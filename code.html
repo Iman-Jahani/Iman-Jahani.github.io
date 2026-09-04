@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سیستم تصحیح خودکار پایتون</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-family: monospace;
+            font-size: 14px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #2ea44f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #22863a;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f6f8fa;
+            border: 1px solid #d1d5da;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>سیستم تصحیح خودکار کد پایتون</h1>
+    <p>تابعی به نام <code>solve</code> بنویسید که یک عدد را گرفته و مربع آن را برگرداند.</p>
+    <textarea id="pythonCode" placeholder="def solve(x):&#10;    return x * x"></textarea>
+    <br>
+    <button id="runBtn">اجرا و تصحیح</button>
+    <div id="result"></div>
+
+    <!-- بارگذاری Pyodide -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
+    <script>
+        let pyodideReady = false;
+        let pyodide;
+
+        async function loadPyodide() {
+            if (!pyodideReady) {
+                pyodide = await loadPyodide();
+                pyodideReady = true;
+            }
+        }
+
+        async function runAndGrade() {
+            const code = document.getElementById('pythonCode').value;
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'در حال بارگذاری پایتون...';
+
+            try {
+                await loadPyodide();
+
+                // گرفتن stdout پایتون برای دریافت خروجی print
+                pyodide.runPython(`
+import sys
+from io import StringIO
+sys.stdout = StringIO()
+                `);
+
+                // اجرای کد کاربر
+                await pyodide.runPythonAsync(code);
+
+                // تست ورودی و خروجی
+                const testInput = 5;
+                const expectedOutput = 25;
+                const actualOutput = pyodide.runPython(`solve(${testInput})`);
+
+                // مقایسه
+                if (actualOutput === expectedOutput) {
+                    resultDiv.innerHTML = '✅ <strong>آفرین! جواب درست است.</strong>';
+                } else {
+                    resultDiv.innerHTML = `❌ <strong>جواب نادرست است.</strong><br>برای ورودی ${testInput}، خروجی تابع شما: ${actualOutput}<br>خروجی مورد انتظار: ${expectedOutput}`;
+                }
+            } catch (err) {
+                resultDiv.innerHTML = `❌ <strong>خطا در اجرای کد:</strong><br>${err.message}`;
+            }
+        }
+
+        document.getElementById('runBtn').addEventListener('click', runAndGrade);
+    </script>
+</body>
+</html>
