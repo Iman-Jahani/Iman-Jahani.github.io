@@ -55,14 +55,18 @@
     <!-- بارگذاری Pyodide -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
     <script>
-        let pyodideReady = false;
-        let pyodide;
+        let pyodideInstance = null; // نگهداری نمونه Pyodide
+        let pyodideLoading = null;   // برای جلوگیری از بارگذاری همزمان
 
-        async function loadPyodide() {
-            if (!pyodideReady) {
-                pyodide = await loadPyodide();
-                pyodideReady = true;
+        // تابع بارگذاری Pyodide (با نام متفاوت)
+        async function initPyodide() {
+            if (!pyodideInstance) {
+                if (!pyodideLoading) {
+                    pyodideLoading = loadPyodide(); // loadPyodide اصلی از کتابخانه است
+                }
+                pyodideInstance = await pyodideLoading;
             }
+            return pyodideInstance;
         }
 
         async function runAndGrade() {
@@ -71,7 +75,7 @@
             resultDiv.textContent = 'در حال بارگذاری پایتون...';
 
             try {
-                await loadPyodide();
+                const pyodide = await initPyodide();
 
                 // گرفتن stdout پایتون برای دریافت خروجی print
                 pyodide.runPython(`
