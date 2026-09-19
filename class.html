@@ -14,7 +14,7 @@
     import { loadPyodide } from 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs';
 
     const supabase = createClient('SUPABASE_URL', 'SUPABASE_ANON_KEY');
-    const sessionId = 'UUID-کلاس-را-اینجا-بگذار';
+    const sessionId = '658b9f04-aa90-453e-839a-51280819f6e5';
 
     await supabase.auth.signInAnonymously();
     const user = (await supabase.auth.getUser()).data.user;
