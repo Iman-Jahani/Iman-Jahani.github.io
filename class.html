@@ -1,51 +1,220 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <title>کلاس پایتون</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دفترچه اشتراکی کلاس پایتون</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<style>
+  body { font-family: Tahoma, sans-serif; background: #f6f7f9; margin: 0; padding: 16px; }
+  h1 { font-size: 20px; }
+  .toolbar { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+  .cell { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 10px; margin-bottom: 14px; }
+  .meta { font-size: 12px; color: #666; margin-bottom: 6px; }
+  .actions { display: flex; gap: 6px; margin-top: 8px; }
+  .actions button { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; background: #fafafa; cursor: pointer; }
+  .actions .run { background: #e6f6e6; }
+  .actions .del { background: #fde8e8; }
+  .output { background: #0f172a; color: #d1fae5; padding: 8px; border-radius: 6px; font-family: monospace; white-space: pre-wrap; min-height: 20px; margin-top: 8px; direction: ltr; text-align: left; }
+  .CodeMirror { direction: ltr; text-align: left; border: 1px solid #ccc; border-radius: 6px; height: auto; }
+</style>
 </head>
 <body>
-  <h1>دفترچهٔ اشتراکی کلاس پایتون</h1>
+  <h1>🐍 دفترچه اشتراکی کلاس پایتون</h1>
+  <div class="toolbar">
+    <button id="addCell">➕ سلول جدید</button>
+    <span id="whoami"></span>
+  </div>
   <div id="cells"></div>
-  <button id="addCell">سلول جدید</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
     import { loadPyodide } from 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs';
 
-    const supabase = createClient('https://fqwlbqpduxmpnlvxrmsy.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxd2xicXBkdXhtcG5sdnhybXN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MTUwNjEsImV4cCI6MjEwNTM5MTA2MX0.5qvPUi_grBuUgITLpG0-QShzLsLaiA07i7pWRtnsWPc');
-    const sessionId = '658b9f04-aa90-453e-839a-51280819f6e5';
+    // ============ این سه را پر کن ============
+    const SUPABASE_URL = 'https://fqwlbqpduxmpnlvxrmsy.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxd2xicXBkdXhtcG5sdnhybXN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MTUwNjEsImV4cCI6MjEwNTM5MTA2MX0.5qvPUi_grBuUgITLpG0-QShzLsLaiA07i7pWRtnsWPc';
+    const SESSION_ID = '658b9f04-aa90-453e-839a-51280819f6e5';
+    // =========================================
 
-    await supabase.auth.signInAnonymously();
-    const user = (await supabase.auth.getUser()).data.user;
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const cellsEl = document.getElementById('cells');
+    const editors = new Map();
 
-    const pyodide = await loadPyodide();
-
-    async function loadCells() {
-      const { data } = await supabase
-        .from('cells')
-        .select('*')
-        .eq('session_id', sessionId)
-        .order('order_index');
-
-      renderCells(data);
+    // --- ورود ناشناس ---
+    let user = (await supabase.auth.getUser()).data.user;
+    if (!user) {
+      const { data, error } = await supabase.auth.signInAnonymously();
+      if (error) { alert('خطای ورود: ' + error.message); throw error; }
+      user = data.user;
     }
 
+    let displayName = localStorage.getItem('displayName');
+    if (!displayName) {
+      displayName = (prompt('اسمت را وارد کن:') || 'ناشناس').trim();
+      localStorage.setItem('displayName', displayName);
+    }
+    document.getElementById('whoami').textContent = '👤 ' + displayName;
+
+    // --- helper ---
+    const esc = (s) => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+    // --- ذخیره سلول ---
+    async function saveCell(id, code, output) {
+      await supabase.from('cells').update({
+        code, output, updated_at: new Date().toISOString()
+      }).eq('id', id);
+    }
+
+    // --- Pyodide ---
+    let pyodide;
+    async function getPyodide() {
+      if (!pyodide) {
+        pyodide = await loadPyodide({
+          indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/'
+        });
+      }
+      return pyodide;
+    }
+
+    async function runCode(id, code, outputEl) {
+      outputEl.textContent = '⏳ در حال آماده‌سازی Pyodide...';
+      let out = '';
+      try {
+        const py = await getPyodide();
+        outputEl.textContent = '⏳ در حال اجرا...';
+        py.setStdout({ batched: (s) => { out += s + '\n'; } });
+        py.setStderr({ batched: (s) => { out += s + '\n'; } });
+        try {
+          const result = await py.runPythonAsync(code);
+          if (result !== undefined && result !== null) out += String(result);
+        } catch (e) {
+          out += 'Error: ' + (e.message || e);
+        }
+      } catch (e) {
+        out = 'Pyodide error: ' + e.message;
+      }
+      outputEl.textContent = out || '(بدون خروجی)';
+      await saveCell(id, code, outputEl.textContent);
+    }
+
+    // --- رندر سلول‌ها ---
+    function renderCells(cells) {
+      // حذف سلول‌هایی که دیگر وجود ندارند
+      for (const [id, obj] of [...editors]) {
+        if (!cells.find(c => c.id === id)) {
+          obj.cellEl.remove();
+          editors.delete(id);
+        }
+      }
+
+      for (const cell of cells) {
+        if (editors.has(cell.id)) {
+          const obj = editors.get(cell.id);
+          // اگر کسی دارد تایپ می‌کند، مقدارش را عوض نکن
+          if (!obj.cm.hasFocus() && obj.cm.getValue() !== cell.code) {
+            obj.cm.setValue(cell.code);
+          }
+          obj.outputEl.textContent = cell.output || '';
+          continue;
+        }
+
+        const cellEl = document.createElement('div');
+        cellEl.className = 'cell';
+        cellEl.innerHTML = `
+          <div class="meta">
+            <b>${esc(cell.author_name)}</b>
+            · ${new Date(cell.created_at).toLocaleString('fa-IR')}
+          </div>
+          <textarea></textarea>
+          <div class="actions">
+            <button class="run">▶ اجرا</button>
+            <button class="save">💾 ذخیره</button>
+            ${cell.author_id === user.id ? '<button class="del">🗑 حذف</button>' : ''}
+          </div>
+          <pre class="output"></pre>
+        `;
+        cellsEl.appendChild(cellEl);
+
+        const ta = cellEl.querySelector('textarea');
+        const cm = CodeMirror.fromTextArea(ta, {
+          mode: 'python',
+          lineNumbers: true,
+          indentUnit: 4,
+          tabSize: 4,
+          indentWithTabs: false,
+        });
+        cm.setValue(cell.code || '');
+
+        const outputEl = cellEl.querySelector('.output');
+        outputEl.textContent = cell.output || '';
+
+        let saveTimer;
+        cm.on('change', () => {
+          clearTimeout(saveTimer);
+          saveTimer = setTimeout(() => {
+            saveCell(cell.id, cm.getValue(), outputEl.textContent);
+          }, 900);
+        });
+
+        cellEl.querySelector('.run').onclick = () => {
+          runCode(cell.id, cm.getValue(), outputEl);
+        };
+        cellEl.querySelector('.save').onclick = () => {
+          saveCell(cell.id, cm.getValue(), outputEl.textContent);
+        };
+
+        const delBtn = cellEl.querySelector('.del');
+        if (delBtn) delBtn.onclick = async () => {
+          if (!confirm('این سلول حذف شود؟')) return;
+          await supabase.from('cells').delete().eq('id', cell.id);
+        };
+
+        editors.set(cell.id, { cm, cellEl, outputEl });
+      }
+    }
+
+    // --- لود سلول‌ها از Supabase ---
+    async function loadCells() {
+      const { data, error } = await supabase
+        .from('cells')
+        .select('*')
+        .eq('session_id', SESSION_ID)
+        .order('order_index', { ascending: true })
+        .order('created_at', { ascending: true });
+      if (error) { console.error(error); return; }
+      renderCells(data || []);
+    }
+
+    // --- Realtime ---
     supabase
-      .channel('cells-channel')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'cells',
-          filter: `session_id=eq.${sessionId}`
-        },
-        loadCells
-      )
+      .channel('cells-' + SESSION_ID)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'cells',
+        filter: `session_id=eq.${SESSION_ID}`,
+      }, () => loadCells())
       .subscribe();
 
-    loadCells();
+    // --- دکمهٔ سلول جدید ---
+    document.getElementById('addCell').onclick = async () => {
+      const { error } = await supabase.from('cells').insert({
+        session_id: SESSION_ID,
+        author_id: user.id,
+        author_name: displayName,
+        code: '',
+        output: '',
+        order_index: Date.now(),
+      });
+      if (error) alert('خطا: ' + error.message);
+    };
+
+    // --- شروع ---
+    await loadCells();
   </script>
 </body>
 </html>
