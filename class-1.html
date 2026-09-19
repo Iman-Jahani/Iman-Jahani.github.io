@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دفترچه اشتراکی کلاس پایتون</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+
+<style>
+  :root {
+    --bg: #f6f7fb;
+    --card: #ffffff;
+    --ink: #1e293b;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --primary: #6366f1;
+    --primary-2: #8b5cf6;
+    --primary-glow: rgba(99, 102, 241, .25);
+    --success: #10b981;
+    --danger: #ef4444;
+    --radius: 14px;
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, .06);
+    --shadow-md: 0 4px 16px rgba(15, 23, 42, .08);
+    --shadow-lg: 0 12px 32px rgba(15, 23, 42, .12);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Vazirmatn', Tahoma, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background:
+      radial-gradient(1200px 600px at 100% -10%, rgba(139, 92, 246, .12), transparent 60%),
+      radial-gradient(900px 500px at -10% 0%, rgba(99, 102, 241, .12), transparent 55%),
+      var(--bg);
+    min-height: 100vh;
+  }
+
+  /* ============ HEADER ============ */
+  .hero {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #ec4899 100%);
+    color: white;
+    padding: 28px 20px 70px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,.15), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(255,255,255,.10), transparent 45%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .hero h1 {
+    font-size: 26px;
+    margin: 0 0 8px;
+    font-weight: 800;
+    letter-spacing: -.3px;
+  }
+  .hero p {
+    margin: 0;
+    opacity: .9;
+    font-size: 14px;
+  }
+  .hero .who {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.25);
+    backdrop-filter: blur(8px);
+    padding: 6px 12px;
+    border-radius: 999px;
+    margin-top: 14px;
+    font-size: 13px;
+  }
+  .hero .who .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, .3);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 3px rgba(74,222,128,.3); }
+    50%     { box-shadow: 0 0 0 6px rgba(74,222,128,.1); }
+  }
+
+  /* ============ MAIN ============ */
+  main {
+    max-width: 900px;
+    margin: -46px auto 60px;
+    padding: 0 16px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ============ TOOLBAR ============ */
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    background: rgba(255,255,255,.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 10px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 22px;
+    position: sticky;
+    top: 12px;
+    z-index: 10;
+  }
+  .toolbar .spacer { flex: 1; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .2s, background .2s, opacity .2s;
+    white-space: nowrap;
+  }
+  .btn:active { transform: translateY(1px) scale(.98); }
+  .btn:disabled { opacity: .6; cursor: not-allowed; }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    color: white;
+    box-shadow: 0 4px 14px var(--primary-glow);
+  }
+  .btn-primary:hover { box-shadow: 0 6px 20px var(--primary-glow); }
+
+  .btn-ghost {
+    background: white;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn-ghost:hover { background: #f8fafc; }
+
+  /* ============ CELL ============ */
+  .cell {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 18px;
+    overflow: hidden;
+    animation: slideIn .35s cubic-bezier(.2,.7,.3,1.2);
+    transition: box-shadow .25s, border-color .25s;
+  }
+  .cell:hover { box-shadow: var(--shadow-md); border-color: #d7dbe6; }
+  .cell.own { border-color: rgba(99,102,241,.45); }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .cell-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, #fbfcfe, #f5f7fb);
+  }
+
+  .avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: white;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(15,23,42,.15);
+  }
+
+  .cell-head .who {
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 0;
+  }
+  .cell-head .name {
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .cell-head .time {
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .cell-head .spacer { flex: 1; }
+  .cell-head .badge {
+    font-size: 11px;
+    background: rgba(99,102,241,.12);
+    color: var(--primary);
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+
+  /* CodeMirror wrapper */
+  .editor-wrap { position: relative; }
+  .CodeMirror {
+    direction: ltr;
+    text-align: left;
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    font-size: 14px;
+    height: auto;
+    min-height: 70px;
+    border: none !important;
+    border-radius: 0 !important;
+    background: #282a36;
+  }
+  .CodeMirror-gutters { border: none !important; background: #282a36 !important; }
+
+  /* ============ ACTIONS ============ */
+  .cell-actions {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--line);
+    background: #fbfcfe;
+    flex-wrap: wrap;
+  }
+  .action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: white;
+    cursor: pointer;
+    color: var(--ink);
+    transition: all .18s;
+    font-family: inherit;
+  }
+  .action:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+  .action.run  { background: linear-gradient(135deg,#10b981,#059669); color: white; border-color: transparent; }
+  .action.run:hover { box-shadow: 0 4px 12px rgba(16,185,129,.35); }
+  .action.save { color: var(--primary); border-color: rgba(99,102,241,.3); background: rgba(99,102,241,.06); }
+  .action.del  { color: var(--danger); border-color: rgba(239,68,68,.25); background: rgba(239,68,68,.05); }
+  .action svg { width: 15px; height: 15px; }
+
+  /* ============ OUTPUT ============ */
+  .output {
+    margin: 0;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .35s ease, padding .3s;
+    background: #0b1020;
+    color: #d1fae5;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px;
+    direction: ltr;
+    text-align: left;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border-top: 1px solid #0f172a;
+  }
+  .output.show { max-height: 400px; overflow: auto; padding: 12px 14px; }
+  .output.err { color: #fca5a5; }
+  .output .placeholder { color: #64748b; font-style: italic; }
+  .output::-webkit-scrollbar { width: 8px; height: 8px; }
+  .output::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+  /* ============ EMPTY ============ */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .empty .emoji { font-size: 56px; margin-bottom: 12px; }
+  .empty h3 { margin: 0 0 6px; color: var(--ink); font-size: 18px; }
+  .empty p { margin: 0; font-size: 14px; }
+
+  /* ============ TOAST ============ */
+  .toasts {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
+  }
+  .toast {
+    background: #1e293b;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    font-size: 13.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: toastIn .3s cubic-bezier(.2,.8,.3,1.2);
+    min-width: 200px;
+  }
+  .toast.ok  { background: linear-gradient(135deg,#10b981,#059669); }
+  .toast.err { background: linear-gradient(135deg,#ef4444,#b91c1c); }
+  .toast.info{ background: linear-gradient(135deg,#6366f1,#8b5cf6); }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(20px) scale(.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .toast.hide { animation: toastOut .3s forwards; }
+  @keyframes toastOut {
+    to { opacity: 0; transform: translateY(20px) scale(.95); }
+  }
+
+  /* ============ LOADING ============ */
+  .loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 40px;
+    color: var(--muted);
+  }
+  .spinner {
+    width: 30px; height: 30px;
+    border: 3px solid rgba(99,102,241,.2);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 600px) {
+    .hero { padding: 22px 16px 60px; }
+    .hero h1 { font-size: 20px; }
+    main { padding: 0 10px; }
+    .toolbar { top: 8px; padding: 8px; gap: 6px; }
+    .btn { padding: 8px 12px; font-size: 13px; }
+    .cell-head { padding: 10px; }
+    .cell-actions { padding: 8px 10px; gap: 6px; }
+    .action { padding: 6px 9px; font-size: 12px; }
+    .action .label { display: none; }
+  }
+
+  .spin { animation: spin .7s linear infinite; display: inline-block; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <h1>🐍 دفترچه اشتراکی کلاس پایتون</h1>
+    <p>اینجا می‌توانی کد بزنی، اجرا کنی و کد بقیه را ببینی.</p>
+    <div class="who">
+      <span class="dot"></span>
+      <span id="whoami">در حال اتصال…</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="toolbar">
+    <button class="btn btn-primary" id="addCell">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg>
+      سلول جدید
+    </button>
+    <button class="btn btn-ghost" id="exportBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16"/></svg>
+      دانلود ipynb
+    </button>
+    <span class="spacer"></span>
+    <span id="stats" style="font-size:13px;color:var(--muted)"></span>
+  </div>
+
+  <div id="cells"></div>
+</main>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  import { loadPyodide } from 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs';
+
+  // ================================================
+  const SUPABASE_URL = 'https://fqwlbqpduxmpnlvxrmsy.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxd2xicXBkdXhtcG5sdnhybXN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MTUwNjEsImV4cCI6MjEwNTM5MTA2MX0.5qvPUi_grBuUgITLpG0-QShzLsLaiA07i7pWRtnsWPc';
+  const SESSION_ID = '658b9f04-aa90-453e-839a-51280819f6e5';
+  // ================================================
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const cellsEl = document.getElementById('cells');
+  const editors = new Map();
+
+  // ---------- Toast ----------
+  function toast(msg, type = 'info', ms = 3000) {
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    const icons = { ok: '✓', err: '✕', info: 'ℹ' };
+    t.innerHTML = `<b>${icons[type] || ''}</b><span>${msg}</span>`;
+    document.getElementById('toasts').appendChild(t);
+    setTimeout(() => {
+      t.classList.add('hide');
+      setTimeout(() => t.remove(), 300);
+    }, ms);
+  }
+
+  // ---------- Avatar color ----------
+  const PALETTE = ['#6366f1','#8b5cf6','#ec4899','#f43f5e','#f59e0b','#10b981','#06b6d4','#3b82f6','#84cc16','#eab308'];
+  function colorOf(name) {
+    let h = 0;
+    for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+    return PALETTE[h % PALETTE.length];
+  }
+  function initials(name) {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 1).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+
+  // ---------- Login anon ----------
+  let user = (await supabase.auth.getUser()).data.user;
+  if (!user) {
+    const { data, error } = await supabase.auth.signInAnonymously();
+    if (error) { toast('خطای ورود: ' + error.message, 'err', 6000); throw error; }
+    user = data.user;
+  }
+
+  let displayName = localStorage.getItem('displayName');
+  if (!displayName) {
+    displayName = (prompt('اسمت را وارد کن:') || 'ناشناس').trim();
+    localStorage.setItem('displayName', displayName);
+  }
+  document.getElementById('whoami').textContent = displayName;
+
+  // ---------- Save / render ----------
+  async function saveCell(id, code, output) {
+    await supabase.from('cells').update({
+      code, output, updated_at: new Date().toISOString()
+    }).eq('id', id);
+  }
+
+  async function setOutput(outputEl, text, isErr) {
+    outputEl.classList.add('show');
+    outputEl.classList.toggle('err', !!isErr);
+    outputEl.textContent = text;
+  }
+
+  // ---------- Pyodide ----------
+  let pyodide;
+  async function getPyodide() {
+    if (!pyodide) pyodide = await loadPyodide();
+    return pyodide;
+  }
+
+  async function runCode(id, code, outputEl) {
+    await setOutput(outputEl, '⏳ در حال آماده‌سازی Pyodide…', false);
+    let out = '';
+    try {
+      const py = await getPyodide();
+      await setOutput(outputEl, '⏳ در حال اجرا…', false);
+      py.setStdout({ batched: (s) => { out += s + '\n'; } });
+      py.setStderr({ batched: (s) => { out += s + '\n'; } });
+      try {
+        const r = await py.runPythonAsync(code);
+        if (r !== undefined && r !== null) out += String(r);
+      } catch (e) {
+        out += 'Error: ' + (e.message || e);
+      }
+    } catch (e) {
+      out = 'Pyodide error: ' + e.message;
+    }
+    out = out.trim() || '(بدون خروجی)';
+    await setOutput(outputEl, out, out.startsWith('Error') || out.startsWith('Pyodide'));
+    await saveCell(id, code, out);
+  }
+
+  // ---------- Empty state ----------
+  function renderEmpty() {
+    cellsEl.innerHTML = `
+      <div class="empty">
+        <div class="emoji">✨</div>
+        <h3>هنوز سلولی نداری</h3>
+        <p>روی «سلول جدید» بزن و اولین کد پایتونت را بنویس.</p>
+      </div>`;
+  }
+
+  // ---------- Render ----------
+  function renderCells(cells) {
+    if (!cells.length) { renderEmpty(); }
+    else if (cellsEl.querySelector('.empty')) { cellsEl.innerHTML = ''; }
+
+    // update stats
+    document.getElementById('stats').textContent =
+      cells.length ? `${cells.length} سلول · ${new Set(cells.map(c=>c.author_name)).size} دانشجو` : '';
+
+    // remove deleted
+    for (const [id, obj] of [...editors]) {
+      if (!cells.find(c => c.id === id)) {
+        obj.cellEl.remove();
+        editors.delete(id);
+      }
+    }
+
+    for (const cell of cells) {
+      if (editors.has(cell.id)) {
+        const obj = editors.get(cell.id);
+        if (!obj.cm.hasFocus() && obj.cm.getValue() !== cell.code) {
+          obj.cm.setValue(cell.code);
+        }
+        const newOut = cell.output || '';
+        if (obj.lastOutput !== newOut) {
+          obj.lastOutput = newOut;
+          if (newOut) { setOutput(obj.outputEl, newOut, newOut.startsWith('Error') || newOut.startsWith('Pyodide')); }
+          else { obj.outputEl.classList.remove('show'); obj.outputEl.textContent = ''; }
+        }
+        continue;
+      }
+
+      const isOwn = cell.author_id === user.id;
+      const name = cell.author_name || 'ناشناس';
+      const color = colorOf(name);
+
+      const el = document.createElement('div');
+      el.className = 'cell' + (isOwn ? ' own' : '');
+      el.innerHTML = `
+        <div class="cell-head">
+          <div class="avatar" style="background:${color}">${initials(name)}</div>
+          <div class="who">
+            <div class="name">${name}${isOwn ? ' <span class="badge">شما</span>' : ''}</div>
+            <div class="time">${new Date(cell.created_at).toLocaleString('fa-IR')}</div>
+          </div>
+          <div class="spacer"></div>
+        </div>
+        <div class="editor-wrap"><textarea></textarea></div>
+        <div class="cell-actions">
+          <button class="action run" title="Ctrl+Enter">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span class="label">اجرا</span>
+          </button>
+          <button class="action save" title="ذخیره">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+            <span class="label">ذخیره</span>
+          </button>
+          ${isOwn ? `
+          <button class="action del" title="حذف">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14"/></svg>
+            <span class="label">حذف</span>
+          </button>` : ''}
+        </div>
+        <pre class="output"></pre>
+      `;
+      cellsEl.appendChild(el);
+
+      const cm = CodeMirror.fromTextArea(el.querySelector('textarea'), {
+        mode: 'python',
+        theme: 'dracula',
+        lineNumbers: true,
+        indentUnit: 4,
+        tabSize: 4,
+        indentWithTabs: false,
+        autoCloseBrackets: true,
+        matchBrackets: true,
+        viewportMargin: Infinity,
+      });
+      cm.setValue(cell.code || '');
+
+      const outputEl = el.querySelector('.output');
+      const obj = { cm, cellEl: el, outputEl, lastOutput: cell.output || '' };
+      if (cell.output) { setOutput(outputEl, cell.output, cell.output.startsWith('Error') || cell.output.startsWith('Pyodide')); }
+
+      let saveTimer;
+      cm.on('change', () => {
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(() => saveCell(cell.id, cm.getValue(), obj.lastOutput), 900);
+      });
+
+      // Ctrl+Enter
+      cm.setOption('extraKeys', {
+        'Ctrl-Enter': () => el.querySelector('.run').click(),
+        'Cmd-Enter': () => el.querySelector('.run').click(),
+      });
+
+      el.querySelector('.run').onclick = (ev) => {
+        const btn = ev.currentTarget;
+        btn.disabled = true;
+        const svg = btn.querySelector('svg');
+        svg.classList.add('spin');
+        runCode(cell.id, cm.getValue(), outputEl).finally(() => {
+          svg.classList.remove('spin');
+          btn.disabled = false;
+        });
+      };
+      el.querySelector('.save').onclick = async () => {
+        await saveCell(cell.id, cm.getValue(), obj.lastOutput);
+        toast('ذخیره شد', 'ok', 1500);
+      };
+      const delBtn = el.querySelector('.del');
+      if (delBtn) delBtn.onclick = async () => {
+        if (!confirm('این سلول حذف شود؟')) return;
+        const { error } = await supabase.from('cells').delete().eq('id', cell.id);
+        if (error) toast('خطای حذف: ' + error.message, 'err');
+        else toast('حذف شد', 'ok', 1500);
+      };
+
+      editors.set(cell.id, obj);
+    }
+  }
+
+  // ---------- Load ----------
+  async function loadCells() {
+    const { data, error } = await supabase
+      .from('cells')
+      .select('*')
+      .eq('session_id', SESSION_ID)
+      .order('created_at', { ascending: true });
+    if (error) { console.error(error); return; }
+    renderCells(data || []);
+  }
+
+  // ---------- Realtime ----------
+  supabase
+    .channel('cells-' + SESSION_ID)
+    .on('postgres_changes', {
+      event: '*', schema: 'public', table: 'cells',
+      filter: `session_id=eq.${SESSION_ID}`,
+    }, () => loadCells())
+    .subscribe();
+
+  // ---------- Add cell ----------
+  document.getElementById('addCell').onclick = async (ev) => {
+    const btn = ev.currentTarget;
+    btn.disabled = true;
+    const { error } = await supabase.from('cells').insert({
+      session_id: SESSION_ID,
+      author_id: user.id,
+      author_name: displayName,
+      code: '',
+      output: '',
+    });
+    btn.disabled = false;
+    if (error) toast('خطا: ' + error.message, 'err');
+  };
+
+  // ---------- Export ipynb ----------
+  document.getElementById('exportBtn').onclick = async () => {
+    toast('در حال ساخت فایل…', 'info', 1500);
+    const { data, error } = await supabase
+      .from('cells').select('*')
+      .eq('session_id', SESSION_ID)
+      .order('created_at');
+    if (error) return toast('خطا: ' + error.message, 'err');
+
+    const nb = {
+      cells: data.map(c => ({
+        cell_type: 'code',
+        metadata: { author: c.author_name, created_at: c.created_at },
+        source: (c.code || '').split('\n'),
+        outputs: c.output ? [{
+          output_type: 'stream', name: 'stdout',
+          text: c.output.split('\n').map(l => l + '\n')
+        }] : [],
+        execution_count: null
+      })),
+      metadata: {
+        kernelspec: { name: 'python3', display_name: 'Python 3' },
+        language_info: { name: 'python', file_extension: '.py' }
+      },
+      nbformat: 4, nbformat_minor: 5
+    };
+
+    const blob = new Blob([JSON.stringify(nb, null, 1)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'class-' + new Date().toISOString().slice(0, 10) + '.ipynb';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('دانلود شد', 'ok');
+  };
+
+  // ---------- Start ----------
+  cellsEl.innerHTML = `<div class="loader"><div class="spinner"></div><div>در حال بارگذاری…</div></div>`;
+  await loadCells();
+</script>
+</body>
+</html>
