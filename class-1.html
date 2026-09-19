@@ -641,13 +641,38 @@
 
   // ---------- Load ----------
   async function loadCells() {
+  try {
+    console.log('SESSION_ID =', SESSION_ID);
+    console.log('USER =', user);
+
     const { data, error } = await supabase
       .from('cells')
       .select('*')
       .eq('session_id', SESSION_ID)
       .order('created_at', { ascending: true });
-    if (error) { console.error(error); return; }
+
+    console.log('QUERY RESULT:', { data, error });
+
+    if (error) {
+      cellsEl.innerHTML = `
+        <div class="empty">
+          <div class="emoji">⚠️</div>
+          <h3>خطا در بارگذاری</h3>
+          <p>${error.message}</p>
+          <p style="font-size:12px;color:#94a3b8">${error.code || ''} ${error.details || ''}</p>
+        </div>`;
+      toast('خطا: ' + error.message, 'err', 6000);
+      return;
+    }
     renderCells(data || []);
+  } catch (e) {
+    console.error(e);
+    cellsEl.innerHTML = `
+      <div class="empty">
+        <div class="emoji">💥</div>
+        <h3>خطای غیرمنتظره</h3>
+        <p>${e.message}</p>
+      </div>`;
   }
 
   // ---------- Realtime ----------
