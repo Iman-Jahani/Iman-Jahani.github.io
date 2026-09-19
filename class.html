@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>کلاس پایتون</title>
+</head>
+<body>
+  <h1>دفترچهٔ اشتراکی کلاس پایتون</h1>
+  <div id="cells"></div>
+  <button id="addCell">سلول جدید</button>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    import { loadPyodide } from 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs';
+
+    const supabase = createClient('SUPABASE_URL', 'SUPABASE_ANON_KEY');
+    const sessionId = 'UUID-کلاس-را-اینجا-بگذار';
+
+    await supabase.auth.signInAnonymously();
+    const user = (await supabase.auth.getUser()).data.user;
+
+    const pyodide = await loadPyodide();
+
+    async function loadCells() {
+      const { data } = await supabase
+        .from('cells')
+        .select('*')
+        .eq('session_id', sessionId)
+        .order('order_index');
+
+      renderCells(data);
+    }
+
+    supabase
+      .channel('cells-channel')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'cells',
+          filter: `session_id=eq.${sessionId}`
+        },
+        loadCells
+      )
+      .subscribe();
+
+    loadCells();
+  </script>
+</body>
+</html>
