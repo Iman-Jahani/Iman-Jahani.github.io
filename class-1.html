@@ -618,6 +618,33 @@
         'Ctrl-Enter': () => el.querySelector('.run').click(),
         'Cmd-Enter': () => el.querySelector('.run').click(),
       });
+      
+            // جلوگیری از پیست
+      cm.on('paste', (instance, e) => {
+        e.preventDefault();
+        toast('کپی‌پیست مجاز نیست. لطفاً کد را تایپ کن.', 'err', 2500);
+      });
+      
+      // جلوگیری از drop (کشیدن متن با ماوس)
+      cm.on('drop', (instance, e) => {
+        e.preventDefault();
+        toast('کشیدن متن مجاز نیست. لطفاً کد را تایپ کن.', 'err', 2500);
+      });
+      
+      // جلوگیری از راست‌کلیک (منوی Paste را می‌بندد)
+      cm.on('contextmenu', (instance, e) => {
+        e.preventDefault();
+        toast('راست‌کلیک غیرفعال است.', 'info', 2000);
+      });
+      
+      // جلوگیری از Ctrl+V و Ctrl+X و Ctrl+C (اختیاری، سخت‌گیرانه)
+      cm.setOption('extraKeys', {
+        'Ctrl-Enter': () => cm.getWrapperElement().closest('.cell').querySelector('.run').click(),
+        'Cmd-Enter':  () => cm.getWrapperElement().closest('.cell').querySelector('.run').click(),
+        'Ctrl-V': () => { toast('پیست مجاز نیست', 'err', 2000); return; },
+        'Cmd-V':  () => { toast('پیست مجاز نیست', 'err', 2000); return; },
+        'Shift-Insert': () => { toast('پیست مجاز نیست', 'err', 2000); return; },
+      });
 
       el.querySelector('.run').onclick = (ev) => {
         const btn = ev.currentTarget;
