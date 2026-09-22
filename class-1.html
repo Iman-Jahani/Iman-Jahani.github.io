@@ -742,6 +742,91 @@
     toast('دانلود شد', 'ok');
   };
 
+
+  // ---------- Upload ipynb ----------
+const fileInput = document.getElementById('fileInput');
+const uploadBtn = document.getElementById('uploadBtn');
+
+uploadBtn.onclick = () => fileInput.click();
+
+fileInput.onchange = async (ev) => {
+  const file = ev.target.files[0];
+  if (!file) return;
+  fileInput.value = ''; // برای اینکه بشود دوباره همان فایل را انتخاب کرد
+
+  try {
+    const text = await file.text();
+    let nb;
+    try {
+      nb = JSON.parse(text);
+    } catch {
+      return toast('فایل JSON معتبر نیست', 'err');
+    }
+
+    if (!nb.cells || !Array.isArray(nb.cells)) {
+      return toast('این فایل یک ipynb معتبر نیست', 'err');
+    }
+
+    // استخراج سلول‌های code
+    const codeCells = nb.cells.filter(c => c.cell_type === 'code');
+
+    if (!codeCells.length) {
+      return toast('هیچ سلول کدی در فایل پیدا نشد', 'info');
+    }
+
+    if (!confirm(`این فایل ${codeCells.length} سلول کد دارد. همه اضافه شوند؟`)) return;
+
+    uploadBtn.disabled = true;
+    toast(`در حال آپلود ${codeCells.length} سلول…`, 'info', 2000);
+
+    // آماده‌سازی رکوردها
+    const rows = codeCells.map((c, i) => {
+      const src = Array.isArray(c.source) ? c.source.join('') : String(c.source || '');
+      const out = Array.isArray(c.outputs)
+        ? c.outputs
+            .map(o => {
+              if (o.output_type === 'stream') {
+                return Array.isArray(o.text) ? o.text.join('') : String(o.text || '');
+              }
+              if (o.output_type === 'execute_result' && o.data) {
+                const d = o.data['text/plain'];
+                return Array.isArray(d) ? d.join('') : String(d || '');
+              }
+              if (o.output_type === 'error') {
+                return (o.ename || 'Error') + ': ' + (o.evalue || '');
+              }
+              return '';
+            })
+            .filter(Boolean)
+            .join('\n')
+        : '';
+
+      return {
+        session_id: SESSION_ID,
+        author_id: user.id,
+        author_name: displayName,
+        code: src,
+        output: out,
+        // برای اینکه ترتیب حفظ شود، از ترتیب اصلی فایل استفاده می‌کنیم
+        order_index: i,
+      };
+    });
+
+    // درج گروهی
+    const { error } = await supabase.from('cells').insert(rows);
+    if (error) {
+      toast('خطای آپلود: ' + error.message, 'err', 6000);
+    } else {
+      toast(`${codeCells.length} سلول اضافه شد`, 'ok');
+    }
+  } catch (e) {
+    console.error(e);
+    toast('خطا در خواندن فایل: ' + e.message, 'err');
+  } finally {
+    uploadBtn.disabled = false;
+  }
+};
+
   // ---------- Start ----------
   cellsEl.innerHTML = `<div class="loader"><div class="spinner"></div><div>در حال بارگذاری…</div></div>`;
   await loadCells();
