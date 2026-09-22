@@ -306,447 +306,527 @@
 
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-import { loadPyodide } from 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs';
-
-// ================================================
-const SUPABASE_URL = 'https://fqwlbqpduxmpnlvxrmsy.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxd2xicXBkdXhtcG5sdnhybXN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MTUwNjEsImV4cCI6MjEwNTM5MTA2MX0.5qvPUi_grBuUgITLpG0-QShzLsLaiA07i7pWRtnsWPc';
-const SESSION_ID = '658b9f04-aa90-453e-839a-51280819f6e5';
-// ================================================
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const cellsEl = document.getElementById('cells');
-
-// ساختار: id → { cell, el, cm, outputEl, lastOutput }
-const nodes = new Map();
-
-let user = null;
-let displayName = '';
-let pyodide = null;
-
-// ---------- Toast ----------
-function toast(msg, type = 'info', ms = 3000) {
-  const t = document.createElement('div');
-  t.className = 'toast ' + type;
-  const icons = { ok: '✓', err: '✕', info: 'ℹ' };
-  t.innerHTML = `<b>${icons[type] || ''}</b><span>${msg}</span>`;
-  document.getElementById('toasts').appendChild(t);
-  setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, ms);
-}
-
-// ---------- Avatar ----------
-const PALETTE = ['#6366f1','#8b5cf6','#ec4899','#f43f5e','#f59e0b','#10b981','#06b6d4','#3b82f6','#84cc16','#eab308'];
-function colorOf(name) {
-  let h = 0;
-  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
-  return PALETTE[h % PALETTE.length];
-}
-function initials(name) {
-  const p = name.trim().split(/\s+/);
-  return p.length === 1 ? p[0][0].toUpperCase() : (p[0][0] + p[1][0]).toUpperCase();
-}
-
-// ---------- Pyodide ----------
-async function getPyodide() {
-  if (!pyodide) pyodide = await loadPyodide();
-  return pyodide;
-}
-
-async function setOutput(el, text, isErr) {
-  el.classList.add('show');
-  el.classList.toggle('err', !!isErr);
-  el.textContent = text;
-}
-
-async function runCode(id, code, outputEl) {
-  await setOutput(outputEl, '⏳ در حال آماده‌سازی Pyodide…', false);
-  let out = '';
-  try {
-    const py = await getPyodide();
-    const ns = py.globals.get('dict')();
-    py.setStdout({ batched: s => { out += s + '\n'; } });
-    py.setStderr({ batched: s => { out += s + '\n'; } });
-    await setOutput(outputEl, '⏳ در حال اجرا…', false);
+  import { loadPyodide } from 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs';
+  
+  // ================================================
+  const SUPABASE_URL = 'https://fqwlbqpduxmpnlvxrmsy.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxd2xicXBkdXhtcG5sdnhybXN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MTUwNjEsImV4cCI6MjEwNTM5MTA2MX0.5qvPUi_grBuUgITLpG0-QShzLsLaiA07i7pWRtnsWPc';
+  const SESSION_ID = '658b9f04-aa90-453e-839a-51280819f6e5';
+  // ================================================
+  
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const cellsEl = document.getElementById('cells');
+  
+  // id → { cell, el, cm, outputEl, lastOutput }
+  const nodes = new Map();
+  
+  // id → عنصر insert-bar که قبل از این سلول قرار دارد
+  const insertBarsBefore = new Map();
+  
+  let user = null;
+  let displayName = '';
+  let pyodide = null;
+  
+  // ---------- Toast ----------
+  function toast(msg, type = 'info', ms = 3000) {
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    const icons = { ok: '✓', err: '✕', info: 'ℹ' };
+    t.innerHTML = `<b>${icons[type] || ''}</b><span>${msg}</span>`;
+    document.getElementById('toasts').appendChild(t);
+    setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, ms);
+  }
+  
+  // ---------- Avatar ----------
+  const PALETTE = ['#6366f1','#8b5cf6','#ec4899','#f43f5e','#f59e0b','#10b981','#06b6d4','#3b82f6','#84cc16','#eab308'];
+  function colorOf(name) {
+    let h = 0;
+    for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+    return PALETTE[h % PALETTE.length];
+  }
+  function initials(name) {
+    const p = name.trim().split(/\s+/);
+    return p.length === 1 ? p[0][0].toUpperCase() : (p[0][0] + p[1][0]).toUpperCase();
+  }
+  
+  // ---------- Pyodide ----------
+  async function getPyodide() {
+    if (!pyodide) pyodide = await loadPyodide();
+    return pyodide;
+  }
+  async function setOutput(el, text, isErr) {
+    el.classList.add('show');
+    el.classList.toggle('err', !!isErr);
+    el.textContent = text;
+  }
+  async function runCode(id, code, outputEl) {
+    await setOutput(outputEl, '⏳ در حال آماده‌سازی Pyodide…', false);
+    let out = '';
     try {
-      const r = await py.runPythonAsync(code, { globals: ns });
-      if (r !== undefined && r !== null) out += String(r);
+      const py = await getPyodide();
+      const ns = py.globals.get('dict')();
+      py.setStdout({ batched: s => { out += s + '\n'; } });
+      py.setStderr({ batched: s => { out += s + '\n'; } });
+      await setOutput(outputEl, '⏳ در حال اجرا…', false);
+      try {
+        const r = await py.runPythonAsync(code, { globals: ns });
+        if (r !== undefined && r !== null) out += String(r);
+      } catch (e) {
+        out += 'Error: ' + (e.message || e);
+      }
     } catch (e) {
-      out += 'Error: ' + (e.message || e);
+      out = 'Pyodide error: ' + e.message;
     }
-  } catch (e) {
-    out = 'Pyodide error: ' + e.message;
+    out = out.trim() || '(بدون خروجی)';
+    await setOutput(outputEl, out, out.startsWith('Error') || out.startsWith('Pyodide'));
+    await supabase.from('cells').update({
+      code, output: out, updated_at: new Date().toISOString()
+    }).eq('id', id);
   }
-  out = out.trim() || '(بدون خروجی)';
-  await setOutput(outputEl, out, out.startsWith('Error') || out.startsWith('Pyodide'));
-  await supabase.from('cells').update({
-    code, output: out, updated_at: new Date().toISOString()
-  }).eq('id', id);
-}
-
-// ---------- ساخت یک سلول ----------
-function createCellNode(cell) {
-  const isOwn = cell.author_id === user.id;
-  const name = cell.author_name || 'ناشناس';
-  const color = colorOf(name);
-
-  const el = document.createElement('div');
-  el.className = 'cell' + (isOwn ? ' own' : '');
-  el.dataset.id = cell.id;
-  el.dataset.order = String(cell.order_index ?? 0);
-  el.innerHTML = `
-    <div class="cell-head">
-      <div class="avatar" style="background:${color}">${initials(name)}</div>
-      <div class="who">
-        <div class="name">${name}${isOwn ? ' <span class="badge">شما</span>' : ''}</div>
-        <div class="time">${new Date(cell.created_at).toLocaleString('fa-IR')}</div>
+  
+  // ---------- ساخت سلول ----------
+  function createCellNode(cell) {
+    const isOwn = cell.author_id === user.id;
+    const name = cell.author_name || 'ناشناس';
+    const color = colorOf(name);
+  
+    const el = document.createElement('div');
+    el.className = 'cell' + (isOwn ? ' own' : '');
+    el.dataset.id = cell.id;
+    el.dataset.order = String(cell.order_index ?? 0);
+    el.innerHTML = `
+      <div class="cell-head">
+        <div class="avatar" style="background:${color}">${initials(name)}</div>
+        <div class="who">
+          <div class="name">${name}${isOwn ? ' <span class="badge">شما</span>' : ''}</div>
+          <div class="time">${new Date(cell.created_at).toLocaleString('fa-IR')}</div>
+        </div>
+        <div class="spacer"></div>
       </div>
-      <div class="spacer"></div>
-    </div>
-    <div class="editor-wrap"><textarea></textarea></div>
-    <div class="cell-actions">
-      <button class="action run" title="Ctrl+Enter">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        <span class="label">اجرا</span>
-      </button>
-      <button class="action save" title="ذخیره">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
-        <span class="label">ذخیره</span>
-      </button>
-      ${isOwn ? `
-      <button class="action del" title="حذف">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14"/></svg>
-        <span class="label">حذف</span>
-      </button>` : ''}
-    </div>
-    <pre class="output"></pre>
-  `;
-
-  const cm = CodeMirror.fromTextArea(el.querySelector('textarea'), {
-    mode: 'python',
-    theme: 'dracula',
-    lineNumbers: true,
-    indentUnit: 4,
-    tabSize: 4,
-    indentWithTabs: false,
-    autoCloseBrackets: true,
-    matchBrackets: true,
-    viewportMargin: Infinity,
-  });
-  cm.setValue(cell.code || '');
-
-  const outputEl = el.querySelector('.output');
-  if (cell.output) {
-    setOutput(outputEl, cell.output,
-      cell.output.startsWith('Error') || cell.output.startsWith('Pyodide'));
-  }
-
-  // ذخیرهٔ خودکار
-  let saveTimer;
-  cm.on('change', () => {
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      supabase.from('cells').update({
+      <div class="editor-wrap"><textarea></textarea></div>
+      <div class="cell-actions">
+        <button class="action run" title="Ctrl+Enter">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <span class="label">اجرا</span>
+        </button>
+        <button class="action save" title="ذخیره">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+          <span class="label">ذخیره</span>
+        </button>
+        ${isOwn ? `
+        <button class="action del" title="حذف">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14"/></svg>
+          <span class="label">حذف</span>
+        </button>` : ''}
+      </div>
+      <pre class="output"></pre>
+    `;
+  
+    const cm = CodeMirror.fromTextArea(el.querySelector('textarea'), {
+      mode: 'python',
+      theme: 'dracula',
+      lineNumbers: true,
+      indentUnit: 4,
+      tabSize: 4,
+      indentWithTabs: false,
+      autoCloseBrackets: true,
+      matchBrackets: true,
+      viewportMargin: Infinity,
+    });
+    cm.setValue(cell.code || '');
+  
+    const outputEl = el.querySelector('.output');
+    if (cell.output) {
+      setOutput(outputEl, cell.output,
+        cell.output.startsWith('Error') || cell.output.startsWith('Pyodide'));
+    }
+  
+    let saveTimer;
+    cm.on('change', () => {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        supabase.from('cells').update({
+          code: cm.getValue(),
+          updated_at: new Date().toISOString()
+        }).eq('id', cell.id);
+      }, 900);
+    });
+  
+    // ضد پیست
+    cm.on('paste', (inst, e) => {
+      e.preventDefault();
+      toast('کپی‌پیست مجاز نیست. تایپ کن 🌱', 'err', 2200);
+    });
+    cm.on('drop', (inst, e) => {
+      e.preventDefault();
+      toast('کشیدن متن مجاز نیست', 'err', 2000);
+    });
+    cm.on('contextmenu', (inst, e) => {
+      e.preventDefault();
+      toast('راست‌کلیک غیرفعال است', 'info', 1500);
+    });
+    cm.setOption('extraKeys', {
+      'Ctrl-Enter': () => el.querySelector('.run').click(),
+      'Cmd-Enter':  () => el.querySelector('.run').click(),
+      'Ctrl-V': () => toast('پیست مجاز نیست', 'err', 1800),
+      'Cmd-V':  () => toast('پیست مجاز نیست', 'err', 1800),
+      'Shift-Insert': () => toast('پیست مجاز نیست', 'err', 1800),
+    });
+  
+    el.querySelector('.run').onclick = async (ev) => {
+      const btn = ev.currentTarget;
+      btn.disabled = true;
+      const svg = btn.querySelector('svg');
+      svg.classList.add('spin');
+      try {
+        await runCode(cell.id, cm.getValue(), outputEl);
+      } finally {
+        svg.classList.remove('spin');
+        btn.disabled = false;
+      }
+    };
+    el.querySelector('.save').onclick = async () => {
+      await supabase.from('cells').update({
         code: cm.getValue(),
         updated_at: new Date().toISOString()
       }).eq('id', cell.id);
-    }, 900);
-  });
-
-  // ضد پیست
-  cm.on('paste', (inst, e) => {
-    e.preventDefault();
-    toast('کپی‌پیست مجاز نیست. تایپ کن 🌱', 'err', 2200);
-  });
-  cm.on('drop', (inst, e) => {
-    e.preventDefault();
-    toast('کشیدن متن مجاز نیست', 'err', 2000);
-  });
-  cm.on('contextmenu', (inst, e) => {
-    e.preventDefault();
-    toast('راست‌کلیک غیرفعال است', 'info', 1500);
-  });
-  cm.setOption('extraKeys', {
-    'Ctrl-Enter': () => el.querySelector('.run').click(),
-    'Cmd-Enter':  () => el.querySelector('.run').click(),
-    'Ctrl-V': () => toast('پیست مجاز نیست', 'err', 1800),
-    'Cmd-V':  () => toast('پیست مجاز نیست', 'err', 1800),
-    'Shift-Insert': () => toast('پیست مجاز نیست', 'err', 1800),
-  });
-
-  // دکمه‌ها
-  el.querySelector('.run').onclick = async (ev) => {
-    const btn = ev.currentTarget;
-    btn.disabled = true;
-    const svg = btn.querySelector('svg');
-    svg.classList.add('spin');
-    try {
-      await runCode(cell.id, cm.getValue(), outputEl);
-    } finally {
-      svg.classList.remove('spin');
-      btn.disabled = false;
-    }
-  };
-  el.querySelector('.save').onclick = async () => {
-    await supabase.from('cells').update({
-      code: cm.getValue(),
-      updated_at: new Date().toISOString()
-    }).eq('id', cell.id);
-    toast('ذخیره شد', 'ok', 1500);
-  };
-  const delBtn = el.querySelector('.del');
-  if (delBtn) delBtn.onclick = async () => {
-    if (!confirm('این سلول حذف شود؟')) return;
-    const { error } = await supabase.from('cells').delete().eq('id', cell.id);
-    if (error) toast('خطای حذف: ' + error.message, 'err');
-  };
-
-  return { cell, el, cm, outputEl };
-}
-
-// ---------- اضافه/آپدیت یک سلول ----------
-function upsertCell(cell) {
-  if (nodes.has(cell.id)) {
-    // فقط محتوا را به‌روز کن، DOM را دست نزن
-    const n = nodes.get(cell.id);
-    if (!n.cm.hasFocus() && n.cm.getValue() !== (cell.code || '')) {
-      n.cm.setValue(cell.code || '');
-    }
-    const newOut = cell.output || '';
-    if (n.lastOutput !== newOut) {
-      n.lastOutput = newOut;
-      if (newOut) setOutput(n.outputEl, newOut,
-        newOut.startsWith('Error') || newOut.startsWith('Pyodide'));
-      else { n.outputEl.classList.remove('show'); n.outputEl.textContent = ''; }
-    }
-    // اگر order_index عوض شده، جابه‌جا کن
-    n.el.dataset.order = String(cell.order_index ?? 0);
-    return;
+      toast('ذخیره شد', 'ok', 1500);
+    };
+    const delBtn = el.querySelector('.del');
+    if (delBtn) delBtn.onclick = async () => {
+      if (!confirm('این سلول حذف شود؟')) return;
+      const { error } = await supabase.from('cells').delete().eq('id', cell.id);
+      if (error) toast('خطای حذف: ' + error.message, 'err');
+    };
+  
+    // ★ مهم: بعد از اینکه در DOM قرار گرفت، refresh کن
+    requestAnimationFrame(() => cm.refresh());
+  
+    return { cell, el, cm, outputEl, lastOutput: cell.output || '' };
   }
-
-  const n = createCellNode(cell);
-  n.lastOutput = cell.output || '';
-  nodes.set(cell.id, n);
-
-  // درج در جای درست
-  insertNodeInOrder(n);
-}
-
-// ---------- درج در جای درست ----------
-function insertNodeInOrder(n) {
-  const myOrder = Number(n.el.dataset.order) || 0;
-  const all = [...cellsEl.children].filter(c => c.classList.contains('cell'));
-  let before = null;
-  for (const child of all) {
-    const o = Number(child.dataset.order) || 0;
-    if (o > myOrder) { before = child; break; }
+  
+  // ---------- نوار + بین سلول‌ها ----------
+  function makeInsertBar(orderIndex, beforeCellId) {
+    const bar = document.createElement('div');
+    bar.className = 'insert-bar';
+    bar.dataset.beforeId = beforeCellId || '';
+    bar.dataset.order = String(orderIndex);
+    bar.innerHTML = `
+      <button class="insert-btn" title="افزودن سلول اینجا">
+        <span class="insert-line"></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="14" height="14">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        <span class="insert-line"></span>
+      </button>`;
+    bar.querySelector('button').onclick = async () => {
+      await addCellAt(orderIndex);
+    };
+    return bar;
   }
-  if (before) cellsEl.insertBefore(n.el, before);
-  else cellsEl.appendChild(n.el);
-}
-
-// ---------- حذف سلول ----------
-function removeNode(id) {
-  const n = nodes.get(id);
-  if (!n) return;
-  n.el.remove();
-  nodes.delete(id);
-}
-
-// ---------- بارگذاری و رندر ----------
-async function loadCells() {
-  const { data, error } = await supabase
-    .from('cells').select('*')
-    .eq('session_id', SESSION_ID)
-    .order('order_index', { ascending: true, nullsFirst: false })
-    .order('created_at', { ascending: true });
-
-  if (error) {
-    toast('خطا: ' + error.message, 'err', 5000);
-    return;
-  }
-
-  const incoming = data || [];
-
-  // حذف سلول‌هایی که دیگر نیستند
-  const incomingIds = new Set(incoming.map(c => c.id));
-  for (const id of [...nodes.keys()]) {
-    if (!incomingIds.has(id)) removeNode(id);
-  }
-
-  // اضافه/آپدیت
-  for (const cell of incoming) upsertCell(cell);
-
-  // حالت خالی
-  const hasAny = nodes.size > 0;
-  const emptyEl = cellsEl.querySelector('.empty');
-  if (!hasAny && !emptyEl) {
-    cellsEl.innerHTML = `
-      <div class="empty">
-        <div class="emoji">✨</div>
-        <h3>هنوز سلولی نداری</h3>
-        <p>روی «سلول جدید» بزن یا یک فایل ipynb آپلود کن.</p>
-      </div>`;
-  } else if (hasAny && emptyEl) {
-    emptyEl.remove();
-  }
-
-  document.getElementById('stats').textContent =
-    nodes.size ? `${nodes.size} سلول · ${new Set([...nodes.values()].map(n => n.cell.author_name)).size} دانشجو` : '';
-}
-
-// ---------- افزودن سلول ----------
-async function addCellAt(orderIndex) {
-  const { error } = await supabase.from('cells').insert({
-    session_id: SESSION_ID,
-    author_id: user.id,
-    author_name: displayName,
-    code: '',
-    output: '',
-    order_index: orderIndex,
-  });
-  if (error) toast('خطا: ' + error.message, 'err', 5000);
-}
-
-// ---------- شروع ----------
-async function init() {
-  // ورود ناشناس
-  let u = (await supabase.auth.getUser()).data.user;
-  if (!u) {
-    const { data, error } = await supabase.auth.signInAnonymously();
-    if (error) { toast('خطای ورود: ' + error.message, 'err', 6000); return; }
-    u = data.user;
-  }
-  user = u;
-
-  displayName = localStorage.getItem('displayName');
-  if (!displayName) {
-    displayName = (prompt('اسمت را وارد کن:') || 'ناشناس').trim();
-    localStorage.setItem('displayName', displayName);
-  }
-  document.getElementById('whoami').textContent = displayName;
-
-  // لود اول
-  cellsEl.innerHTML = `<div class="loader"><div class="spinner"></div><div>در حال بارگذاری…</div></div>`;
-  await loadCells();
-
-  // دکمهٔ «سلول جدید»
-  document.getElementById('addCell').onclick = async () => {
-    const { data } = await supabase
-      .from('cells').select('order_index')
-      .eq('session_id', SESSION_ID)
-      .order('order_index', { ascending: false })
-      .limit(1);
-    const max = Number(data?.[0]?.order_index) || 0;
-    await addCellAt(max + 1);
-  };
-
-  // Realtime
-  supabase
-    .channel('cells-' + SESSION_ID)
-    .on('postgres_changes', {
-      event: '*', schema: 'public', table: 'cells',
-      filter: `session_id=eq.${SESSION_ID}`,
-    }, () => loadCells())
-    .subscribe();
-
-  // آپلود ipynb
-  const fileInput = document.getElementById('fileInput');
-  document.getElementById('uploadBtn').onclick = () => fileInput.click();
-
-  fileInput.onchange = async (ev) => {
-    const file = ev.target.files[0];
-    if (!file) return;
-    fileInput.value = '';
-
-    try {
-      const text = await file.text();
-      let nb;
-      try { nb = JSON.parse(text); }
-      catch { return toast('فایل JSON معتبر نیست', 'err'); }
-      if (!nb.cells || !Array.isArray(nb.cells))
-        return toast('این فایل ipynb معتبر نیست', 'err');
-
-      const codeCells = nb.cells.filter(c => c.cell_type === 'code');
-      if (!codeCells.length) return toast('هیچ سلول کدی پیدا نشد', 'info');
-      if (!confirm(`این فایل ${codeCells.length} سلول کد دارد. همه اضافه شوند؟`)) return;
-
-      const { data: last } = await supabase
-        .from('cells').select('order_index')
-        .eq('session_id', SESSION_ID)
-        .order('order_index', { ascending: false })
-        .limit(1);
-      const base = Number(last?.[0]?.order_index) || 0;
-
-      const rows = codeCells.map((c, i) => ({
-        session_id: SESSION_ID,
-        author_id: user.id,
-        author_name: displayName,
-        code: Array.isArray(c.source) ? c.source.join('') : String(c.source || ''),
-        output: '',
-        order_index: base + i + 1,
-      }));
-
-      const btn = document.getElementById('uploadBtn');
-      btn.disabled = true;
-      toast(`در حال آپلود ${rows.length} سلول…`, 'info', 2000);
-
-      const CHUNK = 20;
-      for (let i = 0; i < rows.length; i += CHUNK) {
-        const { error } = await supabase.from('cells').insert(rows.slice(i, i + CHUNK));
-        if (error) {
-          toast('خطای آپلود: ' + error.message, 'err', 6000);
-          btn.disabled = false;
-          return;
-        }
+  
+  // ---------- چیدمان درست ----------
+  // ترتیب واقعی DOM: bar_top, cell1, bar_after1, cell2, bar_after2, ...
+  function rebuildInsertBars(sortedCells) {
+    // حذف نوارهای قدیمی
+    for (const bar of cellsEl.querySelectorAll('.insert-bar')) bar.remove();
+    insertBarsBefore.clear();
+  
+    if (!sortedCells.length) return;
+  
+    // نوار بالای همه
+    const first = sortedCells[0];
+    const topOrder = (Number(first.order_index) || 0) - 1;
+    const topBar = makeInsertBar(topOrder, first.id);
+    cellsEl.insertBefore(topBar, cellsEl.firstChild);
+  
+    // نوار بعد از هر سلول
+    sortedCells.forEach((cell, i) => {
+      const next = sortedCells[i + 1];
+      let mid;
+      if (next) {
+        const a = Number(cell.order_index) || 0;
+        const b = Number(next.order_index) || 0;
+        mid = (a + b) / 2;
+      } else {
+        mid = (Number(cell.order_index) || 0) + 1;
       }
-      btn.disabled = false;
-      toast(`${rows.length} سلول اضافه شد`, 'ok');
-    } catch (e) {
-      console.error(e);
-      toast('خطا در خواندن فایل: ' + e.message, 'err');
+      const bar = makeInsertBar(mid, next ? next.id : null);
+  
+      // درج بعد از سلول فعلی
+      const cellEl = cellsEl.querySelector(`.cell[data-id="${cell.id}"]`);
+      if (cellEl && cellEl.nextSibling) {
+        cellsEl.insertBefore(bar, cellEl.nextSibling);
+      } else {
+        cellsEl.appendChild(bar);
+      }
+    });
+  }
+  
+  // ---------- درج/آپدیت سلول ----------
+  function upsertCell(cell) {
+    if (nodes.has(cell.id)) {
+      const n = nodes.get(cell.id);
+      if (!n.cm.hasFocus() && n.cm.getValue() !== (cell.code || '')) {
+        n.cm.setValue(cell.code || '');
+      }
+      const newOut = cell.output || '';
+      if (n.lastOutput !== newOut) {
+        n.lastOutput = newOut;
+        if (newOut) setOutput(n.outputEl, newOut,
+          newOut.startsWith('Error') || newOut.startsWith('Pyodide'));
+        else { n.outputEl.classList.remove('show'); n.outputEl.textContent = ''; }
+      }
+      n.el.dataset.order = String(cell.order_index ?? 0);
+      return;
     }
-  };
-
-  // دانلود ipynb
-  document.getElementById('exportBtn').onclick = async () => {
-    toast('در حال ساخت فایل…', 'info', 1500);
+  
+    const n = createCellNode(cell);
+    nodes.set(cell.id, n);
+  }
+  
+  // ---------- حذف سلول ----------
+  function removeNode(id) {
+    const n = nodes.get(id);
+    if (!n) return;
+    n.el.remove();
+    nodes.delete(id);
+  }
+  
+  // ---------- لود ----------
+  async function loadCells() {
     const { data, error } = await supabase
       .from('cells').select('*')
       .eq('session_id', SESSION_ID)
       .order('order_index', { ascending: true, nullsFirst: false })
       .order('created_at', { ascending: true });
-    if (error) return toast('خطا: ' + error.message, 'err');
-
-    const nb = {
-      cells: data.map(c => ({
-        cell_type: 'code',
-        metadata: { author: c.author_name, created_at: c.created_at },
-        source: (c.code || '').split('\n'),
-        outputs: c.output ? [{
-          output_type: 'stream', name: 'stdout',
-          text: c.output.split('\n').map(l => l + '\n')
-        }] : [],
-        execution_count: null
-      })),
-      metadata: {
-        kernelspec: { name: 'python3', display_name: 'Python 3' },
-        language_info: { name: 'python', file_extension: '.py' }
-      },
-      nbformat: 4, nbformat_minor: 5
+  
+    if (error) { toast('خطا: ' + error.message, 'err', 5000); return; }
+  
+    const incoming = data || [];
+    const incomingIds = new Set(incoming.map(c => c.id));
+  
+    // حذف سلول‌های پاک‌شده
+    for (const id of [...nodes.keys()]) {
+      if (!incomingIds.has(id)) removeNode(id);
+    }
+  
+    // اضافه/آپدیت سلول‌ها
+    for (const cell of incoming) upsertCell(cell);
+  
+    // اگر سلولی تازه اضافه شده، باید در جای درست قرار بگیرد
+    // ترتیب نهایی را بر اساس order_index بساز
+    const sorted = [...nodes.values()]
+      .map(n => n.cell)
+      .sort((a, b) => {
+        const ao = Number(a.order_index) || 0;
+        const bo = Number(b.order_index) || 0;
+        if (ao !== bo) return ao - bo;
+        return new Date(a.created_at) - new Date(b.created_at);
+      });
+  
+    // DOM را دوباره بچین (فقط جابه‌جایی، بدون ساخت مجدد)
+    // ۱) حذف نوارهای قبلی
+    for (const bar of cellsEl.querySelectorAll('.insert-bar')) bar.remove();
+    insertBarsBefore.clear();
+  
+    // ۲) سلول‌ها را به ترتیب append کن
+    for (const cell of sorted) {
+      const n = nodes.get(cell.id);
+      if (n) cellsEl.appendChild(n.el); // appendChild خودش جابه‌جا می‌کند، دوباره نمی‌سازد
+    }
+  
+    // ۳) نوارها را در جای درست بگذار
+    if (sorted.length) {
+      const first = sorted[0];
+      const topOrder = (Number(first.order_index) || 0) - 1;
+      const topBar = makeInsertBar(topOrder, first.id);
+      cellsEl.insertBefore(topBar, cellsEl.firstChild);
+  
+      sorted.forEach((cell, i) => {
+        const next = sorted[i + 1];
+        const a = Number(cell.order_index) || 0;
+        const b = next ? (Number(next.order_index) || 0) : a + 1;
+        const mid = next ? (a + b) / 2 : a + 1;
+        const bar = makeInsertBar(mid, next ? next.id : null);
+        const cellEl = nodes.get(cell.id).el;
+        if (cellEl.nextSibling) cellsEl.insertBefore(bar, cellEl.nextSibling);
+        else cellsEl.appendChild(bar);
+      });
+    }
+  
+    // حالت خالی
+    const hasAny = nodes.size > 0;
+    const emptyEl = cellsEl.querySelector('.empty');
+    if (!hasAny && !emptyEl) {
+      cellsEl.innerHTML = `
+        <div class="empty">
+          <div class="emoji">✨</div>
+          <h3>هنوز سلولی نداری</h3>
+          <p>روی «سلول جدید» بزن یا یک فایل ipynb آپلود کن.</p>
+        </div>`;
+    } else if (hasAny && emptyEl) {
+      emptyEl.remove();
+    }
+  
+    document.getElementById('stats').textContent =
+      nodes.size ? `${nodes.size} سلول · ${new Set([...nodes.values()].map(n => n.cell.author_name)).size} دانشجو` : '';
+  
+    // ★ رفرش همه ادیتورها بعد از چیدمان
+    requestAnimationFrame(() => {
+      for (const n of nodes.values()) n.cm.refresh();
+    });
+  }
+  
+  // ---------- افزودن سلول ----------
+  async function addCellAt(orderIndex) {
+    const { error } = await supabase.from('cells').insert({
+      session_id: SESSION_ID,
+      author_id: user.id,
+      author_name: displayName,
+      code: '',
+      output: '',
+      order_index: orderIndex,
+    });
+    if (error) toast('خطا: ' + error.message, 'err', 5000);
+  }
+  
+  // ---------- شروع ----------
+  async function init() {
+    let u = (await supabase.auth.getUser()).data.user;
+    if (!u) {
+      const { data, error } = await supabase.auth.signInAnonymously();
+      if (error) { toast('خطای ورود: ' + error.message, 'err', 6000); return; }
+      u = data.user;
+    }
+    user = u;
+  
+    displayName = localStorage.getItem('displayName');
+    if (!displayName) {
+      displayName = (prompt('اسمت را وارد کن:') || 'ناشناس').trim();
+      localStorage.setItem('displayName', displayName);
+    }
+    document.getElementById('whoami').textContent = displayName;
+  
+    cellsEl.innerHTML = `<div class="loader"><div class="spinner"></div><div>در حال بارگذاری…</div></div>`;
+    await loadCells();
+  
+    // دکمهٔ «سلول جدید» (آخر همه)
+    document.getElementById('addCell').onclick = async () => {
+      const { data } = await supabase
+        .from('cells').select('order_index')
+        .eq('session_id', SESSION_ID)
+        .order('order_index', { ascending: false })
+        .limit(1);
+      const max = Number(data?.[0]?.order_index) || 0;
+      await addCellAt(max + 1);
     };
-
-    const blob = new Blob([JSON.stringify(nb, null, 1)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'class-' + new Date().toISOString().slice(0, 10) + '.ipynb';
-    a.click();
-    URL.revokeObjectURL(a.href);
-    toast('دانلود شد', 'ok');
-  };
-}
-
-// ---------- اجرا ----------
-init();
+  
+    // Realtime
+    supabase
+      .channel('cells-' + SESSION_ID)
+      .on('postgres_changes', {
+        event: '*', schema: 'public', table: 'cells',
+        filter: `session_id=eq.${SESSION_ID}`,
+      }, () => loadCells())
+      .subscribe();
+  
+    // آپلود ipynb
+    const fileInput = document.getElementById('fileInput');
+    document.getElementById('uploadBtn').onclick = () => fileInput.click();
+  
+    fileInput.onchange = async (ev) => {
+      const file = ev.target.files[0];
+      if (!file) return;
+      fileInput.value = '';
+  
+      try {
+        const text = await file.text();
+        let nb;
+        try { nb = JSON.parse(text); }
+        catch { return toast('فایل JSON معتبر نیست', 'err'); }
+        if (!nb.cells || !Array.isArray(nb.cells))
+          return toast('این فایل ipynb معتبر نیست', 'err');
+  
+        const codeCells = nb.cells.filter(c => c.cell_type === 'code');
+        if (!codeCells.length) return toast('هیچ سلول کدی پیدا نشد', 'info');
+        if (!confirm(`این فایل ${codeCells.length} سلول کد دارد. همه اضافه شوند؟`)) return;
+  
+        const { data: last } = await supabase
+          .from('cells').select('order_index')
+          .eq('session_id', SESSION_ID)
+          .order('order_index', { ascending: false })
+          .limit(1);
+        const base = Number(last?.[0]?.order_index) || 0;
+  
+        const rows = codeCells.map((c, i) => ({
+          session_id: SESSION_ID,
+          author_id: user.id,
+          author_name: displayName,
+          code: Array.isArray(c.source) ? c.source.join('') : String(c.source || ''),
+          output: '',
+          order_index: base + i + 1,
+        }));
+  
+        const btn = document.getElementById('uploadBtn');
+        btn.disabled = true;
+        toast(`در حال آپلود ${rows.length} سلول…`, 'info', 2000);
+        const CHUNK = 20;
+        for (let i = 0; i < rows.length; i += CHUNK) {
+          const { error } = await supabase.from('cells').insert(rows.slice(i, i + CHUNK));
+          if (error) {
+            toast('خطای آپلود: ' + error.message, 'err', 6000);
+            btn.disabled = false;
+            return;
+          }
+        }
+        btn.disabled = false;
+        toast(`${rows.length} سلول اضافه شد`, 'ok');
+      } catch (e) {
+        console.error(e);
+        toast('خطا در خواندن فایل: ' + e.message, 'err');
+      }
+    };
+  
+    // دانلود ipynb
+    document.getElementById('exportBtn').onclick = async () => {
+      toast('در حال ساخت فایل…', 'info', 1500);
+      const { data, error } = await supabase
+        .from('cells').select('*')
+        .eq('session_id', SESSION_ID)
+        .order('order_index', { ascending: true, nullsFirst: false })
+        .order('created_at', { ascending: true });
+      if (error) return toast('خطا: ' + error.message, 'err');
+  
+      const nb = {
+        cells: data.map(c => ({
+          cell_type: 'code',
+          metadata: { author: c.author_name, created_at: c.created_at },
+          source: (c.code || '').split('\n'),
+          outputs: c.output ? [{
+            output_type: 'stream', name: 'stdout',
+            text: c.output.split('\n').map(l => l + '\n')
+          }] : [],
+          execution_count: null
+        })),
+        metadata: {
+          kernelspec: { name: 'python3', display_name: 'Python 3' },
+          language_info: { name: 'python', file_extension: '.py' }
+        },
+        nbformat: 4, nbformat_minor: 5
+      };
+  
+      const blob = new Blob([JSON.stringify(nb, null, 1)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'class-' + new Date().toISOString().slice(0, 10) + '.ipynb';
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast('دانلود شد', 'ok');
+    };
+  }
+  
+  init();
 </script>
 </body>
 </html>
