@@ -11,217 +11,355 @@
 
 <style>
   :root {
-    --bg: #f6f7fb;
+    --bg: #f8fafc;
     --card: #ffffff;
     --ink: #1e293b;
     --muted: #64748b;
     --line: #e2e8f0;
     --primary: #6366f1;
     --primary-2: #8b5cf6;
+    --primary-light: #e0e7ff;
     --primary-glow: rgba(99, 102, 241, .25);
     --success: #10b981;
+    --success-light: #d1fae5;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
     --danger: #ef4444;
-    --radius: 14px;
-    --shadow-sm: 0 1px 2px rgba(15, 23, 42, .06);
+    --danger-light: #fee2e2;
+    --info: #06b6d4;
+    --info-light: #cffafe;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, .06);
     --shadow-md: 0 4px 16px rgba(15, 23, 42, .08);
     --shadow-lg: 0 12px 32px rgba(15, 23, 42, .12);
+    --shadow-xl: 0 20px 48px rgba(15, 23, 42, .15);
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  * { box-sizing: border-box; }
-
-  html, body {
+  * { 
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
+  }
+
+  html, body {
     background: var(--bg);
     color: var(--ink);
-    font-family: 'Vazirmatn', Tahoma, sans-serif;
+    font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
   }
 
   body {
     background:
-      radial-gradient(1200px 600px at 100% -10%, rgba(139, 92, 246, .12), transparent 60%),
-      radial-gradient(900px 500px at -10% 0%, rgba(99, 102, 241, .12), transparent 55%),
-      var(--bg);
+      radial-gradient(1200px 600px at 100% -10%, rgba(139, 92, 246, .08), transparent 60%),
+      radial-gradient(900px 500px at -10% 0%, rgba(99, 102, 241, .08), transparent 55%),
+      linear-gradient(180deg, rgba(248, 250, 252, 0.9), rgba(248, 250, 252, 1));
     min-height: 100vh;
   }
 
-  /* ============ HEADER ============ */
+  /* ============ IMPROVED HEADER ============ */
   .hero {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #ec4899 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 45%, #ec4899 100%);
     color: white;
-    padding: 28px 20px 70px;
+    padding: 32px 24px 80px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 24px rgba(99, 102, 241, 0.2);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.4), transparent);
   }
   .hero::after {
     content: '';
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(circle at 20% 30%, rgba(255,255,255,.15), transparent 40%),
-      radial-gradient(circle at 80% 80%, rgba(255,255,255,.10), transparent 45%);
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,.2), transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255,255,255,.15), transparent 55%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     pointer-events: none;
   }
   .hero-inner {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
     position: relative;
     z-index: 1;
+    animation: fadeIn 0.8s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   .hero h1 {
-    font-size: 26px;
-    margin: 0 0 8px;
+    font-size: 28px;
+    margin: 0 0 12px;
     font-weight: 800;
-    letter-spacing: -.3px;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   .hero p {
     margin: 0;
-    opacity: .9;
-    font-size: 14px;
+    opacity: 0.95;
+    font-size: 15px;
+    max-width: 600px;
+    line-height: 1.7;
   }
   .hero .who {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    background: rgba(255,255,255,.18);
-    border: 1px solid rgba(255,255,255,.25);
-    backdrop-filter: blur(8px);
-    padding: 6px 12px;
+    gap: 10px;
+    background: rgba(255,255,255,.22);
+    border: 1px solid rgba(255,255,255,.3);
+    backdrop-filter: blur(12px);
+    padding: 8px 16px;
     border-radius: 999px;
-    margin-top: 14px;
-    font-size: 13px;
+    margin-top: 18px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  .hero .who:hover {
+    background: rgba(255,255,255,.28);
+    transform: translateY(-1px);
   }
   .hero .who .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: #4ade80;
-    box-shadow: 0 0 0 3px rgba(74, 222, 128, .3);
-    animation: pulse 2s infinite;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, .4);
+    animation: pulse 1.5s infinite;
   }
   @keyframes pulse {
-    0%,100% { box-shadow: 0 0 0 3px rgba(74,222,128,.3); }
-    50%     { box-shadow: 0 0 0 6px rgba(74,222,128,.1); }
+    0%,100% { box-shadow: 0 0 0 3px rgba(74,222,128,.4); }
+    50%     { box-shadow: 0 0 0 6px rgba(74,222,128,.2); }
   }
 
-  /* ============ MAIN ============ */
+  /* ============ IMPROVED MAIN ============ */
   main {
-    max-width: 900px;
-    margin: -46px auto 60px;
-    padding: 0 16px;
+    max-width: 1000px;
+    margin: -52px auto 80px;
+    padding: 0 20px;
     position: relative;
     z-index: 2;
+    animation: slideUp 0.6s ease-out 0.2s both;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ============ TOOLBAR ============ */
+  /* ============ ENHANCED TOOLBAR ============ */
   .toolbar {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
     align-items: center;
-    background: rgba(255,255,255,.85);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 10px;
-    box-shadow: var(--shadow-md);
-    margin-bottom: 22px;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    box-shadow: var(--shadow-lg), 0 8px 32px rgba(99, 102, 241, 0.08);
+    margin-bottom: 28px;
     position: sticky;
-    top: 12px;
-    z-index: 10;
+    top: 16px;
+    z-index: 100;
+    transition: var(--transition);
+  }
+  .toolbar:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: var(--shadow-xl), 0 12px 40px rgba(99, 102, 241, 0.12);
   }
   .toolbar .spacer { flex: 1; }
 
   .btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 10px;
     border: none;
-    padding: 10px 16px;
-    border-radius: 10px;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
     font-family: inherit;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: transform .15s, box-shadow .2s, background .2s, opacity .2s;
+    transition: var(--transition);
     white-space: nowrap;
+    position: relative;
+    overflow: hidden;
   }
-  .btn:active { transform: translateY(1px) scale(.98); }
-  .btn:disabled { opacity: .6; cursor: not-allowed; }
+  .btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+  }
+  .btn:active::after {
+    width: 200px;
+    height: 200px;
+  }
+  .btn:active { transform: translateY(2px); }
+  .btn:disabled { 
+    opacity: 0.5; 
+    cursor: not-allowed;
+    transform: none !important;
+  }
 
   .btn-primary {
     background: linear-gradient(135deg, var(--primary), var(--primary-2));
     color: white;
-    box-shadow: 0 4px 14px var(--primary-glow);
+    box-shadow: 0 6px 20px var(--primary-glow);
+    border: 1px solid rgba(99, 102, 241, 0.3);
   }
-  .btn-primary:hover { box-shadow: 0 6px 20px var(--primary-glow); }
+  .btn-primary:hover {
+    box-shadow: 0 10px 28px var(--primary-glow);
+    transform: translateY(-2px);
+  }
 
   .btn-ghost {
     background: white;
     color: var(--ink);
     border: 1px solid var(--line);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
   }
-  .btn-ghost:hover { background: #f8fafc; }
+  .btn-ghost:hover {
+    background: #f8fafc;
+    border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+    transform: translateY(-1px);
+  }
 
-  /* ============ CELL ============ */
+  .btn-success {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
+  }
+  .btn-success:hover {
+    box-shadow: 0 10px 28px rgba(16, 185, 129, 0.35);
+    transform: translateY(-2px);
+  }
+
+  /* ============ ENHANCED CELL ============ */
   .cell {
     background: var(--card);
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
-    margin-bottom: 18px;
+    margin-bottom: 24px;
     overflow: hidden;
-    animation: slideIn .35s cubic-bezier(.2,.7,.3,1.2);
-    transition: box-shadow .25s, border-color .25s;
+    animation: slideIn .4s cubic-bezier(.2,.7,.3,1.2);
+    transition: var(--transition);
+    position: relative;
   }
-  .cell:hover { box-shadow: var(--shadow-md); border-color: #d7dbe6; }
-  .cell.own { border-color: rgba(99,102,241,.45); }
+  .cell:hover { 
+    box-shadow: var(--shadow-lg); 
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-2px);
+  }
+  .cell.own { 
+    border-color: rgba(99,102,241,.45);
+    border-left: 4px solid var(--primary);
+  }
+  .cell.has-comments { border-color: rgba(59, 130, 246, 0.4); }
+  .cell.has-error { border-color: rgba(239, 68, 68, 0.4); }
+  .cell.running { border-color: rgba(245, 158, 11, 0.4); }
 
   @keyframes slideIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .cell-head {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 14px;
+    gap: 12px;
+    padding: 14px 18px;
     border-bottom: 1px solid var(--line);
-    background: linear-gradient(180deg, #fbfcfe, #f5f7fb);
+    background: linear-gradient(180deg, #fcfdfe, #f7f9fc);
   }
 
   .avatar {
-    width: 34px; height: 34px;
+    width: 40px; height: 40px;
     border-radius: 50%;
     display: grid; place-items: center;
     color: white;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
     flex-shrink: 0;
-    box-shadow: 0 2px 6px rgba(15,23,42,.15);
+    box-shadow: 0 3px 8px rgba(15,23,42,.18);
+    transition: var(--transition);
+  }
+  .avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 12px rgba(15,23,42,.25);
   }
 
   .cell-head .who {
-    display: flex; flex-direction: column; gap: 2px;
+    display: flex; flex-direction: column; gap: 3px;
     min-width: 0;
   }
   .cell-head .name {
     font-weight: 700;
-    font-size: 14px;
+    font-size: 15px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .cell-head .time {
-    font-size: 11.5px;
+    font-size: 12px;
     color: var(--muted);
+    direction: rtl;
   }
   .cell-head .spacer { flex: 1; }
   .cell-head .badge {
     font-size: 11px;
     background: rgba(99,102,241,.12);
     color: var(--primary);
-    padding: 3px 8px;
+    padding: 4px 10px;
     border-radius: 999px;
     font-weight: 600;
+    border: 1px solid rgba(99,102,241,.2);
+  }
+  
+  /* Comment Indicator */
+  .comment-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .comment-indicator:hover {
+    background: rgba(59, 130, 246, 0.15);
+    transform: translateY(-1px);
+  }
+  .comment-indicator.has-comments {
+    background: rgba(59, 130, 246, 0.2);
+    color: #1d4ed8;
   }
 
   /* CodeMirror wrapper */
@@ -239,36 +377,554 @@
   }
   .CodeMirror-gutters { border: none !important; background: #282a36 !important; }
 
-  /* ============ ACTIONS ============ */
+  /* ============ ENHANCED ACTIONS ============ */
   .cell-actions {
     display: flex;
-    gap: 8px;
-    padding: 10px 14px;
+    gap: 10px;
+    padding: 12px 18px;
     border-top: 1px solid var(--line);
-    background: #fbfcfe;
+    background: #fcfdfe;
     flex-wrap: wrap;
   }
   .action {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 7px 12px;
+    gap: 8px;
+    padding: 8px 14px;
     font-size: 13px;
     font-weight: 600;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--line);
     background: white;
     cursor: pointer;
     color: var(--ink);
-    transition: all .18s;
+    transition: var(--transition);
     font-family: inherit;
+    position: relative;
+    overflow: hidden;
   }
-  .action:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
-  .action.run  { background: linear-gradient(135deg,#10b981,#059669); color: white; border-color: transparent; }
-  .action.run:hover { box-shadow: 0 4px 12px rgba(16,185,129,.35); }
-  .action.save { color: var(--primary); border-color: rgba(99,102,241,.3); background: rgba(99,102,241,.06); }
-  .action.del  { color: var(--danger); border-color: rgba(239,68,68,.25); background: rgba(239,68,68,.05); }
-  .action svg { width: 15px; height: 15px; }
+  .action:hover { 
+    transform: translateY(-2px); 
+    box-shadow: var(--shadow-md);
+  }
+  .action.run  { 
+    background: linear-gradient(135deg, var(--success), #059669); 
+    color: white; 
+    border-color: transparent; 
+  }
+  .action.run:hover { 
+    box-shadow: 0 6px 16px rgba(16,185,129,.4); 
+  }
+  .action.save { 
+    color: var(--primary); 
+    border-color: rgba(99,102,241,.3); 
+    background: rgba(99,102,241,.08); 
+  }
+  .action.save:hover {
+    background: rgba(99,102,241,.12);
+  }
+  .action.comment { 
+    color: #3b82f6; 
+    border-color: rgba(59, 130, 246, 0.3); 
+    background: rgba(59, 130, 246, 0.08); 
+  }
+  .action.comment:hover {
+    background: rgba(59, 130, 246, 0.12);
+  }
+  .action.del  { 
+    color: var(--danger); 
+    border-color: rgba(239,68,68,.25); 
+    background: rgba(239,68,68,.06); 
+  }
+  .action.del:hover {
+    background: rgba(239,68,68,.10);
+  }
+  .action svg { width: 16px; height: 16px; }
+  
+  /* Action badge for notifications */
+  .action-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse-badge 1.5s infinite;
+  }
+  @keyframes pulse-badge {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  /* ============ TIMER & PROGRESS ============ */
+  .timer-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+  }
+  
+  .timer-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    direction: ltr;
+    text-align: center;
+    min-width: 100px;
+  }
+  
+  .timer-controls {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .timer-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .timer-btn.start {
+    background: var(--success);
+    color: white;
+  }
+  .timer-btn.start:hover {
+    background: #059669;
+  }
+  
+  .timer-btn.pause {
+    background: var(--warning);
+    color: white;
+  }
+  .timer-btn.pause:hover {
+    background: #d97706;
+  }
+  
+  .timer-btn.stop {
+    background: var(--danger);
+    color: white;
+  }
+  .timer-btn.stop:hover {
+    background: #dc2626;
+  }
+  
+  .progress-container {
+    flex: 1;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-2));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+  
+  .progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  
+  .progress-stats {
+    display: flex;
+    gap: 16px;
+    padding: 10px 16px;
+    background: white;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .progress-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .progress-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  
+  .progress-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  
+  .time-warning {
+    animation: pulse-warning 1s infinite;
+  }
+  @keyframes pulse-warning {
+    0%,100% { color: var(--warning); }
+    50% { color: var(--danger); }
+  }
+  
+  .time-critical {
+    animation: pulse-critical 0.5s infinite;
+  }
+  @keyframes pulse-critical {
+    0%,100% { color: var(--danger); }
+    50% { color: white; }
+  }
+
+  /* ============ TEACHER MODE ============ */
+  .teacher-mode {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border-color: #f59e0b;
+  }
+  
+  .teacher-tools {
+    display: none;
+    padding: 14px 18px;
+    background: #fffbeb;
+    border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+    border-top: 1px solid rgba(245, 158, 11, 0.3);
+  }
+  .teacher-tools.show {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    animation: slideDown 0.3s ease-out;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .teacher-stats {
+    display: flex;
+    gap: 20px;
+    background: white;
+    padding: 10px 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+  }
+  
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--warning);
+  }
+  
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  
+  .evaluation-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: var(--success-light);
+    color: var(--success);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+  
+  .evaluation-badge.needs-work {
+    background: var(--warning-light);
+    color: var(--warning);
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+  
+  .evaluation-badge.excellent {
+    background: linear-gradient(135deg, #a7f3d0, #6ee7b7);
+    color: #065f46;
+    border-color: rgba(6, 95, 70, 0.3);
+  }
+  
+  .evaluation-actions {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    justify-content: flex-end;
+  }
+  
+  .teacher-cell-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(255, 251, 235, 0.9);
+    z-index: 5;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    backdrop-filter: blur(4px);
+  }
+  
+  .cell:hover .teacher-cell-overlay {
+    display: flex;
+  }
+  
+  .teacher-grade-input {
+    width: 80px;
+    padding: 8px 12px;
+    border: 2px solid var(--primary);
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    background: white;
+  }
+  
+  .teacher-quick-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  /* ============ TAGGING SYSTEM ============ */
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--line);
+    background: #f8fafc;
+  }
+  
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .tag:hover {
+    background: rgba(99, 102, 241, 0.15);
+    transform: translateY(-1px);
+  }
+  .tag.selected {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  
+  .tag-warning {
+    background: var(--warning-light);
+    color: var(--warning);
+    border-color: rgba(245, 158, 11, 0.2);
+  }
+  .tag-success {
+    background: var(--success-light);
+    color: var(--success);
+    border-color: rgba(16, 185, 129, 0.2);
+  }
+  .tag-danger {
+    background: var(--danger-light);
+    color: var(--danger);
+    border-color: rgba(239, 68, 68, 0.2);
+  }
+  .tag-info {
+    background: var(--info-light);
+    color: var(--info);
+    border-color: rgba(6, 182, 212, 0.2);
+  }
+  
+  .tag-input {
+    flex: 1;
+    min-width: 120px;
+    padding: 4px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 11px;
+    font-family: inherit;
+    background: white;
+  }
+  .tag-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-light);
+  }
+  
+  .tag-btn {
+    padding: 4px 8px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .tag-btn:hover {
+    background: #f1f5f9;
+    color: var(--ink);
+  }
+
+  /* ============ COMMENTS SECTION ============ */
+  .comments-section {
+    margin: 0;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s;
+    background: #f8fafc;
+    border-top: 1px solid var(--line);
+  }
+  .comments-section.show {
+    max-height: 500px;
+    overflow: auto;
+    padding: 0;
+  }
+  
+  .comments-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    background: #f1f5f9;
+    border-bottom: 1px solid var(--line);
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 14px;
+  }
+  
+  .comments-list {
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .comment-item {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    transition: background 0.2s;
+  }
+  .comment-item:hover {
+    background: #f8fafc;
+  }
+  .comment-item:last-child {
+    border-bottom: none;
+  }
+  
+  .comment-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  
+  .comment-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  
+  .comment-author {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--ink);
+  }
+  
+  .comment-time {
+    font-size: 11px;
+    color: var(--muted);
+    direction: rtl;
+  }
+  
+  .comment-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink);
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding-right: 38px;
+  }
+  
+  .comment-input {
+    padding: 14px 18px;
+    border-top: 1px solid var(--line);
+    background: white;
+  }
+  
+  .comment-textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.5;
+    resize: vertical;
+    transition: var(--transition);
+  }
+  .comment-textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+  }
+  
+  .comment-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    justify-content: flex-end;
+  }
 
   /* ============ OUTPUT ============ */
   .output {
@@ -394,15 +1050,33 @@
 
     <button class="btn btn-ghost" id="uploadBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 21V9m0 0l-4 4m4-4l4 4M4 5h16"/></svg>
-       آپلود ipynb
+      آپلود ipynb
     </button>
     <input type="file" id="fileInput" accept=".ipynb,application/json" hidden>
+    
     <button class="btn btn-ghost" id="exportBtn">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16"/></svg>
       دانلود ipynb
     </button>
+    
+    <button class="btn btn-ghost" id="toggleTags">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
+        <line x1="7" y1="7" x2="7.01" y2="7"/>
+      </svg>
+      تگ‌ها
+    </button>
+    
+    <button class="btn btn-success" id="toggleTeacherMode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+      حالت معلم
+    </button>
+    
     <span class="spacer"></span>
     <span id="stats" style="font-size:13px;color:var(--muted)"></span>
+    <span id="timer" style="font-size:13px;color:var(--muted);direction:ltr"></span>
   </div>
 
   <div id="cells"></div>
@@ -569,6 +1243,12 @@
             <div class="time">${new Date(cell.created_at).toLocaleString('fa-IR')}</div>
           </div>
           <div class="spacer"></div>
+          <div class="comment-indicator ${cell.comments_count > 0 ? 'has-comments' : ''}" data-cell-id="${cell.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+              <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
+            </svg>
+            <span class="comment-count">${cell.comments_count || 0}</span>
+          </div>
         </div>
         <div class="editor-wrap"><textarea></textarea></div>
         <div class="cell-actions">
@@ -580,11 +1260,33 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
             <span class="label">ذخیره</span>
           </button>
+          <button class="action comment" title="نظر دادن">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"/>
+            </svg>
+            <span class="label">نظر</span>
+          </button>
           ${isOwn ? `
           <button class="action del" title="حذف">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14"/></svg>
             <span class="label">حذف</span>
           </button>` : ''}
+        </div>
+        <div class="comments-section" id="comments-${cell.id}">
+          <div class="comments-header">
+            <span>نظرات (${cell.comments_count || 0})</span>
+            <button class="close-comments" data-cell-id="${cell.id}">✕</button>
+          </div>
+          <div class="comments-list" id="comments-list-${cell.id}">
+            <!-- Comments will be loaded here -->
+          </div>
+          <div class="comment-input">
+            <textarea class="comment-textarea" placeholder="نظر خود را اینجا بنویسید..." data-cell-id="${cell.id}"></textarea>
+            <div class="comment-actions">
+              <button class="btn btn-ghost" data-action="cancel-comment" data-cell-id="${cell.id}">لغو</button>
+              <button class="btn btn-primary" data-action="submit-comment" data-cell-id="${cell.id}">ارسال نظر</button>
+            </div>
+          </div>
         </div>
         <pre class="output"></pre>
       `;
@@ -853,6 +1555,378 @@ fileInput.onchange = async (ev) => {
     uploadBtn.disabled = false;
   }
 };
+
+  // ---------- Teacher Mode ----------
+  let isTeacherMode = localStorage.getItem('teacherMode') === 'true';
+  const teacherTools = document.createElement('div');
+  teacherTools.className = 'teacher-tools';
+  teacherTools.innerHTML = `
+    <div class="teacher-stats">
+      <div class="stat-item">
+        <div class="stat-value" id="studentCount">0</div>
+        <div class="stat-label">دانشجو</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="activeCells">0</div>
+        <div class="stat-label">سلول فعال</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="avgCodeLength">0</div>
+        <div class="stat-label">میانگین کد</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="errorRate">0%</div>
+        <div class="stat-label">خطا</div>
+      </div>
+    </div>
+    <div class="evaluation-actions">
+      <button class="btn btn-ghost" id="exportGrades">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        خروجی نمرات
+      </button>
+    </div>
+  `;
+  
+  // Insert teacher tools after toolbar
+  document.querySelector('main').insertBefore(teacherTools, document.querySelector('#cells'));
+  
+  function updateTeacherStats(cells) {
+    if (!isTeacherMode) return;
+    
+    const uniqueStudents = new Set(cells.map(c => c.author_name)).size;
+    const activeCells = cells.filter(c => c.code && c.code.trim().length > 0).length;
+    const totalCodeLength = cells.reduce((sum, c) => sum + (c.code ? c.code.length : 0), 0);
+    const avgCodeLength = cells.length > 0 ? Math.round(totalCodeLength / cells.length) : 0;
+    const errorCells = cells.filter(c => c.output && (c.output.includes('Error') || c.output.includes('Pyodide error'))).length;
+    const errorRate = cells.length > 0 ? Math.round((errorCells / cells.length) * 100) : 0;
+    
+    document.getElementById('studentCount').textContent = uniqueStudents;
+    document.getElementById('activeCells').textContent = activeCells;
+    document.getElementById('avgCodeLength').textContent = avgCodeLength;
+    document.getElementById('errorRate').textContent = errorRate + '%';
+  }
+  
+  function toggleTeacherMode() {
+    isTeacherMode = !isTeacherMode;
+    localStorage.setItem('teacherMode', isTeacherMode.toString());
+    
+    const teacherBtn = document.getElementById('toggleTeacherMode');
+    const mainEl = document.querySelector('main');
+    
+    if (isTeacherMode) {
+      teacherTools.classList.add('show');
+      mainEl.classList.add('teacher-mode');
+      teacherBtn.classList.remove('btn-success');
+      teacherBtn.classList.add('btn-warning');
+      teacherBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+          <circle cx="8.5" cy="7" r="4"/>
+          <line x1="23" y1="11" x2="17" y2="11"/>
+        </svg>
+        حالت دانشجو
+      `;
+      
+      // Update stats with current cells
+      const cells = [...editors.values()].map(obj => obj.cell);
+      updateTeacherStats(cells);
+    } else {
+      teacherTools.classList.remove('show');
+      mainEl.classList.remove('teacher-mode');
+      teacherBtn.classList.remove('btn-warning');
+      teacherBtn.classList.add('btn-success');
+      teacherBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+        حالت معلم
+      `;
+    }
+  }
+  
+  // Initialize teacher mode on page load
+  if (isTeacherMode) {
+    setTimeout(() => {
+      document.getElementById('toggleTeacherMode').click();
+    }, 100);
+  }
+  
+  document.getElementById('toggleTeacherMode').onclick = toggleTeacherMode;
+  
+  // Export grades functionality
+  document.getElementById('exportGrades').onclick = async () => {
+    const cells = [...editors.values()].map(obj => obj.cell);
+    const students = {};
+    
+    cells.forEach(cell => {
+      if (!students[cell.author_name]) {
+        students[cell.author_name] = {
+          name: cell.author_name,
+          cellCount: 0,
+          totalCodeLength: 0,
+          errorCount: 0,
+          lastActive: cell.created_at
+        };
+      }
+      
+      const student = students[cell.author_name];
+      student.cellCount++;
+      student.totalCodeLength += (cell.code ? cell.code.length : 0);
+      if (cell.output && (cell.output.includes('Error') || cell.output.includes('Pyodide error'))) {
+        student.errorCount++;
+      }
+      if (new Date(cell.created_at) > new Date(student.lastActive)) {
+        student.lastActive = cell.created_at;
+      }
+    });
+    
+    const report = Object.values(students).map(student => ({
+      نام: student.name,
+      تعداد_سلول: student.cellCount,
+      میانگین_طول_کد: Math.round(student.totalCodeLength / student.cellCount),
+      تعداد_خطا: student.errorCount,
+      آخرین_فعالیت: new Date(student.lastActive).toLocaleString('fa-IR')
+    }));
+    
+    const csvContent = [
+      Object.keys(report[0] || {}).join(','),
+      ...report.map(row => Object.values(row).join(','))
+    ].join('\n');
+    
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `گزارش-کلاس-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    
+    toast('گزارش کلاس دانلود شد', 'ok');
+  };
+
+  // ---------- Timer & Progress Tracking ----------
+  let timerInterval = null;
+  let remainingTime = 0;
+  let totalTime = 0;
+  let isTimerRunning = false;
+  let exerciseStartTime = null;
+  
+  const timerDisplay = document.getElementById('timer');
+  const progressContainer = document.createElement('div');
+  progressContainer.className = 'progress-container';
+  progressContainer.innerHTML = `
+    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+    <div class="progress-text" id="progressText">0%</div>
+  `;
+  
+  const timerControls = document.createElement('div');
+  timerControls.className = 'timer-controls';
+  
+  const startBtn = document.createElement('button');
+  startBtn.className = 'timer-btn start';
+  startBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+      <polygon points="5 3 19 12 5 21 5 3"/>
+    </svg>
+    شروع
+  `;
+  
+  const pauseBtn = document.createElement('button');
+  pauseBtn.className = 'timer-btn pause';
+  pauseBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+      <rect x="6" y="4" width="4" height="16"/>
+      <rect x="14" y="4" width="4" height="16"/>
+    </svg>
+    توقف
+  `;
+  
+  const stopBtn = document.createElement('button');
+  stopBtn.className = 'timer-btn stop';
+  stopBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+    </svg>
+    پایان
+  `;
+  
+  timerControls.appendChild(startBtn);
+  timerControls.appendChild(pauseBtn);
+  timerControls.appendChild(stopBtn);
+  
+  const timerWrapper = document.createElement('div');
+  timerWrapper.className = 'timer-container';
+  timerWrapper.innerHTML = `
+    <div class="timer-display" id="timerDisplay">00:00</div>
+  `;
+  timerWrapper.appendChild(timerControls);
+  timerWrapper.appendChild(progressContainer);
+  
+  // Insert timer before cells
+  document.querySelector('main').insertBefore(timerWrapper, document.querySelector('#cells'));
+  
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+  
+  function updateTimerDisplay() {
+    const timerEl = document.getElementById('timerDisplay');
+    timerEl.textContent = formatTime(remainingTime);
+    
+    // Update timer warning states
+    if (remainingTime <= 60 && remainingTime > 30) {
+      timerEl.classList.add('time-warning');
+      timerEl.classList.remove('time-critical');
+    } else if (remainingTime <= 30) {
+      timerEl.classList.remove('time-warning');
+      timerEl.classList.add('time-critical');
+    } else {
+      timerEl.classList.remove('time-warning', 'time-critical');
+    }
+    
+    // Update progress bar
+    if (totalTime > 0) {
+      const progress = Math.round(((totalTime - remainingTime) / totalTime) * 100);
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+      progressBar.style.width = `${progress}%`;
+      progressText.textContent = `${progress}%`;
+    }
+  }
+  
+  function startTimer(minutes) {
+    if (isTimerRunning) return;
+    
+    if (!totalTime) {
+      totalTime = minutes * 60;
+      remainingTime = totalTime;
+    }
+    
+    isTimerRunning = true;
+    exerciseStartTime = new Date();
+    startBtn.disabled = true;
+    pauseBtn.disabled = false;
+    
+    timerInterval = setInterval(() => {
+      remainingTime--;
+      updateTimerDisplay();
+      
+      if (remainingTime <= 0) {
+        stopTimer();
+        toast('زمان تمرین به پایان رسید!', 'info', 5000);
+        
+        // Auto-save progress
+        saveProgressData();
+      }
+    }, 1000);
+    
+    updateTimerDisplay();
+  }
+  
+  function pauseTimer() {
+    if (!isTimerRunning) return;
+    
+    isTimerRunning = false;
+    clearInterval(timerInterval);
+    startBtn.disabled = false;
+    pauseBtn.disabled = true;
+  }
+  
+  function stopTimer() {
+    isTimerRunning = false;
+    clearInterval(timerInterval);
+    remainingTime = 0;
+    totalTime = 0;
+    startBtn.disabled = false;
+    pauseBtn.disabled = true;
+    
+    updateTimerDisplay();
+    
+    // Save progress data
+    saveProgressData();
+  }
+  
+  function saveProgressData() {
+    const cells = [...editors.values()].map(obj => ({
+      author: obj.cell.author_name,
+      codeLength: obj.cm.getValue().length,
+      hasOutput: obj.lastOutput && obj.lastOutput.trim() !== '(بدون خروجی)',
+      hasError: obj.lastOutput && (obj.lastOutput.includes('Error') || obj.lastOutput.includes('Pyodide error'))
+    }));
+    
+    const progressData = {
+      exerciseStartTime: exerciseStartTime,
+      exerciseEndTime: new Date(),
+      totalDuration: totalTime - remainingTime,
+      totalCells: cells.length,
+      uniqueStudents: new Set(cells.map(c => c.author)).size,
+      totalCodeLength: cells.reduce((sum, c) => sum + c.codeLength, 0),
+      completedCells: cells.filter(c => c.hasOutput && !c.hasError).length
+    };
+    
+    localStorage.setItem('exerciseProgress', JSON.stringify(progressData));
+    updateProgressStats(progressData);
+  }
+  
+  function updateProgressStats(data) {
+    const statsContainer = document.createElement('div');
+    statsContainer.className = 'progress-stats';
+    statsContainer.innerHTML = `
+      <div class="progress-item">
+        <div class="progress-value" id="completedCells">${data.completedCells || 0}</div>
+        <div class="progress-label">سلول تکمیل شده</div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-value" id="avgCodePerStudent">${data.uniqueStudents > 0 ? Math.round(data.totalCodeLength / data.uniqueStudents) : 0}</div>
+        <div class="progress-label">میانگین کد</div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-value" id="completionRate">${data.totalCells > 0 ? Math.round((data.completedCells / data.totalCells) * 100) : 0}%</div>
+        <div class="progress-label">نرخ تکمیل</div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-value" id="timePerCell">${data.totalCells > 0 ? Math.round(data.totalDuration / data.totalCells) : 0}</div>
+        <div class="progress-label">ثانیه/سلول</div>
+      </div>
+    `;
+    
+    // Replace or add stats container
+    const existingStats = document.querySelector('.progress-stats');
+    if (existingStats) {
+      existingStats.replaceWith(statsContainer);
+    } else {
+      timerWrapper.appendChild(statsContainer);
+    }
+  }
+  
+  // Event listeners
+  startBtn.onclick = () => {
+    const minutes = prompt('مدت زمان تمرین را وارد کنید (دقیقه):', '45');
+    if (minutes && !isNaN(minutes) && minutes > 0) {
+      startTimer(parseInt(minutes));
+    }
+  };
+  
+  pauseBtn.onclick = pauseTimer;
+  stopBtn.onclick = stopTimer;
+  
+  // Load saved progress
+  const savedProgress = localStorage.getItem('exerciseProgress');
+  if (savedProgress) {
+    try {
+      const progressData = JSON.parse(savedProgress);
+      updateProgressStats(progressData);
+    } catch (e) {
+      console.error('Error loading progress data:', e);
+    }
+  }
 
   // ---------- Start ----------
   cellsEl.innerHTML = `<div class="loader"><div class="spinner"></div><div>در حال بارگذاری…</div></div>`;
