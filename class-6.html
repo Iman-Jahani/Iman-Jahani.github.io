@@ -1,0 +1,2551 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دفترچه اشتراکی کلاس پایتون</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+
+<style>
+  :root {
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --ink: #1e293b;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --primary: #6366f1;
+    --primary-2: #8b5cf6;
+    --primary-light: #e0e7ff;
+    --primary-glow: rgba(99, 102, 241, .25);
+    --success: #10b981;
+    --success-light: #d1fae5;
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --danger: #ef4444;
+    --danger-light: #fee2e2;
+    --info: #06b6d4;
+    --info-light: #cffafe;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, .06);
+    --shadow-md: 0 4px 16px rgba(15, 23, 42, .08);
+    --shadow-lg: 0 12px 32px rgba(15, 23, 42, .12);
+    --shadow-xl: 0 20px 48px rgba(15, 23, 42, .15);
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+  }
+
+  body {
+    background:
+      radial-gradient(1200px 600px at 100% -10%, rgba(139, 92, 246, .08), transparent 60%),
+      radial-gradient(900px 500px at -10% 0%, rgba(99, 102, 241, .08), transparent 55%),
+      linear-gradient(180deg, rgba(248, 250, 252, 0.9), rgba(248, 250, 252, 1));
+    min-height: 100vh;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 45%, #ec4899 100%);
+    color: white;
+    padding: 32px 24px 80px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(99, 102, 241, 0.2);
+  }
+  .hero::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.4), transparent);
+  }
+  .hero::after {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,.2), transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(255,255,255,.15), transparent 55%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 1000px; margin: 0 auto;
+    position: relative; z-index: 1;
+    animation: fadeIn 0.8s ease-out;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .hero h1 { font-size: 28px; margin: 0 0 12px; font-weight: 800; letter-spacing: -0.5px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); }
+  .hero p { margin: 0; opacity: 0.95; font-size: 15px; max-width: 600px; line-height: 1.7; }
+  .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+  .hero .who, .team-badge, .session-chip {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,.22);
+    border: 1px solid rgba(255,255,255,.3);
+    backdrop-filter: blur(12px);
+    padding: 8px 16px; border-radius: 999px;
+    font-size: 14px; font-weight: 600;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    color: white; font-family: inherit; cursor: pointer;
+  }
+  .team-badge:hover, .session-chip:hover { background: rgba(255,255,255,.32); transform: translateY(-1px); }
+  .hero .who { cursor: default; }
+  .hero .who .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    box-shadow: 0 0 0 3px rgba(74, 222, 128, .4);
+    animation: pulse 1.5s infinite;
+  }
+  .team-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  @keyframes pulse {
+    0%,100% { box-shadow: 0 0 0 3px rgba(74,222,128,.4); }
+    50%     { box-shadow: 0 0 0 6px rgba(74,222,128,.2); }
+  }
+
+  main {
+    max-width: 1000px; margin: -52px auto 80px;
+    padding: 0 20px; position: relative; z-index: 2;
+    animation: slideUp 0.6s ease-out 0.2s both;
+  }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    box-shadow: var(--shadow-lg), 0 8px 32px rgba(99, 102, 241, 0.08);
+    margin-bottom: 28px;
+    position: sticky; top: 16px; z-index: 100;
+    transition: var(--transition);
+  }
+  .toolbar:hover { border-color: rgba(99, 102, 241, 0.3); box-shadow: var(--shadow-xl), 0 12px 40px rgba(99, 102, 241, 0.12); }
+  .toolbar .spacer { flex: 1; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    border: none; padding: 12px 20px;
+    border-radius: var(--radius-md);
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: var(--transition);
+    white-space: nowrap; position: relative; overflow: hidden;
+  }
+  .btn:active { transform: translateY(2px); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    color: white; box-shadow: 0 6px 20px var(--primary-glow);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+  }
+  .btn-primary:hover { box-shadow: 0 10px 28px var(--primary-glow); transform: translateY(-2px); }
+
+  .btn-ghost {
+    background: white; color: var(--ink);
+    border: 1px solid var(--line);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  }
+  .btn-ghost:hover {
+    background: #f8fafc; border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08); transform: translateY(-1px);
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white; border: 1px solid rgba(16, 185, 129, 0.3);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
+  }
+  .btn-success:hover { box-shadow: 0 10px 28px rgba(16, 185, 129, 0.35); transform: translateY(-2px); }
+
+  .btn-warning {
+    background: linear-gradient(135deg, var(--warning), #d97706);
+    color: white; border: 1px solid rgba(245, 158, 11, 0.3);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.25);
+  }
+  .btn-warning:hover { box-shadow: 0 10px 28px rgba(245, 158, 11, 0.35); transform: translateY(-2px); }
+
+  .btn.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    color: white; border-color: transparent;
+    box-shadow: 0 6px 20px var(--primary-glow);
+  }
+
+  .cell {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 24px; overflow: hidden;
+    animation: slideIn .4s cubic-bezier(.2,.7,.3,1.2);
+    transition: var(--transition);
+    position: relative;
+  }
+  .cell:hover { box-shadow: var(--shadow-lg); border-color: rgba(99, 102, 241, 0.3); transform: translateY(-2px); }
+  .cell.own { border-color: rgba(99,102,241,.45); border-left: 4px solid var(--primary); }
+  .cell.has-comments { border-color: rgba(59, 130, 246, 0.4); }
+  .cell.has-error { border-color: rgba(239, 68, 68, 0.4); }
+  .cell.running { border-color: rgba(245, 158, 11, 0.4); }
+
+  @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  .cell-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px; border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, #fcfdfe, #f7f9fc);
+    flex-wrap: wrap;
+  }
+
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: grid; place-items: center;
+    color: white; font-weight: 700; font-size: 15px;
+    flex-shrink: 0; box-shadow: 0 3px 8px rgba(15,23,42,.18);
+    transition: var(--transition);
+  }
+  .avatar:hover { transform: scale(1.05); box-shadow: 0 5px 12px rgba(15,23,42,.25); }
+
+  .cell-head .who { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .cell-head .name { font-weight: 700; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cell-head .time { font-size: 12px; color: var(--muted); direction: rtl; }
+  .cell-head .spacer { flex: 1; }
+  .cell-head .badge {
+    font-size: 11px; background: rgba(99,102,241,.12); color: var(--primary);
+    padding: 4px 10px; border-radius: 999px; font-weight: 600;
+    border: 1px solid rgba(99,102,241,.2);
+  }
+
+  .cell-team-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; color: white;
+    box-shadow: 0 2px 6px rgba(15,23,42,.15);
+    white-space: nowrap;
+  }
+
+  .comment-indicator {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 8px;
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6; border-radius: 999px;
+    font-size: 11px; font-weight: 600;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    cursor: pointer; transition: var(--transition);
+  }
+  .comment-indicator:hover { background: rgba(59, 130, 246, 0.15); transform: translateY(-1px); }
+  .comment-indicator.has-comments { background: rgba(59, 130, 246, 0.2); color: #1d4ed8; }
+
+  .editor-wrap { position: relative; }
+  .CodeMirror {
+    direction: ltr; text-align: left;
+    font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+    font-size: 14px; height: auto; min-height: 70px;
+    border: none !important; border-radius: 0 !important;
+    background: #282a36;
+  }
+  .CodeMirror-gutters { border: none !important; background: #282a36 !important; }
+
+  .cell-actions {
+    display: flex; gap: 10px; padding: 12px 18px;
+    border-top: 1px solid var(--line);
+    background: #fcfdfe; flex-wrap: wrap;
+  }
+  .action {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px; font-size: 13px; font-weight: 600;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: white; cursor: pointer; color: var(--ink);
+    transition: var(--transition); font-family: inherit;
+    position: relative; overflow: hidden;
+  }
+  .action:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .action.run  { background: linear-gradient(135deg, var(--success), #059669); color: white; border-color: transparent; }
+  .action.run:hover { box-shadow: 0 6px 16px rgba(16,185,129,.4); }
+  .action.save { color: var(--primary); border-color: rgba(99,102,241,.3); background: rgba(99,102,241,.08); }
+  .action.save:hover { background: rgba(99,102,241,.12); }
+  .action.comment { color: #3b82f6; border-color: rgba(59, 130, 246, 0.3); background: rgba(59, 130, 246, 0.08); }
+  .action.comment:hover { background: rgba(59, 130, 246, 0.12); }
+  .action.del  { color: var(--danger); border-color: rgba(239,68,68,.25); background: rgba(239,68,68,.06); }
+  .action.del:hover { background: rgba(239,68,68,.10); }
+  .action svg { width: 16px; height: 16px; }
+
+  .timer-container {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+    margin-bottom: 20px;
+  }
+  .timer-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px; font-weight: 700;
+    color: var(--primary); direction: ltr;
+    text-align: center; min-width: 100px;
+  }
+  .timer-controls { display: flex; gap: 8px; }
+  .timer-btn {
+    padding: 6px 12px; border: none;
+    border-radius: var(--radius-sm);
+    font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: var(--transition);
+    display: flex; align-items: center; gap: 4px;
+    font-family: inherit;
+  }
+  .timer-btn.start { background: var(--success); color: white; }
+  .timer-btn.start:hover { background: #059669; }
+  .timer-btn.pause { background: var(--warning); color: white; }
+  .timer-btn.pause:hover { background: #d97706; }
+  .timer-btn.stop { background: var(--danger); color: white; }
+  .timer-btn.stop:hover { background: #dc2626; }
+
+  .progress-container {
+    flex: 1; height: 8px; background: #e2e8f0;
+    border-radius: 4px; overflow: hidden; position: relative;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--primary-2));
+    border-radius: 4px; transition: width 0.5s ease;
+  }
+  .progress-text {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px; font-weight: 700;
+    color: var(--ink); white-space: nowrap;
+  }
+  .progress-stats {
+    display: flex; gap: 16px; padding: 10px 16px;
+    background: white; border-radius: var(--radius-md);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+  }
+  .progress-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .progress-value { font-size: 16px; font-weight: 700; color: var(--primary); }
+  .progress-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+
+  .time-warning { animation: pulse-warning 1s infinite; }
+  @keyframes pulse-warning { 0%,100% { color: var(--warning); } 50% { color: var(--danger); } }
+  .time-critical { animation: pulse-critical 0.5s infinite; }
+  @keyframes pulse-critical { 0%,100% { color: var(--danger); } 50% { color: white; } }
+
+  .teacher-mode { background: linear-gradient(135deg, #fef3c7, #fde68a); border-color: #f59e0b; }
+
+  .teacher-tools {
+    display: none; padding: 14px 18px;
+    background: #fffbeb;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+    flex-wrap: wrap; gap: 12px; align-items: center;
+  }
+  .teacher-tools.show { display: flex; animation: slideDown 0.3s ease-out; }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .teacher-stats {
+    display: flex; gap: 20px;
+    background: white; padding: 10px 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1);
+  }
+  .stat-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .stat-value { font-size: 18px; font-weight: 700; color: var(--warning); }
+  .stat-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .evaluation-actions { display: flex; gap: 8px; flex: 1; justify-content: flex-end; }
+
+  .tags-container {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding: 10px 18px;
+    border-bottom: 1px solid var(--line);
+    background: #f8fafc;
+    align-items: center;
+    min-height: 8px;
+  }
+  .tags-container.hidden { display: none; }
+
+  .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px;
+    background: var(--primary-light); color: var(--primary);
+    border-radius: 999px; font-size: 11px; font-weight: 600;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    cursor: pointer; transition: var(--transition);
+  }
+  .tag:hover { background: rgba(99, 102, 241, 0.15); transform: translateY(-1px); }
+  .tag .tag-remove { font-size: 13px; opacity: .6; margin-right: 2px; }
+  .tag:hover .tag-remove { opacity: 1; }
+
+  .tag-btn {
+    padding: 4px 10px; background: white;
+    border: 1px dashed var(--line);
+    border-radius: 999px;
+    font-size: 11px; font-weight: 600;
+    color: var(--muted); cursor: pointer;
+    transition: var(--transition); font-family: inherit;
+  }
+  .tag-btn:hover { background: #f1f5f9; color: var(--ink); border-color: var(--primary); }
+
+  .comments-section {
+    margin: 0; padding: 0;
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.4s ease;
+    background: #f8fafc;
+    border-top: 1px solid var(--line);
+  }
+  .comments-section.show { max-height: 800px; overflow: auto; }
+
+  .comments-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px;
+    background: #f1f5f9;
+    border-bottom: 1px solid var(--line);
+    font-weight: 600; color: var(--ink); font-size: 14px;
+    position: sticky; top: 0; z-index: 2;
+  }
+  .comments-header .close-comments {
+    background: transparent; border: none; cursor: pointer;
+    font-size: 16px; color: var(--muted);
+    padding: 4px 8px; border-radius: 6px;
+    transition: var(--transition);
+  }
+  .comments-header .close-comments:hover { background: #e2e8f0; color: var(--ink); }
+
+  .comments-list { padding: 0; margin: 0; max-height: 320px; overflow-y: auto; }
+  .comment-item { padding: 14px 18px; border-bottom: 1px solid var(--line); transition: background 0.2s; }
+  .comment-item:hover { background: #f8fafc; }
+  .comment-item:last-child { border-bottom: none; }
+
+  .comment-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .comment-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: grid; place-items: center;
+    color: white; font-weight: 600; font-size: 12px; flex-shrink: 0;
+  }
+  .comment-author { font-weight: 600; font-size: 13px; color: var(--ink); }
+  .comment-time { font-size: 11px; color: var(--muted); direction: rtl; margin-right: auto; }
+  .comment-text {
+    font-size: 13px; line-height: 1.6; color: var(--ink);
+    white-space: pre-wrap; word-break: break-word;
+    padding-right: 38px;
+  }
+
+  .comments-empty { padding: 18px; text-align: center; color: var(--muted); font-size: 13px; }
+
+  .comment-input { padding: 14px 18px; border-top: 1px solid var(--line); background: white; }
+  .comment-textarea {
+    width: 100%; min-height: 80px; padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-family: inherit; font-size: 13px; line-height: 1.5;
+    resize: vertical; transition: var(--transition);
+  }
+  .comment-textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+  .comment-actions { display: flex; gap: 10px; margin-top: 12px; justify-content: flex-end; }
+
+  .output {
+    margin: 0; padding: 0; max-height: 0; overflow: hidden;
+    transition: max-height .35s ease, padding .3s;
+    background: #0b1020; color: #d1fae5;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 13px; direction: ltr; text-align: left;
+    white-space: pre-wrap; word-break: break-word;
+    border-top: 1px solid #0f172a;
+  }
+  .output.show { max-height: 400px; overflow: auto; padding: 12px 14px; }
+  .output.err { color: #fca5a5; }
+  .output::-webkit-scrollbar { width: 8px; height: 8px; }
+  .output::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty .emoji { font-size: 56px; margin-bottom: 12px; }
+  .empty h3 { margin: 0 0 6px; color: var(--ink); font-size: 18px; }
+  .empty p { margin: 0; font-size: 14px; }
+
+  .toasts {
+    position: fixed; bottom: 20px; left: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+    z-index: 9999;
+  }
+  .toast {
+    background: #1e293b; color: white;
+    padding: 12px 16px; border-radius: 10px;
+    box-shadow: var(--shadow-lg);
+    font-size: 13.5px;
+    display: flex; align-items: center; gap: 10px;
+    animation: toastIn .3s cubic-bezier(.2,.8,.3,1.2);
+    min-width: 200px;
+  }
+  .toast.ok  { background: linear-gradient(135deg,#10b981,#059669); }
+  .toast.err { background: linear-gradient(135deg,#ef4444,#b91c1c); }
+  .toast.info{ background: linear-gradient(135deg,#6366f1,#8b5cf6); }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(20px) scale(.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .toast.hide { animation: toastOut .3s forwards; }
+  @keyframes toastOut { to { opacity: 0; transform: translateY(20px) scale(.95); } }
+
+  .loader { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 40px; color: var(--muted); }
+  .spinner {
+    width: 30px; height: 30px;
+    border: 3px solid rgba(99,102,241,.2);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ============ MODAL ============ */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9998;
+    padding: 20px;
+    animation: fadeIn .25s ease-out;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+    animation: modalIn .3s cubic-bezier(.2,.8,.3,1.2);
+    position: relative;
+  }
+  @keyframes modalIn { from { opacity: 0; transform: translateY(20px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .modal h2 { margin: 0 0 8px; font-size: 22px; font-weight: 800; color: var(--ink); }
+  .modal > p { margin: 0 0 20px; color: var(--muted); font-size: 14px; }
+  .modal-close {
+    position: absolute; top: 16px; left: 16px;
+    background: transparent; border: none; cursor: pointer;
+    font-size: 20px; color: var(--muted);
+    width: 36px; height: 36px; border-radius: 50%;
+    display: grid; place-items: center;
+    transition: var(--transition);
+    z-index: 3;
+  }
+  .modal-close:hover { background: #f1f5f9; color: var(--ink); }
+
+  /* ============ WELCOME ============ */
+  .welcome-tabs {
+    display: flex; gap: 4px;
+    padding: 4px;
+    background: #f1f5f9;
+    border-radius: var(--radius-md);
+    margin-bottom: 20px;
+  }
+  .welcome-tab {
+    flex: 1; padding: 10px 16px;
+    border: none; background: transparent;
+    border-radius: var(--radius-sm);
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    color: var(--muted); cursor: pointer;
+    transition: var(--transition);
+  }
+  .welcome-tab.active {
+    background: white; color: var(--primary);
+    box-shadow: var(--shadow-sm);
+  }
+  .welcome-panel {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .welcome-panel.hidden { display: none; }
+  .welcome-panel input {
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 15px;
+    transition: var(--transition);
+    text-align: center;
+    width: 100%;
+  }
+  .welcome-panel input:focus {
+    outline: none; border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+  }
+  .welcome-panel input.code-input {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--primary);
+  }
+  .welcome-hint {
+    font-size: 12px; color: var(--muted);
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* ============ SHARE ============ */
+  .share-box {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 18px;
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    border: 1px solid rgba(99,102,241,.3);
+    border-radius: var(--radius-md);
+    margin-bottom: 14px;
+  }
+  .share-box.white { background: white; }
+  .share-label {
+    font-size: 11px; font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .share-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px; font-weight: 800;
+    color: var(--primary);
+    letter-spacing: 6px;
+    text-align: center;
+    padding: 6px 0;
+  }
+  .share-link-row { display: flex; gap: 8px; }
+  .share-link-row input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: white;
+    direction: ltr;
+    min-width: 0;
+  }
+
+  /* ============ TEAM PICKER ============ */
+  .team-list {
+    display: flex; flex-direction: column; gap: 10px;
+    margin-bottom: 20px;
+    max-height: 45vh;
+    overflow-y: auto;
+    padding-left: 4px;
+  }
+  .team-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    flex-wrap: wrap;
+  }
+  .team-card:hover {
+    border-color: var(--primary);
+    background: #f8fafc;
+    box-shadow: var(--shadow-md);
+  }
+  .team-card.current {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    box-shadow: 0 4px 16px rgba(99,102,241,.15);
+  }
+  .team-card-head {
+    display: flex; align-items: center; gap: 12px;
+    width: 100%;
+  }
+  .team-card-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(15,23,42,.15);
+    display: grid; place-items: center;
+    color: white; font-weight: 700; font-size: 12px;
+  }
+  .team-card-info {
+    flex: 1; min-width: 0;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .team-card-name {
+    font-weight: 700; font-size: 15px; color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .team-card-count {
+    font-size: 12px; color: var(--muted); font-weight: 500;
+  }
+  .team-card-join {
+    font-size: 13px; color: var(--primary); font-weight: 700;
+    white-space: nowrap;
+  }
+  .team-members {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    width: 100%;
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+  }
+  .member-chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 9px;
+    background: #f1f5f9;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .member-chip .mini-avatar {
+    width: 16px; height: 16px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 9px; font-weight: 700;
+    color: white;
+  }
+  .member-chip.you {
+    background: #e0e7ff;
+    color: var(--primary);
+    border-color: rgba(99,102,241,.3);
+  }
+
+  .team-create {
+    display: flex; gap: 8px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--line);
+  }
+  .team-create input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 14px;
+    transition: var(--transition);
+    min-width: 0;
+  }
+  .team-create input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+  }
+
+  /* ============ LEADERBOARD ============ */
+  .lb-body {
+    display: flex; flex-direction: column; gap: 10px;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-left: 4px;
+  }
+  .lb-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+    position: relative;
+  }
+  .lb-row.mine {
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    border-color: rgba(99,102,241,.4);
+    box-shadow: 0 4px 16px rgba(99,102,241,.15);
+  }
+  .lb-row:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .lb-rank {
+    font-size: 22px; font-weight: 800;
+    min-width: 40px; text-align: center;
+    color: var(--muted);
+  }
+  .lb-team { flex: 1; min-width: 0; }
+  .lb-team-name {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 700; font-size: 15px; color: var(--ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .lb-team-meta {
+    font-size: 12px; color: var(--muted);
+    margin-top: 2px;
+  }
+  .lb-stats { display: flex; gap: 16px; }
+  .lb-stat {
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 46px;
+  }
+  .lb-stat b { font-size: 15px; font-weight: 800; color: var(--primary); }
+  .lb-stat span { font-size: 10px; color: var(--muted); font-weight: 600; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 600px) {
+    .hero { padding: 22px 16px 60px; }
+    .hero h1 { font-size: 20px; }
+    main { padding: 0 10px; }
+    .toolbar { top: 8px; padding: 8px; gap: 6px; }
+    .btn { padding: 8px 12px; font-size: 13px; }
+    .cell-head { padding: 10px; }
+    .cell-actions { padding: 8px 10px; gap: 6px; }
+    .action { padding: 6px 9px; font-size: 12px; }
+    .action .label { display: none; }
+    .progress-stats { flex-wrap: wrap; }
+    .teacher-stats { flex-wrap: wrap; }
+    .modal { padding: 20px; }
+    .lb-stats { gap: 8px; }
+    .lb-stat { min-width: 38px; }
+    .lb-stat b { font-size: 13px; }
+    .lb-stat span { font-size: 9px; }
+    .share-code { font-size: 24px; letter-spacing: 4px; }
+  }
+
+  .spin { animation: spin .7s linear infinite; display: inline-block; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <h1>🐍 دفترچه اشتراکی کلاس پایتون</h1>
+    <p>اینجا می‌توانی کد بزنی، اجرا کنی و با تیمت مسابقه بدهی.</p>
+    <div class="hero-chips">
+      <div class="who">
+        <span class="dot"></span>
+        <span id="whoami">در حال اتصال…</span>
+      </div>
+      <button class="session-chip" id="sessionChip" style="display:none" title="اطلاعات کلاس">
+        <span>📚</span>
+        <span id="sessionChipText"></span>
+      </button>
+      <button class="team-badge" id="teamBadge" title="مدیریت تیم" style="display:none">
+        <span>+ انتخاب تیم</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="toolbar" id="toolbar" style="display:none">
+    <button class="btn btn-primary" id="addCell">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg>
+      سلول جدید
+    </button>
+
+    <button class="btn btn-ghost" id="uploadBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 21V9m0 0l-4 4m4-4l4 4M4 5h16"/></svg>
+      آپلود ipynb
+    </button>
+    <input type="file" id="fileInput" accept=".ipynb,application/json" hidden>
+
+    <button class="btn btn-ghost" id="exportBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 19h16"/></svg>
+      دانلود ipynb
+    </button>
+
+    <button class="btn btn-ghost" id="toggleTags">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/>
+        <line x1="7" y1="7" x2="7.01" y2="7"/>
+      </svg>
+      تگ‌ها
+    </button>
+
+    <button class="btn btn-ghost" id="leaderboardBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <path d="M8 21h8M12 17v4M17 4h3a1 1 0 011 1v3a4 4 0 01-4 4h-1M7 4H4a1 1 0 00-1 1v3a4 4 0 004 4h1M7 4v6a5 5 0 0010 0V4H7z"/>
+      </svg>
+      جدول امتیازات
+    </button>
+
+    <button class="btn btn-success" id="toggleTeacherMode">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+      حالت معلم
+    </button>
+
+    <span class="spacer"></span>
+    <span id="stats" style="font-size:13px;color:var(--muted)"></span>
+  </div>
+
+  <div id="cells"></div>
+</main>
+
+<!-- Welcome Modal -->
+<div class="modal-overlay" id="welcomeModal">
+  <div class="modal">
+    <h2>🐍 دفترچه اشتراکی کلاس پایتون</h2>
+    <p>برای شروع، کلاس خودت رو بساز یا با کد کلاس وارد شو.</p>
+
+    <div class="welcome-tabs">
+      <button class="welcome-tab active" data-tab="join">ورود به کلاس</button>
+      <button class="welcome-tab" data-tab="create">ساخت کلاس جدید</button>
+    </div>
+
+    <div class="welcome-panel" data-panel="join">
+      <input type="text" id="joinCode" class="code-input" placeholder="ABC123" maxlength="8" autocomplete="off">
+      <button class="btn btn-primary" id="joinBtn">ورود به کلاس</button>
+      <div class="welcome-hint">کد کلاس رو از استادت بگیر</div>
+    </div>
+
+    <div class="welcome-panel hidden" data-panel="create">
+      <input type="text" id="createTitle" placeholder="نام کلاس (مثلاً پایتون مقدماتی)" maxlength="60" autocomplete="off">
+      <input type="text" id="createPin" placeholder="رمز مدیریت (۴ تا ۸ کاراکتر)" maxlength="20" autocomplete="off">
+      <button class="btn btn-primary" id="createBtn">ساخت کلاس و شروع</button>
+      <div class="welcome-hint">این رمز رو برای ورود به حالت معلم لازم داری — جایی امن نگهش دار</div>
+    </div>
+  </div>
+</div>
+
+<!-- Team Picker Modal -->
+<div class="modal-overlay" id="teamPickerModal">
+  <div class="modal">
+    <button class="modal-close" id="closeTeamPicker" title="بستن">✕</button>
+    <h2>🧑‍🤝‍🧑 انتخاب تیم</h2>
+    <p>برای شروع، به یک تیم بپیوند یا تیم جدید بساز. هر تیم فقط کدهای خودش را می‌بیند.</p>
+    <div class="team-list" id="teamList"></div>
+    <div class="team-create">
+      <input type="text" id="newTeamName" placeholder="نام تیم جدید…" maxlength="40">
+      <button class="btn btn-primary" id="createTeamBtn">ساخت تیم</button>
+    </div>
+  </div>
+</div>
+
+<!-- Leaderboard Modal -->
+<div class="modal-overlay" id="leaderboardModal">
+  <div class="modal">
+    <button class="modal-close" id="closeLeaderboard" title="بستن">✕</button>
+    <h2>🏆 جدول امتیازات تیم‌ها</h2>
+    <p>رتبه‌بندی بر اساس تعداد سلول‌های تکمیل‌شده. کد تیم‌های دیگر نمایش داده نمی‌شود.</p>
+    <div class="lb-body" id="leaderboardBody"></div>
+  </div>
+</div>
+
+<!-- Share / Session Modal -->
+<div class="modal-overlay" id="shareModal">
+  <div class="modal">
+    <button class="modal-close" id="closeShare" title="بستن">✕</button>
+    <h2>📚 کلاس: <span id="shareTitle"></span></h2>
+    <p>این کد را با دانشجوها به اشتراک بذار تا وارد کلاس بشن.</p>
+
+    <div class="share-box">
+      <div class="share-label">کد کلاس</div>
+      <div class="share-code" id="shareCode">—</div>
+      <button class="btn btn-primary" id="copyCodeBtn" style="width:100%">📋 کپی کد</button>
+    </div>
+
+    <div class="share-box white">
+      <div class="share-label">لینک اشتراک</div>
+      <div class="share-link-row">
+        <input type="text" id="shareLink" readonly>
+        <button class="btn btn-ghost" id="copyLinkBtn">کپی</button>
+      </div>
+    </div>
+
+    <button class="btn btn-ghost" id="leaveClassBtn" style="margin-top:20px;width:100%;color:var(--danger);border-color:rgba(239,68,68,.3)">
+      🚪 خروج از کلاس
+    </button>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+  import { loadPyodide } from 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.mjs';
+
+  // ================================================
+  const SUPABASE_URL = 'https://fqwlbqpduxmpnlvxrmsy.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxd2xicXBkdXhtcG5sdnhybXN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MTUwNjEsImV4cCI6MjEwNTM5MTA2MX0.5qvPUi_grBuUgITLpG0-QShzLsLaiA07i7pWRtnsWPc';
+  // ================================================
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const cellsEl = document.getElementById('cells');
+  const editors = new Map();
+  const openCommentSections = new Set();
+  const commentsCache = new Map();
+
+  // ---------- State ----------
+  let currentSession = null;   // { id, code, title, admin_pin_hash, ... }
+  let currentTeam = null;      // { id, name, color }
+  let isTeacherMode = false;
+  let cellsChannel = null;
+
+  // ---------- Helpers ----------
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, m => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[m]));
+  }
+
+  function toast(msg, type = 'info', ms = 3000) {
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    const icons = { ok: '✓', err: '✕', info: 'ℹ' };
+    t.innerHTML = `<b>${icons[type] || ''}</b><span>${escapeHtml(msg)}</span>`;
+    document.getElementById('toasts').appendChild(t);
+    setTimeout(() => {
+      t.classList.add('hide');
+      setTimeout(() => t.remove(), 300);
+    }, ms);
+  }
+
+  const PALETTE = ['#6366f1','#8b5cf6','#ec4899','#f43f5e','#f59e0b','#10b981','#06b6d4','#3b82f6','#84cc16','#eab308'];
+  function colorOf(name) {
+    let h = 0;
+    const s = name || 'ناشناس';
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+    return PALETTE[h % PALETTE.length];
+  }
+  function initials(name) {
+    const s = (name || '؟').trim();
+    const parts = s.split(/\s+/);
+    if (parts.length === 1) return parts[0].slice(0, 1).toUpperCase();
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+
+  async function hashPin(pin) {
+    const enc = new TextEncoder();
+    const buf = await crypto.subtle.digest('SHA-256', enc.encode(pin + '::pythonclass::v1'));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function generateSessionCode() {
+    const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    return code;
+  }
+
+  // ---------- Login anon ----------
+  let user = (await supabase.auth.getUser()).data.user;
+  if (!user) {
+    const { data, error } = await supabase.auth.signInAnonymously();
+    if (error) { toast('خطای ورود: ' + error.message, 'err', 6000); throw error; }
+    user = data.user;
+  }
+
+  let displayName = localStorage.getItem('displayName');
+  if (!displayName) {
+    displayName = (prompt('اسمت را وارد کن:') || 'ناشناس').trim();
+    localStorage.setItem('displayName', displayName);
+  }
+  document.getElementById('whoami').textContent = displayName;
+
+  // ---------- Team storage (per session) ----------
+  function getStoredTeam(sessionId) {
+    const id = localStorage.getItem('teamId_' + sessionId);
+    const name = localStorage.getItem('teamName_' + sessionId);
+    const color = localStorage.getItem('teamColor_' + sessionId);
+    if (id && name) return { id, name, color: color || colorOf(name) };
+    return null;
+  }
+  function storeTeam(sessionId, team) {
+    localStorage.setItem('teamId_' + sessionId, team.id);
+    localStorage.setItem('teamName_' + sessionId, team.name);
+    localStorage.setItem('teamColor_' + sessionId, team.color);
+  }
+  function clearStoredTeam(sessionId) {
+    localStorage.removeItem('teamId_' + sessionId);
+    localStorage.removeItem('teamName_' + sessionId);
+    localStorage.removeItem('teamColor_' + sessionId);
+  }
+
+  function updateTeamBadge() {
+    const badge = document.getElementById('teamBadge');
+    if (!badge) return;
+    if (!currentSession) { badge.style.display = 'none'; return; }
+    badge.style.display = 'inline-flex';
+    if (currentTeam) {
+      badge.innerHTML = `<span class="team-dot" style="background:${currentTeam.color}"></span><span>${escapeHtml(currentTeam.name)}</span><span style="opacity:.7;font-size:12px">• تغییر</span>`;
+    } else {
+      badge.innerHTML = `<span>+ انتخاب تیم</span>`;
+    }
+  }
+
+  // ---------- Session management ----------
+  function getCodeFromURL() {
+    const params = new URLSearchParams(location.search);
+    const c = params.get('s');
+    return c ? c.trim().toUpperCase() : null;
+  }
+
+  function getStoredSessionCode() {
+    return localStorage.getItem('lastSessionCode');
+  }
+
+  async function loadSessionByCode(code) {
+    const { data, error } = await supabase
+      .from('sessions').select('*')
+      .eq('code', code.toUpperCase())
+      .maybeSingle();
+    if (error) { console.error('loadSessionByCode', error); return null; }
+    return data;
+  }
+
+  async function createSession(title, pin) {
+    const pinHash = await hashPin(pin);
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const code = generateSessionCode();
+      const { data, error } = await supabase.from('sessions').insert({
+        code, title, admin_pin_hash: pinHash, created_by: user.id
+      }).select().single();
+      if (!error) return data;
+      // 23505 = unique violation
+      if (error.code !== '23505') throw error;
+    }
+    throw new Error('نتوانستم کد یکتا بسازم، دوباره امتحان کن');
+  }
+
+  function updateSessionUI() {
+    const chip = document.getElementById('sessionChip');
+    const chipText = document.getElementById('sessionChipText');
+    const toolbar = document.getElementById('toolbar');
+    if (!currentSession) {
+      chip.style.display = 'none';
+      toolbar.style.display = 'none';
+      return;
+    }
+    chip.style.display = 'inline-flex';
+    chipText.textContent = currentSession.title;
+    toolbar.style.display = 'flex';
+  }
+
+  function subscribeToSession() {
+    if (cellsChannel) { supabase.removeChannel(cellsChannel); cellsChannel = null; }
+    if (!currentSession) return;
+    cellsChannel = supabase
+      .channel('cells-' + currentSession.id)
+      .on('postgres_changes', {
+        event: '*', schema: 'public', table: 'cells',
+        filter: `session_id=eq.${currentSession.id}`,
+      }, () => loadCells())
+      .subscribe();
+  }
+
+  async function enterSession(session) {
+    currentSession = session;
+    localStorage.setItem('lastSessionCode', session.code);
+    // Update URL
+    const url = new URL(location.href);
+    url.searchParams.set('s', session.code);
+    history.replaceState(null, '', url.toString());
+
+    // Reset per-session state
+    isTeacherMode = false;
+    localStorage.removeItem('teacherMode'); // per-session via session storage now
+    document.getElementById('toggleTeacherMode').classList.remove('btn-warning');
+    document.getElementById('toggleTeacherMode').classList.add('btn-success');
+    document.getElementById('toggleTeacherMode').innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+      </svg>
+      حالت معلم
+    `;
+    document.querySelector('.teacher-tools')?.classList.remove('show');
+    document.querySelector('main')?.classList.remove('teacher-mode');
+
+    // Clear cells
+    cellsEl.innerHTML = '';
+    editors.clear();
+    openCommentSections.clear();
+    commentsCache.clear();
+
+    // Restore team for this session
+    currentTeam = getStoredTeam(session.id);
+
+    updateSessionUI();
+    updateTeamBadge();
+
+    // Realtime
+    subscribeToSession();
+
+    // Load
+    await loadCells();
+  }
+
+  async function leaveSession() {
+    if (currentSession) {
+      // leave team storage for this session? keep it, in case they come back
+    }
+    if (cellsChannel) { supabase.removeChannel(cellsChannel); cellsChannel = null; }
+    currentSession = null;
+    currentTeam = null;
+    isTeacherMode = false;
+    localStorage.removeItem('lastSessionCode');
+    const url = new URL(location.href);
+    url.searchParams.delete('s');
+    history.replaceState(null, '', url.toString());
+    cellsEl.innerHTML = '';
+    editors.clear();
+    openCommentSections.clear();
+    commentsCache.clear();
+    updateSessionUI();
+    updateTeamBadge();
+    showWelcomeModal();
+  }
+
+  // ---------- Teacher unlock ----------
+  function isTeacherUnlocked() {
+    if (!currentSession) return false;
+    return sessionStorage.getItem('teacherUnlocked_' + currentSession.id) === 'true';
+  }
+  function setTeacherUnlocked() {
+    if (!currentSession) return;
+    sessionStorage.setItem('teacherUnlocked_' + currentSession.id, 'true');
+  }
+  async function tryUnlockTeacher() {
+    if (!currentSession) return false;
+    if (isTeacherUnlocked()) return true;
+    const pin = prompt('رمز مدیریت کلاس را وارد کن:');
+    if (!pin) return false;
+    const h = await hashPin(pin);
+    if (h === currentSession.admin_pin_hash) {
+      setTeacherUnlocked();
+      return true;
+    }
+    toast('رمز اشتباه است', 'err', 2500);
+    return false;
+  }
+
+  // ---------- Welcome Modal ----------
+  function showWelcomeModal() {
+    document.getElementById('welcomeModal').classList.add('show');
+  }
+  function hideWelcomeModal() {
+    document.getElementById('welcomeModal').classList.remove('show');
+  }
+
+  // Tab switching
+  document.querySelectorAll('.welcome-tab').forEach(tab => {
+    tab.onclick = () => {
+      document.querySelectorAll('.welcome-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const name = tab.getAttribute('data-tab');
+      document.querySelectorAll('.welcome-panel').forEach(p => {
+        p.classList.toggle('hidden', p.getAttribute('data-panel') !== name);
+      });
+    };
+  });
+
+  // Join
+  document.getElementById('joinBtn').onclick = async () => {
+    const input = document.getElementById('joinCode');
+    const code = input.value.trim().toUpperCase();
+    if (!code) { toast('کد کلاس را وارد کن', 'err', 2000); return; }
+    const btn = document.getElementById('joinBtn');
+    btn.disabled = true; btn.textContent = 'در حال بررسی…';
+    try {
+      const session = await loadSessionByCode(code);
+      if (!session) { toast('کد کلاس پیدا نشد', 'err', 3000); return; }
+      hideWelcomeModal();
+      input.value = '';
+      await enterSession(session);
+      if (!currentTeam) showTeamPicker();
+    } finally {
+      btn.disabled = false; btn.textContent = 'ورود به کلاس';
+    }
+  };
+  document.getElementById('joinCode').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('joinBtn').click();
+  });
+
+  // Create
+  document.getElementById('createBtn').onclick = async () => {
+    const titleEl = document.getElementById('createTitle');
+    const pinEl = document.getElementById('createPin');
+    const title = titleEl.value.trim();
+    const pin = pinEl.value.trim();
+    if (!title) { toast('نام کلاس را وارد کن', 'err', 2000); return; }
+    if (!pin || pin.length < 4) { toast('رمز مدیریت حداقل ۴ کاراکتر باشد', 'err', 2500); return; }
+    const btn = document.getElementById('createBtn');
+    btn.disabled = true; btn.textContent = 'در حال ساخت…';
+    try {
+      const session = await createSession(title, pin);
+      hideWelcomeModal();
+      titleEl.value = ''; pinEl.value = '';
+      await enterSession(session);
+      toast('کلاس ساخته شد!', 'ok', 2500);
+      // Auto-open share modal for the new professor
+      setTimeout(() => openShareModal(), 400);
+    } catch (e) {
+      toast('خطا: ' + e.message, 'err', 5000);
+    } finally {
+      btn.disabled = false; btn.textContent = 'ساخت کلاس و شروع';
+    }
+  };
+
+  // ---------- Share Modal ----------
+  function openShareModal() {
+    if (!currentSession) return;
+    document.getElementById('shareTitle').textContent = currentSession.title;
+    document.getElementById('shareCode').textContent = currentSession.code;
+    const url = new URL(location.href);
+    url.searchParams.set('s', currentSession.code);
+    document.getElementById('shareLink').value = url.toString();
+    document.getElementById('shareModal').classList.add('show');
+  }
+  document.getElementById('sessionChip').onclick = openShareModal;
+  document.getElementById('closeShare').onclick = () => {
+    document.getElementById('shareModal').classList.remove('show');
+  };
+  document.getElementById('shareModal').addEventListener('click', (e) => {
+    if (e.target.id === 'shareModal') e.currentTarget.classList.remove('show');
+  });
+  document.getElementById('copyCodeBtn').onclick = () => {
+    navigator.clipboard.writeText(currentSession.code).then(() => toast('کد کپی شد', 'ok', 1500));
+  };
+  document.getElementById('copyLinkBtn').onclick = () => {
+    navigator.clipboard.writeText(document.getElementById('shareLink').value).then(() => toast('لینک کپی شد', 'ok', 1500));
+  };
+  document.getElementById('leaveClassBtn').onclick = () => {
+    if (!confirm('از این کلاس خارج می‌شوی. مطمئنی؟')) return;
+    document.getElementById('shareModal').classList.remove('show');
+    leaveSession();
+  };
+
+  // ---------- Teams ----------
+  const TEAM_PALETTE = ['#ef4444','#f97316','#eab308','#22c55e','#06b6d4','#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f43f5e'];
+
+  async function loadTeams() {
+    if (!currentSession) return [];
+    const { data, error } = await supabase
+      .from('teams').select('*')
+      .eq('session_id', currentSession.id)
+      .order('created_at', { ascending: true });
+    if (error) { console.error('loadTeams:', error); return []; }
+    return data || [];
+  }
+
+  async function loadTeamMembers() {
+    if (!currentSession) return {};
+    const { data, error } = await supabase
+      .from('cells')
+      .select('team_id, author_name')
+      .eq('session_id', currentSession.id);
+    if (error) { console.error('loadTeamMembers:', error); return {}; }
+    const map = {};
+    (data || []).forEach(row => {
+      if (!row.team_id || !row.author_name) return;
+      if (!map[row.team_id]) map[row.team_id] = new Set();
+      map[row.team_id].add(row.author_name);
+    });
+    Object.keys(map).forEach(k => { map[k] = [...map[k]].sort(); });
+    return map;
+  }
+
+  async function createTeam(name) {
+    if (!currentSession) return null;
+    const color = TEAM_PALETTE[Math.floor(Math.random() * TEAM_PALETTE.length)];
+    const { data, error } = await supabase
+      .from('teams')
+      .insert({ session_id: currentSession.id, name, color })
+      .select()
+      .single();
+    if (error) { toast('خطای ساخت تیم: ' + error.message, 'err', 5000); return null; }
+    return data;
+  }
+
+  function joinTeam(team) {
+    currentTeam = { id: team.id, name: team.name, color: team.color };
+    storeTeam(currentSession.id, currentTeam);
+    updateTeamBadge();
+    document.getElementById('teamPickerModal').classList.remove('show');
+    loadCells();
+    toast('به تیم «' + team.name + '» پیوستی', 'ok', 2000);
+  }
+
+  async function showTeamPicker() {
+    if (!currentSession) return;
+    const modal = document.getElementById('teamPickerModal');
+    const list = document.getElementById('teamList');
+    modal.classList.add('show');
+    list.innerHTML = '<div class="loader" style="padding:20px"><div class="spinner"></div></div>';
+    const [teams, members] = await Promise.all([loadTeams(), loadTeamMembers()]);
+
+    if (!teams.length) {
+      list.innerHTML = `<div class="comments-empty">هنوز تیمی ساخته نشده. اولین تیم رو بساز! 👇</div>`;
+      return;
+    }
+
+    list.innerHTML = teams.map(t => {
+      const teamMembers = members[t.id] || [];
+      const isMine = currentTeam && currentTeam.id === t.id;
+      const membersHtml = teamMembers.length
+        ? teamMembers.map(m => {
+            const isYou = m === displayName;
+            const c = colorOf(m);
+            return `<span class="member-chip ${isYou ? 'you' : ''}">
+              <span class="mini-avatar" style="background:${c}">${escapeHtml(initials(m))}</span>
+              ${escapeHtml(m)}${isYou ? ' (شما)' : ''}
+            </span>`;
+          }).join('')
+        : '<span style="font-size:11px;color:var(--muted)">هنوز عضوی ندارد — اولین نفر باش!</span>';
+
+      return `
+        <div class="team-card ${isMine ? 'current' : ''}" data-team-id="${t.id}" data-team-name="${escapeHtml(t.name)}" data-team-color="${escapeHtml(t.color)}" style="border-right:4px solid ${t.color}">
+          <div class="team-card-head">
+            <div class="team-card-dot" style="background:${t.color}">${escapeHtml(initials(t.name))}</div>
+            <div class="team-card-info">
+              <div class="team-card-name">${escapeHtml(t.name)}${isMine ? ' <span class="badge">تیم شما</span>' : ''}</div>
+              <div class="team-card-count">${teamMembers.length} عضو</div>
+            </div>
+            <div class="team-card-join">${isMine ? '✓ انتخاب شده' : 'پیوستن →'}</div>
+          </div>
+          <div class="team-members">${membersHtml}</div>
+        </div>
+      `;
+    }).join('');
+
+    list.querySelectorAll('.team-card').forEach(el => {
+      el.onclick = () => {
+        joinTeam({
+          id: el.getAttribute('data-team-id'),
+          name: el.getAttribute('data-team-name'),
+          color: el.getAttribute('data-team-color')
+        });
+      };
+    });
+  }
+
+  document.getElementById('teamBadge').onclick = showTeamPicker;
+  document.getElementById('closeTeamPicker').onclick = () => {
+    document.getElementById('teamPickerModal').classList.remove('show');
+  };
+  document.getElementById('teamPickerModal').addEventListener('click', (e) => {
+    if (e.target.id === 'teamPickerModal') e.currentTarget.classList.remove('show');
+  });
+
+  document.getElementById('createTeamBtn').onclick = async () => {
+    const input = document.getElementById('newTeamName');
+    const name = input.value.trim();
+    if (!name) { toast('نام تیم را وارد کن', 'err', 2000); return; }
+    if (name.length < 2) { toast('نام تیم حداقل ۲ حرف باشد', 'err', 2000); return; }
+    const teams = await loadTeams();
+    if (teams.some(t => t.name.toLowerCase() === name.toLowerCase())) {
+      toast('این نام تیم قبلاً گرفته شده', 'err', 2500);
+      return;
+    }
+    const btn = document.getElementById('createTeamBtn');
+    btn.disabled = true;
+    const team = await createTeam(name);
+    btn.disabled = false;
+    if (team) { input.value = ''; joinTeam(team); }
+  };
+
+  document.getElementById('newTeamName').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('createTeamBtn').click();
+  });
+
+  // ---------- DB helpers ----------
+  async function saveCell(id, code, output) {
+    const { error } = await supabase.from('cells').update({
+      code, output, updated_at: new Date().toISOString()
+    }).eq('id', id);
+    if (error) console.error('saveCell error:', error);
+  }
+
+  async function setOutput(outputEl, text, isErr) {
+    outputEl.classList.add('show');
+    outputEl.classList.toggle('err', !!isErr);
+    outputEl.textContent = text;
+  }
+
+  // ---------- Pyodide ----------
+  let pyodide;
+  async function getPyodide() {
+    if (!pyodide) pyodide = await loadPyodide();
+    return pyodide;
+  }
+
+  async function runCode(id, code, outputEl) {
+    await setOutput(outputEl, '⏳ در حال آماده‌سازی Pyodide…', false);
+    let out = '';
+    try {
+      const py = await getPyodide();
+      await setOutput(outputEl, '⏳ در حال اجرا…', false);
+      py.setStdout({ batched: (s) => { out += s + '\n'; } });
+      py.setStderr({ batched: (s) => { out += s + '\n'; } });
+      try {
+        const r = await py.runPythonAsync(code);
+        if (r !== undefined && r !== null) out += String(r);
+      } catch (e) {
+        out += 'Error: ' + (e.message || e);
+      }
+    } catch (e) {
+      out = 'Pyodide error: ' + e.message;
+    }
+    out = out.trim() || '(بدون خروجی)';
+    await setOutput(outputEl, out, out.startsWith('Error') || out.startsWith('Pyodide'));
+    await saveCell(id, code, out);
+  }
+
+  // ---------- Empty state ----------
+  function renderEmpty() {
+    if (!currentSession) return;
+    if (!currentTeam) {
+      cellsEl.innerHTML = `
+        <div class="empty">
+          <div class="emoji">🧑‍🤝‍🧑</div>
+          <h3>هنوز تیمی انتخاب نکرده‌ای</h3>
+          <p>روی دکمهٔ «+ انتخاب تیم» در بالای صفحه بزن تا به یک تیم بپیوندی.</p>
+          <button class="btn btn-primary" id="emptyPickTeam" style="margin-top:18px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+            انتخاب یا ساخت تیم
+          </button>
+        </div>`;
+      const btn = document.getElementById('emptyPickTeam');
+      if (btn) btn.onclick = showTeamPicker;
+      return;
+    }
+    cellsEl.innerHTML = `
+      <div class="empty">
+        <div class="emoji">✨</div>
+        <h3>تیم شما هنوز سلولی ندارد</h3>
+        <p>روی «سلول جدید» بزن و اولین کد تیمت را بنویس.</p>
+      </div>`;
+  }
+
+  // ---------- Comments ----------
+  async function fetchComments(cellId) {
+    const { data, error } = await supabase
+      .from('comments').select('*')
+      .eq('cell_id', cellId)
+      .order('created_at', { ascending: true });
+    if (error) { console.error('fetchComments error:', error); return []; }
+    commentsCache.set(cellId, data || []);
+    return data || [];
+  }
+
+  function renderComments(cellId, comments) {
+    const list = document.getElementById(`comments-list-${cellId}`);
+    if (!list) return;
+    if (!comments.length) {
+      list.innerHTML = `<div class="comments-empty">هنوز نظری ثبت نشده. اولین نفر باش!</div>`;
+      return;
+    }
+    list.innerHTML = comments.map(c => {
+      const name = c.author_name || 'ناشناس';
+      const color = colorOf(name);
+      return `
+        <div class="comment-item">
+          <div class="comment-header">
+            <div class="comment-avatar" style="background:${color}">${escapeHtml(initials(name))}</div>
+            <div class="comment-author">${escapeHtml(name)}</div>
+            <div class="comment-time">${new Date(c.created_at).toLocaleString('fa-IR')}</div>
+          </div>
+          <div class="comment-text">${escapeHtml(c.text || '')}</div>
+        </div>`;
+    }).join('');
+  }
+
+  function updateCommentIndicators(cellId, count) {
+    const obj = editors.get(cellId);
+    if (!obj) return;
+    obj.cellData.comments_count = count;
+    const ind = obj.cellEl.querySelector('.comment-indicator');
+    const cnt = obj.cellEl.querySelector('.comment-count');
+    const hdr = obj.cellEl.querySelector('.comments-header span');
+    if (cnt) cnt.textContent = count;
+    if (ind) ind.classList.toggle('has-comments', count > 0);
+    if (hdr) hdr.textContent = `نظرات (${count})`;
+    obj.cellEl.classList.toggle('has-comments', count > 0);
+  }
+
+  async function openComments(cellId) {
+    const section = document.getElementById(`comments-${cellId}`);
+    if (!section) return;
+    openCommentSections.add(cellId);
+    section.classList.add('show');
+    const comments = await fetchComments(cellId);
+    renderComments(cellId, comments);
+    updateCommentIndicators(cellId, comments.length);
+  }
+
+  function closeComments(cellId) {
+    const section = document.getElementById(`comments-${cellId}`);
+    if (!section) return;
+    openCommentSections.delete(cellId);
+    section.classList.remove('show');
+  }
+
+  function toggleComments(cellId) {
+    const section = document.getElementById(`comments-${cellId}`);
+    if (!section) return;
+    if (section.classList.contains('show')) closeComments(cellId);
+    else openComments(cellId);
+  }
+
+  async function submitComment(cellId) {
+    const textarea = document.querySelector(`.comment-textarea[data-cell-id="${cellId}"]`);
+    if (!textarea) return;
+    const text = textarea.value.trim();
+    if (!text) { toast('متن نظر خالی است', 'err', 2000); return; }
+    const { error } = await supabase.from('comments').insert({
+      cell_id: cellId,
+      author_id: user.id,
+      author_name: displayName,
+      text
+    });
+    if (error) { toast('خطای ارسال نظر: ' + error.message, 'err', 5000); return; }
+    textarea.value = '';
+    toast('نظر ثبت شد', 'ok', 1500);
+    const comments = await fetchComments(cellId);
+    renderComments(cellId, comments);
+    updateCommentIndicators(cellId, comments.length);
+  }
+
+  // ---------- Tags ----------
+  function renderTags(cellId, tags) {
+    const container = document.getElementById(`tags-${cellId}`);
+    if (!container) return;
+    const arr = Array.isArray(tags) ? tags : [];
+    const tagList = arr.map(t =>
+      `<span class="tag" data-tag="${escapeHtml(t)}" title="حذف تگ">${escapeHtml(t)} <span class="tag-remove">×</span></span>`
+    ).join('');
+    container.innerHTML = `
+      ${tagList}
+      <button class="tag-btn add-tag" data-cell-id="${cellId}">+ افزودن تگ</button>
+    `;
+    container.querySelector('.add-tag').onclick = () => {
+      const tag = prompt('نام تگ (مثلاً: حل‌شده، سوال، مهم):');
+      if (!tag || !tag.trim()) return;
+      addTag(cellId, tag.trim());
+    };
+    container.querySelectorAll('.tag').forEach(el => {
+      el.onclick = () => {
+        const t = el.getAttribute('data-tag');
+        if (!confirm(`تگ «${t}» حذف شود؟`)) return;
+        removeTag(cellId, t);
+      };
+    });
+  }
+
+  async function addTag(cellId, tag) {
+    const obj = editors.get(cellId);
+    if (!obj) return;
+    const current = Array.isArray(obj.cellData.tags) ? [...obj.cellData.tags] : [];
+    if (current.includes(tag)) { toast('این تگ قبلاً اضافه شده', 'info', 2000); return; }
+    current.push(tag);
+    const { error } = await supabase.from('cells').update({ tags: current }).eq('id', cellId);
+    if (error) { toast('خطای تگ: ' + error.message, 'err', 6000); return; }
+    obj.cellData.tags = current;
+    renderTags(cellId, current);
+    toast('تگ اضافه شد', 'ok', 1500);
+  }
+
+  async function removeTag(cellId, tag) {
+    const obj = editors.get(cellId);
+    if (!obj) return;
+    const current = (Array.isArray(obj.cellData.tags) ? obj.cellData.tags : []).filter(t => t !== tag);
+    const { error } = await supabase.from('cells').update({ tags: current }).eq('id', cellId);
+    if (error) { toast('خطای حذف تگ: ' + error.message, 'err', 5000); return; }
+    obj.cellData.tags = current;
+    renderTags(cellId, current);
+  }
+
+  let tagsVisible = localStorage.getItem('tagsVisible') !== 'false';
+  function applyTagsVisibility() {
+    document.querySelectorAll('.tags-container').forEach(el => {
+      el.classList.toggle('hidden', !tagsVisible);
+    });
+    const btn = document.getElementById('toggleTags');
+    if (btn) btn.classList.toggle('active', tagsVisible);
+  }
+
+  document.getElementById('toggleTags').onclick = () => {
+    tagsVisible = !tagsVisible;
+    localStorage.setItem('tagsVisible', tagsVisible);
+    applyTagsVisibility();
+    toast(tagsVisible ? 'تگ‌ها نمایش داده می‌شوند' : 'تگ‌ها پنهان شدند', 'info', 1500);
+  };
+
+  // ---------- Render ----------
+  function renderCells(cells, commentsByCell) {
+    commentsByCell = commentsByCell || {};
+
+    if (!cells.length) renderEmpty();
+    else if (cellsEl.querySelector('.empty')) cellsEl.innerHTML = '';
+
+    document.getElementById('stats').textContent =
+      cells.length ? `${cells.length} سلول · ${new Set(cells.map(c=>c.author_name)).size} دانشجو` : '';
+
+    for (const [id, obj] of [...editors]) {
+      if (!cells.find(c => c.id === id)) {
+        obj.cellEl.remove();
+        editors.delete(id);
+        openCommentSections.delete(id);
+      }
+    }
+
+    for (const cell of cells) {
+      const count = cell.comments_count != null ? cell.comments_count : (commentsByCell[cell.id] || 0);
+      cell.comments_count = count;
+
+      if (editors.has(cell.id)) {
+        const obj = editors.get(cell.id);
+        obj.cellData = cell;
+        if (!obj.cm.hasFocus() && obj.cm.getValue() !== cell.code) {
+          obj.cm.setValue(cell.code);
+        }
+        const newOut = cell.output || '';
+        if (obj.lastOutput !== newOut) {
+          obj.lastOutput = newOut;
+          if (newOut) setOutput(obj.outputEl, newOut, newOut.startsWith('Error') || newOut.startsWith('Pyodide'));
+          else { obj.outputEl.classList.remove('show'); obj.outputEl.textContent = ''; }
+        }
+        renderTags(cell.id, cell.tags || []);
+        updateCommentIndicators(cell.id, count);
+
+        const tb = obj.cellEl.querySelector('.cell-team-badge');
+        if (tb && cell.team_name) {
+          tb.textContent = cell.team_name;
+          tb.style.background = colorOf(cell.team_name);
+        }
+
+        if (openCommentSections.has(cell.id)) {
+          const comments = commentsCache.get(cell.id) || [];
+          renderComments(cell.id, comments);
+          const section = document.getElementById(`comments-${cell.id}`);
+          if (section) section.classList.add('show');
+        }
+        continue;
+      }
+
+      const isOwn = cell.author_id === user.id;
+      const name = cell.author_name || 'ناشناس';
+      const color = colorOf(name);
+      const teamBadgeHtml = cell.team_name
+        ? `<div class="cell-team-badge" style="background:${colorOf(cell.team_name)}">${escapeHtml(cell.team_name)}</div>`
+        : '';
+
+      const el = document.createElement('div');
+      el.className = 'cell' + (isOwn ? ' own' : '');
+      el.innerHTML = `
+        <div class="cell-head">
+          <div class="avatar" style="background:${color}">${escapeHtml(initials(name))}</div>
+          <div class="who">
+            <div class="name">${escapeHtml(name)}${isOwn ? ' <span class="badge">شما</span>' : ''}</div>
+            <div class="time">${new Date(cell.created_at).toLocaleString('fa-IR')}</div>
+          </div>
+          ${teamBadgeHtml}
+          <div class="spacer"></div>
+          <div class="comment-indicator ${count > 0 ? 'has-comments' : ''}" data-cell-id="${cell.id}" title="نمایش نظرات">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+              <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
+            </svg>
+            <span class="comment-count">${count}</span>
+          </div>
+        </div>
+        <div class="tags-container ${tagsVisible ? '' : 'hidden'}" id="tags-${cell.id}"></div>
+        <div class="editor-wrap"><textarea></textarea></div>
+        <div class="cell-actions">
+          <button class="action run" title="Ctrl+Enter">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            <span class="label">اجرا</span>
+          </button>
+          <button class="action save" title="ذخیره">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+            <span class="label">ذخیره</span>
+          </button>
+          <button class="action comment" title="نظر دادن">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"/>
+            </svg>
+            <span class="label">نظر</span>
+          </button>
+          ${isOwn ? `
+          <button class="action del" title="حذف">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14"/></svg>
+            <span class="label">حذف</span>
+          </button>` : ''}
+        </div>
+        <div class="comments-section" id="comments-${cell.id}">
+          <div class="comments-header">
+            <span>نظرات (${count})</span>
+            <button class="close-comments" data-cell-id="${cell.id}" title="بستن">✕</button>
+          </div>
+          <div class="comments-list" id="comments-list-${cell.id}">
+            <div class="comments-empty">در حال بارگذاری…</div>
+          </div>
+          <div class="comment-input">
+            <textarea class="comment-textarea" placeholder="نظر خود را اینجا بنویسید..." data-cell-id="${cell.id}"></textarea>
+            <div class="comment-actions">
+              <button class="btn btn-ghost" data-action="cancel-comment" data-cell-id="${cell.id}">لغو</button>
+              <button class="btn btn-primary" data-action="submit-comment" data-cell-id="${cell.id}">ارسال نظر</button>
+            </div>
+          </div>
+        </div>
+        <pre class="output"></pre>
+      `;
+      cellsEl.appendChild(el);
+
+      const cm = CodeMirror.fromTextArea(el.querySelector('textarea'), {
+        mode: 'python',
+        theme: 'dracula',
+        lineNumbers: true,
+        indentUnit: 4,
+        tabSize: 4,
+        indentWithTabs: false,
+        autoCloseBrackets: true,
+        matchBrackets: true,
+        viewportMargin: Infinity,
+      });
+      cm.setValue(cell.code || '');
+
+      const outputEl = el.querySelector('.output');
+      const obj = { cm, cellEl: el, outputEl, lastOutput: cell.output || '', cellData: cell };
+      if (cell.output) setOutput(outputEl, cell.output, cell.output.startsWith('Error') || cell.output.startsWith('Pyodide'));
+
+      renderTags(cell.id, cell.tags || []);
+
+      let saveTimer;
+      cm.on('change', () => {
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(() => saveCell(cell.id, cm.getValue(), obj.lastOutput), 900);
+      });
+
+      cm.on('paste', (instance, e) => {
+        e.preventDefault();
+        toast('کپی‌پیست مجاز نیست. لطفاً کد را تایپ کن.', 'err', 2500);
+      });
+      cm.on('drop', (instance, e) => {
+        e.preventDefault();
+        toast('کشیدن متن مجاز نیست. لطفاً کد را تایپ کن.', 'err', 2500);
+      });
+      cm.on('contextmenu', (instance, e) => {
+        e.preventDefault();
+        toast('راست‌کلیک غیرفعال است.', 'info', 2000);
+      });
+
+      cm.setOption('extraKeys', {
+        'Ctrl-Enter': () => el.querySelector('.run').click(),
+        'Cmd-Enter':  () => el.querySelector('.run').click(),
+        'Ctrl-V': () => { toast('پیست مجاز نیست', 'err', 2000); return; },
+        'Cmd-V':  () => { toast('پیست مجاز نیست', 'err', 2000); return; },
+        'Shift-Insert': () => { toast('پیست مجاز نیست', 'err', 2000); return; },
+      });
+
+      el.querySelector('.run').onclick = (ev) => {
+        const btn = ev.currentTarget;
+        btn.disabled = true;
+        const svg = btn.querySelector('svg');
+        svg.classList.add('spin');
+        runCode(cell.id, cm.getValue(), outputEl).finally(() => {
+          svg.classList.remove('spin');
+          btn.disabled = false;
+        });
+      };
+
+      el.querySelector('.save').onclick = async () => {
+        await saveCell(cell.id, cm.getValue(), obj.lastOutput);
+        toast('ذخیره شد', 'ok', 1500);
+      };
+
+      const delBtn = el.querySelector('.del');
+      if (delBtn) delBtn.onclick = async () => {
+        if (!confirm('این سلول حذف شود؟')) return;
+        const { error } = await supabase.from('cells').delete().eq('id', cell.id);
+        if (error) toast('خطای حذف: ' + error.message, 'err');
+        else toast('حذف شد', 'ok', 1500);
+      };
+
+      el.querySelector('.comment-indicator').onclick = () => toggleComments(cell.id);
+      el.querySelector('.action.comment').onclick = () => {
+        openComments(cell.id);
+        const ta = el.querySelector('.comment-textarea');
+        if (ta) setTimeout(() => ta.focus(), 250);
+      };
+      el.querySelector('.close-comments').onclick = () => closeComments(cell.id);
+      el.querySelector('[data-action="cancel-comment"]').onclick = () => closeComments(cell.id);
+      el.querySelector('[data-action="submit-comment"]').onclick = () => submitComment(cell.id);
+
+      const ta = el.querySelector('.comment-textarea');
+      ta.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          submitComment(cell.id);
+        }
+      });
+
+      editors.set(cell.id, obj);
+    }
+
+    applyTagsVisibility();
+    if (isTeacherMode) updateTeacherStats();
+  }
+
+  // ---------- Load (team-aware) ----------
+  async function loadCells() {
+    if (!currentSession) return;
+    try {
+      let query = supabase
+        .from('cells')
+        .select('*')
+        .eq('session_id', currentSession.id)
+        .order('created_at', { ascending: true });
+
+      if (!isTeacherMode) {
+        if (currentTeam?.id) {
+          query = query.or(`team_id.eq.${currentTeam.id},team_id.is.null`);
+        } else {
+          query = query.is('team_id', null);
+        }
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        cellsEl.innerHTML = `
+          <div class="empty">
+            <div class="emoji">⚠️</div>
+            <h3>خطا در بارگذاری</h3>
+            <p>${escapeHtml(error.message)}</p>
+            <p style="font-size:12px;color:#94a3b8">${escapeHtml(error.code || '')} ${escapeHtml(error.details || '')}</p>
+          </div>`;
+        toast('خطا: ' + error.message, 'err', 6000);
+        return;
+      }
+
+      const cells = data || [];
+
+      let commentsByCell = {};
+      if (cells.length) {
+        const ids = cells.map(c => c.id);
+        const { data: comments, error: cErr } = await supabase
+          .from('comments').select('cell_id').in('cell_id', ids);
+        if (!cErr && comments) {
+          comments.forEach(c => {
+            commentsByCell[c.cell_id] = (commentsByCell[c.cell_id] || 0) + 1;
+          });
+        }
+      }
+
+      renderCells(cells, commentsByCell);
+    } catch (e) {
+      console.error(e);
+      cellsEl.innerHTML = `
+        <div class="empty">
+          <div class="emoji">💥</div>
+          <h3>خطای غیرمنتظره</h3>
+          <p>${escapeHtml(e.message)}</p>
+        </div>`;
+    }
+  }
+
+  // ---------- Realtime for comments (global) ----------
+  supabase
+    .channel('comments-realtime')
+    .on('postgres_changes', {
+      event: '*', schema: 'public', table: 'comments',
+    }, async (payload) => {
+      const cellId = payload.new ? payload.new.cell_id : (payload.old ? payload.old.cell_id : null);
+      if (!cellId || !openCommentSections.has(cellId)) return;
+      const comments = await fetchComments(cellId);
+      renderComments(cellId, comments);
+      updateCommentIndicators(cellId, comments.length);
+    })
+    .subscribe();
+
+  // ---------- Add cell ----------
+  document.getElementById('addCell').onclick = async (ev) => {
+    if (!currentSession) return;
+    if (!currentTeam) {
+      toast('اول یک تیم انتخاب کن', 'err', 2000);
+      showTeamPicker();
+      return;
+    }
+    const btn = ev.currentTarget;
+    btn.disabled = true;
+    const { error } = await supabase.from('cells').insert({
+      session_id: currentSession.id,
+      author_id: user.id,
+      author_name: displayName,
+      code: '',
+      output: '',
+      tags: [],
+      team_id: currentTeam.id,
+      team_name: currentTeam.name
+    });
+    btn.disabled = false;
+    if (error) toast('خطا: ' + error.message, 'err', 5000);
+  };
+
+  // ---------- Export ipynb ----------
+  document.getElementById('exportBtn').onclick = async () => {
+    if (!currentSession) return;
+    toast('در حال ساخت فایل…', 'info', 1500);
+    let query = supabase
+      .from('cells').select('*')
+      .eq('session_id', currentSession.id)
+      .order('created_at');
+    if (!isTeacherMode && currentTeam?.id) {
+      query = query.or(`team_id.eq.${currentTeam.id},team_id.is.null`);
+    }
+    const { data, error } = await query;
+    if (error) return toast('خطا: ' + error.message, 'err');
+
+    const nb = {
+      cells: data.map(c => ({
+        cell_type: 'code',
+        metadata: { author: c.author_name, team: c.team_name, created_at: c.created_at, tags: c.tags || [] },
+        source: (c.code || '').split('\n'),
+        outputs: c.output ? [{
+          output_type: 'stream', name: 'stdout',
+          text: c.output.split('\n').map(l => l + '\n')
+        }] : [],
+        execution_count: null
+      })),
+      metadata: {
+        kernelspec: { name: 'python3', display_name: 'Python 3' },
+        language_info: { name: 'python', file_extension: '.py' }
+      },
+      nbformat: 4, nbformat_minor: 5
+    };
+
+    const blob = new Blob([JSON.stringify(nb, null, 1)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'class-' + new Date().toISOString().slice(0, 10) + '.ipynb';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('دانلود شد', 'ok');
+  };
+
+  // ---------- Upload ipynb ----------
+  const fileInput = document.getElementById('fileInput');
+  const uploadBtn = document.getElementById('uploadBtn');
+
+  uploadBtn.onclick = () => {
+    if (!currentSession) return;
+    if (!currentTeam) {
+      toast('اول یک تیم انتخاب کن', 'err', 2000);
+      showTeamPicker();
+      return;
+    }
+    fileInput.click();
+  };
+
+  fileInput.onchange = async (ev) => {
+    const file = ev.target.files[0];
+    if (!file) return;
+    fileInput.value = '';
+
+    try {
+      const text = await file.text();
+      let nb;
+      try { nb = JSON.parse(text); }
+      catch { return toast('فایل JSON معتبر نیست', 'err'); }
+
+      if (!nb.cells || !Array.isArray(nb.cells)) {
+        return toast('این فایل یک ipynb معتبر نیست', 'err');
+      }
+
+      const codeCells = nb.cells.filter(c => c.cell_type === 'code');
+      if (!codeCells.length) return toast('هیچ سلول کدی در فایل پیدا نشد', 'info');
+      if (!confirm(`این فایل ${codeCells.length} سلول کد دارد. همه به تیم «${currentTeam.name}» اضافه شوند؟`)) return;
+
+      uploadBtn.disabled = true;
+      toast(`در حال آپلود ${codeCells.length} سلول…`, 'info', 2000);
+
+      const rows = codeCells.map((c) => {
+        const src = Array.isArray(c.source) ? c.source.join('') : String(c.source || '');
+        const out = Array.isArray(c.outputs)
+          ? c.outputs.map(o => {
+              if (o.output_type === 'stream') {
+                return Array.isArray(o.text) ? o.text.join('') : String(o.text || '');
+              }
+              if (o.output_type === 'execute_result' && o.data) {
+                const d = o.data['text/plain'];
+                return Array.isArray(d) ? d.join('') : String(d || '');
+              }
+              if (o.output_type === 'error') {
+                return (o.ename || 'Error') + ': ' + (o.evalue || '');
+              }
+              return '';
+            }).filter(Boolean).join('\n')
+          : '';
+
+        return {
+          session_id: currentSession.id,
+          author_id: user.id,
+          author_name: displayName,
+          code: src,
+          output: out,
+          tags: [],
+          team_id: currentTeam.id,
+          team_name: currentTeam.name
+        };
+      });
+
+      const { error } = await supabase.from('cells').insert(rows);
+      if (error) toast('خطای آپلود: ' + error.message, 'err', 6000);
+      else toast(`${codeCells.length} سلول اضافه شد`, 'ok');
+    } catch (e) {
+      console.error(e);
+      toast('خطا در خواندن فایل: ' + e.message, 'err');
+    } finally {
+      uploadBtn.disabled = false;
+    }
+  };
+
+  // ---------- Leaderboard ----------
+  async function showLeaderboard() {
+    if (!currentSession) return;
+    const modal = document.getElementById('leaderboardModal');
+    const body = document.getElementById('leaderboardBody');
+    modal.classList.add('show');
+    body.innerHTML = '<div class="loader" style="padding:20px"><div class="spinner"></div></div>';
+
+    const [teamsRes, cellsRes] = await Promise.all([
+      supabase.from('teams').select('*').eq('session_id', currentSession.id),
+      supabase.from('cells').select('*').eq('session_id', currentSession.id)
+    ]);
+
+    if (teamsRes.error || cellsRes.error) {
+      body.innerHTML = `<div class="comments-empty">خطا در بارگذاری</div>`;
+      return;
+    }
+
+    const teams = teamsRes.data || [];
+    const cells = cellsRes.data || [];
+
+    const stats = {};
+    teams.forEach(t => {
+      stats[t.id] = {
+        team: t, cellCount: 0, totalCode: 0,
+        completed: 0, errors: 0, members: new Set()
+      };
+    });
+
+    cells.forEach(c => {
+      if (!c.team_id || !stats[c.team_id]) return;
+      const s = stats[c.team_id];
+      s.cellCount++;
+      s.totalCode += (c.code || '').length;
+      if (c.author_name) s.members.add(c.author_name);
+      const out = c.output || '';
+      const hasOut = out.trim() && out.trim() !== '(بدون خروجی)';
+      const hasErr = out.includes('Error') || out.includes('Pyodide');
+      if (hasOut && !hasErr) s.completed++;
+      if (hasErr) s.errors++;
+    });
+
+    const sorted = Object.values(stats).sort((a, b) =>
+      b.completed - a.completed || b.cellCount - a.cellCount || b.totalCode - a.totalCode
+    );
+
+    if (!sorted.length) {
+      body.innerHTML = `<div class="comments-empty">هنوز تیمی ثبت نشده</div>`;
+      return;
+    }
+
+    body.innerHTML = sorted.map((s, i) => {
+      const rank = i + 1;
+      const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+      const isMine = currentTeam && currentTeam.id === s.team.id;
+      return `
+        <div class="lb-row ${isMine ? 'mine' : ''}" style="border-right:4px solid ${s.team.color}">
+          <div class="lb-rank">${medal}</div>
+          <div class="lb-team">
+            <div class="lb-team-name">
+              <span class="team-dot" style="background:${s.team.color}"></span>
+              ${escapeHtml(s.team.name)}
+              ${isMine ? '<span class="badge">تیم شما</span>' : ''}
+            </div>
+            <div class="lb-team-meta">${s.members.size} عضو · ${s.cellCount} سلول</div>
+          </div>
+          <div class="lb-stats">
+            <div class="lb-stat"><b>${s.completed}</b><span>تکمیل</span></div>
+            <div class="lb-stat"><b>${s.totalCode}</b><span>کاراکتر</span></div>
+            <div class="lb-stat"><b>${s.errors}</b><span>خطا</span></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('leaderboardBtn').onclick = showLeaderboard;
+  document.getElementById('closeLeaderboard').onclick = () => {
+    document.getElementById('leaderboardModal').classList.remove('show');
+  };
+  document.getElementById('leaderboardModal').addEventListener('click', (e) => {
+    if (e.target.id === 'leaderboardModal') e.currentTarget.classList.remove('show');
+  });
+
+  // ---------- Teacher Mode ----------
+  const teacherTools = document.createElement('div');
+  teacherTools.className = 'teacher-tools';
+  teacherTools.innerHTML = `
+    <div class="teacher-stats">
+      <div class="stat-item">
+        <div class="stat-value" id="studentCount">0</div>
+        <div class="stat-label">دانشجو</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="activeCells">0</div>
+        <div class="stat-label">سلول فعال</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="avgCodeLength">0</div>
+        <div class="stat-label">میانگین کد</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="errorRate">0%</div>
+        <div class="stat-label">خطا</div>
+      </div>
+    </div>
+    <div class="evaluation-actions">
+      <button class="btn btn-ghost" id="shareClassBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        </svg>
+        اشتراک کلاس
+      </button>
+      <button class="btn btn-ghost" id="exportGrades">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        خروجی نمرات
+      </button>
+    </div>
+  `;
+
+  document.querySelector('main').insertBefore(teacherTools, document.querySelector('#cells'));
+
+  function updateTeacherStats() {
+    const cells = [...editors.values()].map(o => o.cellData).filter(Boolean);
+    const uniqueStudents = new Set(cells.map(c => c.author_name)).size;
+    const activeCells = cells.filter(c => c.code && c.code.trim().length > 0).length;
+    const totalCodeLength = cells.reduce((sum, c) => sum + (c.code ? c.code.length : 0), 0);
+    const avgCodeLength = cells.length > 0 ? Math.round(totalCodeLength / cells.length) : 0;
+    const errorCells = cells.filter(c => c.output && (c.output.includes('Error') || c.output.includes('Pyodide error'))).length;
+    const errorRate = cells.length > 0 ? Math.round((errorCells / cells.length) * 100) : 0;
+
+    const sc = document.getElementById('studentCount');
+    if (sc) sc.textContent = uniqueStudents;
+    const ac = document.getElementById('activeCells');
+    if (ac) ac.textContent = activeCells;
+    const al = document.getElementById('avgCodeLength');
+    if (al) al.textContent = avgCodeLength;
+    const er = document.getElementById('errorRate');
+    if (er) er.textContent = errorRate + '%';
+  }
+
+  document.getElementById('toggleTeacherMode').onclick = async () => {
+    if (!currentSession) return;
+
+    if (!isTeacherMode) {
+      const ok = await tryUnlockTeacher();
+      if (!ok) return;
+    }
+
+    isTeacherMode = !isTeacherMode;
+
+    const teacherBtn = document.getElementById('toggleTeacherMode');
+
+    if (isTeacherMode) {
+      teacherTools.classList.add('show');
+      teacherBtn.classList.remove('btn-success');
+      teacherBtn.classList.add('btn-warning');
+      teacherBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+          <circle cx="8.5" cy="7" r="4"/>
+          <line x1="23" y1="11" x2="17" y2="11"/>
+        </svg>
+        حالت دانشجو
+      `;
+      updateTeacherStats();
+      toast('حالت معلم: همه تیم‌ها را می‌بینی', 'info', 2500);
+    } else {
+      teacherTools.classList.remove('show');
+      teacherBtn.classList.remove('btn-warning');
+      teacherBtn.classList.add('btn-success');
+      teacherBtn.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+        حالت معلم
+      `;
+      toast('حالت دانشجو: فقط کدهای تیم خودت', 'info', 2500);
+    }
+    loadCells();
+  };
+
+  document.getElementById('shareClassBtn').onclick = openShareModal;
+
+  // Export grades (CSV with team column)
+  document.getElementById('exportGrades').onclick = async () => {
+    if (!currentSession) return;
+    const { data: cells, error } = await supabase
+      .from('cells').select('*')
+      .eq('session_id', currentSession.id)
+      .order('created_at');
+    if (error) return toast('خطا: ' + error.message, 'err');
+    if (!cells || !cells.length) return toast('داده‌ای برای خروجی وجود ندارد', 'info');
+
+    const students = {};
+    cells.forEach(cell => {
+      const name = cell.author_name || 'ناشناس';
+      if (!students[name]) {
+        students[name] = {
+          name,
+          team: cell.team_name || '—',
+          cellCount: 0,
+          totalCodeLength: 0,
+          errorCount: 0,
+          lastActive: cell.created_at
+        };
+      }
+      const student = students[name];
+      student.cellCount++;
+      student.totalCodeLength += (cell.code ? cell.code.length : 0);
+      if (cell.output && (cell.output.includes('Error') || cell.output.includes('Pyodide error'))) {
+        student.errorCount++;
+      }
+      if (new Date(cell.created_at) > new Date(student.lastActive)) {
+        student.lastActive = cell.created_at;
+      }
+    });
+
+    const report = Object.values(students).map(student => ({
+      نام: student.name,
+      تیم: student.team,
+      تعداد_سلول: student.cellCount,
+      میانگین_طول_کد: Math.round(student.totalCodeLength / student.cellCount),
+      تعداد_خطا: student.errorCount,
+      آخرین_فعالیت: new Date(student.lastActive).toLocaleString('fa-IR')
+    }));
+
+    const headers = Object.keys(report[0] || {});
+    const csvContent = [
+      headers.join(','),
+      ...report.map(row => headers.map(h => `"${String(row[h]).replace(/"/g, '""')}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `گزارش-${currentSession.code}-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('گزارش کلاس دانلود شد', 'ok');
+  };
+
+  // ---------- Timer & Progress ----------
+  let timerInterval = null;
+  let remainingTime = 0;
+  let totalTime = 0;
+  let isTimerRunning = false;
+  let exerciseStartTime = null;
+
+  const timerWrapper = document.createElement('div');
+  timerWrapper.className = 'timer-container';
+  timerWrapper.innerHTML = `
+    <div class="timer-display" id="timerDisplay">00:00</div>
+    <div class="timer-controls">
+      <button class="timer-btn start" id="timerStart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+        شروع
+      </button>
+      <button class="timer-btn pause" id="timerPause" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+          <rect x="6" y="4" width="4" height="16"/>
+          <rect x="14" y="4" width="4" height="16"/>
+        </svg>
+        توقف
+      </button>
+      <button class="timer-btn stop" id="timerStop">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+        </svg>
+        پایان
+      </button>
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+      <div class="progress-text" id="progressText">0%</div>
+    </div>
+  `;
+  document.querySelector('main').insertBefore(timerWrapper, document.querySelector('#cells'));
+
+  const progressStats = document.createElement('div');
+  progressStats.className = 'progress-stats';
+  progressStats.innerHTML = `
+    <div class="progress-item">
+      <div class="progress-value" id="completedCells">0</div>
+      <div class="progress-label">سلول تکمیل شده</div>
+    </div>
+    <div class="progress-item">
+      <div class="progress-value" id="avgCodePerStudent">0</div>
+      <div class="progress-label">میانگین کد</div>
+    </div>
+    <div class="progress-item">
+      <div class="progress-value" id="completionRate">0%</div>
+      <div class="progress-label">نرخ تکمیل</div>
+    </div>
+    <div class="progress-item">
+      <div class="progress-value" id="timePerCell">0</div>
+      <div class="progress-label">ثانیه/سلول</div>
+    </div>
+  `;
+  document.querySelector('main').insertBefore(progressStats, document.querySelector('#cells'));
+
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  function updateTimerDisplay() {
+    const timerEl = document.getElementById('timerDisplay');
+    timerEl.textContent = formatTime(remainingTime);
+
+    if (remainingTime <= 60 && remainingTime > 30) {
+      timerEl.classList.add('time-warning');
+      timerEl.classList.remove('time-critical');
+    } else if (remainingTime <= 30 && remainingTime > 0) {
+      timerEl.classList.remove('time-warning');
+      timerEl.classList.add('time-critical');
+    } else {
+      timerEl.classList.remove('time-warning', 'time-critical');
+    }
+
+    if (totalTime > 0) {
+      const progress = Math.min(100, Math.round(((totalTime - remainingTime) / totalTime) * 100));
+      document.getElementById('progressBar').style.width = `${progress}%`;
+      document.getElementById('progressText').textContent = `${progress}%`;
+    } else {
+      document.getElementById('progressBar').style.width = `0%`;
+      document.getElementById('progressText').textContent = `0%`;
+    }
+  }
+
+  function startTimer(minutes) {
+    if (isTimerRunning) return;
+    if (!totalTime) { totalTime = minutes * 60; remainingTime = totalTime; }
+    isTimerRunning = true;
+    exerciseStartTime = new Date();
+    document.getElementById('timerStart').disabled = true;
+    document.getElementById('timerPause').disabled = false;
+
+    timerInterval = setInterval(() => {
+      remainingTime--;
+      updateTimerDisplay();
+      if (remainingTime <= 0) {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        remainingTime = 0;
+        updateTimerDisplay();
+        toast('زمان تمرین به پایان رسید!', 'info', 5000);
+        saveProgressData();
+      }
+    }, 1000);
+    updateTimerDisplay();
+  }
+
+  function pauseTimer() {
+    if (!isTimerRunning) return;
+    isTimerRunning = false;
+    clearInterval(timerInterval);
+    document.getElementById('timerStart').disabled = false;
+    document.getElementById('timerPause').disabled = true;
+  }
+
+  function stopTimer() {
+    isTimerRunning = false;
+    clearInterval(timerInterval);
+    remainingTime = 0;
+    totalTime = 0;
+    document.getElementById('timerStart').disabled = false;
+    document.getElementById('timerPause').disabled = true;
+    updateTimerDisplay();
+    saveProgressData();
+  }
+
+  function saveProgressData() {
+    const cells = [...editors.values()].map(o => ({
+      author: o.cellData.author_name,
+      codeLength: o.cm.getValue().length,
+      hasOutput: o.lastOutput && o.lastOutput.trim() && o.lastOutput.trim() !== '(بدون خروجی)',
+      hasError: o.lastOutput && (o.lastOutput.includes('Error') || o.lastOutput.includes('Pyodide'))
+    }));
+
+    const progressData = {
+      exerciseStartTime,
+      exerciseEndTime: new Date(),
+      totalDuration: totalTime > 0 ? totalTime - remainingTime : 0,
+      totalCells: cells.length,
+      uniqueStudents: new Set(cells.map(c => c.author)).size,
+      totalCodeLength: cells.reduce((sum, c) => sum + c.codeLength, 0),
+      completedCells: cells.filter(c => c.hasOutput && !c.hasError).length
+    };
+
+    localStorage.setItem('exerciseProgress_' + (currentSession?.id || ''), JSON.stringify(progressData));
+    updateProgressStats(progressData);
+  }
+
+  function updateProgressStats(data) {
+    const set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    };
+    set('completedCells', data.completedCells || 0);
+    set('avgCodePerStudent', data.uniqueStudents > 0 ? Math.round(data.totalCodeLength / data.uniqueStudents) : 0);
+    set('completionRate', data.totalCells > 0 ? Math.round((data.completedCells / data.totalCells) * 100) + '%' : '0%');
+    set('timePerCell', data.totalCells > 0 ? Math.round((data.totalDuration || 0) / data.totalCells) : 0);
+  }
+
+  document.getElementById('timerStart').onclick = () => {
+    const minutes = prompt('مدت زمان تمرین را وارد کنید (دقیقه):', '45');
+    if (minutes && !isNaN(minutes) && parseInt(minutes) > 0) startTimer(parseInt(minutes));
+  };
+  document.getElementById('timerPause').onclick = pauseTimer;
+  document.getElementById('timerStop').onclick = stopTimer;
+
+  // ---------- Init ----------
+  (async () => {
+    const code = getCodeFromURL() || getStoredSessionCode();
+    if (code) {
+      const s = await loadSessionByCode(code);
+      if (s) {
+        await enterSession(s);
+        if (!currentTeam) showTeamPicker();
+        return;
+      } else {
+        // Invalid stored code — clear and show welcome
+        localStorage.removeItem('lastSessionCode');
+      }
+    }
+    showWelcomeModal();
+  })();
+</script>
+</body>
+</html>
