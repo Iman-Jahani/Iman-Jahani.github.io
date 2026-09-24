@@ -826,7 +826,14 @@
       code, output, updated_at: new Date().toISOString()
     }).eq('id', id);
     if (error) console.error('saveCell error:', error);
+        // رفرش دستی لیست سلول‌ها
     await loadCells();
+    if (!currentTeam) toast('سلول شخصی ساخته شد (فقط خودت می‌بینیش)', 'info', 2500);
+    // فوکوس روی ادیتور سلول جدید
+    setTimeout(() => {
+      const obj = editors.get(data.id);
+      if (obj) obj.cm.focus();
+    }, 300);
   }
   async function setOutput(outputEl, text, isErr) {
     outputEl.classList.add('show');
