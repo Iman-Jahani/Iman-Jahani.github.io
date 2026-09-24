@@ -573,7 +573,6 @@
       hideWelcomeModal();
       input.value = '';
       await enterSession(session);
-      // دیگه تیم رو تحمیل نمی‌کنیم — کاربر خودش تصمیم می‌گیره
     } finally { btn.disabled = false; btn.textContent = 'ورود به کلاس'; }
   };
   document.getElementById('joinCode').addEventListener('keydown', e => {
@@ -862,7 +861,6 @@
   function renderEmpty() {
     if (!currentSession) return;
     if (!currentTeam) {
-      // کاربر بدون تیم: پیام دوستانه، هر دو گزینه باز
       cellsEl.innerHTML = `
         <div class="empty">
           <div class="emoji">✨</div>
@@ -1169,7 +1167,7 @@
   }
 
   // ============================================================
-  // Load cells — جداسازی سختگیرانه + پشتیبانی از سلول شخصی
+  // Load cells
   // ============================================================
   async function loadCells() {
     if (!currentSession) return;
@@ -1182,14 +1180,11 @@
 
       if (!isTeacherMode) {
         if (currentTeam?.id) {
-          // سلول‌های تیم من + سلول‌های شخصی خودم
           query = query.or(`team_id.eq.${currentTeam.id},and(team_id.is.null,author_id.eq.${user.id})`);
         } else {
-          // بدون تیم: فقط سلول‌های شخصی خودم
           query = query.is('team_id', null).eq('author_id', user.id);
         }
       }
-      // معلم: همه سلول‌های این کلاس
 
       const { data, error } = await query;
       if (error) {
@@ -1225,21 +1220,32 @@
     })
     .subscribe();
 
-  // ---------- Add cell (بدون نیاز به تیم) ----------
+  // ---------- Add cell (FIXED) ----------
   document.getElementById('addCell').onclick = async (ev) => {
     if (!currentSession) return;
     const btn = ev.currentTarget; btn.disabled = true;
-    const { error } = await supabase.from('cells').insert({
+    const { data, error } = await supabase.from('cells').insert({
       class_id: currentSession.id,
       team_id: currentTeam?.id || null,
       team_name: currentTeam?.name || null,
       author_id: user.id,
       author_name: displayName,
       code: '', output: '', tags: []
-    });
+    }).select().single();
     btn.disabled = false;
-    if (error) toast('خطا: ' + error.message, 'err', 5000);
-    else if (!currentTeam) toast('سلول شخصی ساخته شد (فقط خودت می‌بینیش)', 'info', 2500);
+    if (error) {
+      console.error('addCell error:', error);
+      toast('خطا: ' + error.message, 'err', 6000);
+      return;
+    }
+    // رفرش دستی لیست سلول‌ها
+    await loadCells();
+    if (!currentTeam) toast('سلول شخصی ساخته شد (فقط خودت می‌بینیش)', 'info', 2500);
+    // فوکوس روی ادیتور سلول جدید
+    setTimeout(() => {
+      const obj = editors.get(data.id);
+      if (obj) obj.cm.focus();
+    }, 300);
   };
 
   // ---------- Export ipynb ----------
@@ -1280,7 +1286,7 @@
     toast('دانلود شد', 'ok');
   };
 
-  // ---------- Upload ipynb (بدون نیاز به تیم) ----------
+  // ---------- Upload ipynb ----------
   const fileInput = document.getElementById('fileInput');
   const uploadBtn = document.getElementById('uploadBtn');
   uploadBtn.onclick = () => {
@@ -1322,7 +1328,10 @@
       });
       const { error } = await supabase.from('cells').insert(rows);
       if (error) toast('خطای آپلود: ' + error.message, 'err', 6000);
-      else toast(`${codeCells.length} سلول اضافه شد`, 'ok');
+      else {
+        toast(`${codeCells.length} سلول اضافه شد`, 'ok');
+        await loadCells();
+      }
     } catch (e) { console.error(e); toast('خطا در خواندن فایل: ' + e.message, 'err'); }
     finally { uploadBtn.disabled = false; }
   };
@@ -1397,8 +1406,8 @@
       <div class="stat-item"><div class="stat-value" id="errorRate">0%</div><div class="stat-label">خطا</div></div>
     </div>
     <div class="evaluation-actions">
-      <button class="btn btn-ghost" id="shareClassBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>اشتراک کلاس</button>
-      <button class="btn btn-ghost" id="exportGrades"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>خروجی نمرات</button>
+      <button class="btn btn-ghost" id="shareClassBtn">🔗 اشتراک کلاس</button>
+      <button class="btn btn-ghost" id="exportGrades">📊 خروجی نمرات</button>
     </div>
   `;
   document.querySelector('main').insertBefore(teacherTools, document.querySelector('#cells'));
