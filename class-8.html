@@ -52,7 +52,7 @@
   .btn-warning { background: linear-gradient(135deg, var(--warning), #d97706); color: white; border: 1px solid rgba(245, 158, 11, 0.3); }
   .btn-warning:hover { transform: translateY(-2px); }
   .btn.active { background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: white; border-color: transparent; box-shadow: 0 6px 20px var(--primary-glow); }
-  .cell { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow: hidden; animation: slideIn .4s cubic-bezier(.2,.7,.3,1.2); transition: var(--transition); position: relative; }
+  .cell { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); margin-bottom: 24px; overflow: hidden; animation: slideIn .4s cubic-bezier(.2,.7,.3,1.2); transition: box-shadow .25s, border-color .25s; position: relative; }
   .cell:hover { box-shadow: var(--shadow-lg); }
   .cell.own { border-color: rgba(99,102,241,.45); border-left: 4px solid var(--primary); }
   .cell.personal { border-right: 4px solid #64748b; }
@@ -246,7 +246,6 @@
   <div id="cells"></div>
 </main>
 
-<!-- Welcome Modal -->
 <div class="modal-overlay" id="welcomeModal">
   <div class="modal">
     <h2>🐍 دفترچه اشتراکی کلاس پایتون</h2>
@@ -269,7 +268,6 @@
   </div>
 </div>
 
-<!-- Team Picker Modal -->
 <div class="modal-overlay" id="teamPickerModal">
   <div class="modal">
     <button class="modal-close" id="closeTeamPicker" title="بستن">✕</button>
@@ -284,7 +282,6 @@
   </div>
 </div>
 
-<!-- Leaderboard Modal -->
 <div class="modal-overlay" id="leaderboardModal">
   <div class="modal">
     <button class="modal-close" id="closeLeaderboard" title="بستن">✕</button>
@@ -294,7 +291,6 @@
   </div>
 </div>
 
-<!-- Share / Session Modal -->
 <div class="modal-overlay" id="shareModal">
   <div class="modal">
     <button class="modal-close" id="closeShare" title="بستن">✕</button>
@@ -341,6 +337,7 @@
   let currentTeam = null;
   let isTeacherMode = false;
   let cellsChannel = null;
+  let pollInterval = null;
 
   function escapeHtml(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
@@ -475,9 +472,33 @@
       .on('postgres_changes', {
         event: '*', schema: 'public', table: 'cells',
         filter: `class_id=eq.${currentSession.id}`,
-      }, () => loadCells())
-      .subscribe();
+      }, (payload) => {
+        console.log('[realtime] cells:', payload.eventType);
+        loadCells();
+      })
+      .subscribe((status) => {
+        console.log('[realtime] status:', status);
+      });
   }
+
+  // ---------- Polling fallback (هر ۵ ثانیه) ----------
+  function startPolling() {
+    if (pollInterval) clearInterval(pollInterval);
+    pollInterval = setInterval(async () => {
+      if (!currentSession) return;
+      if (document.hidden) return;
+      // اگه کاربر داره توی ادیتور تایپ می‌کنه، بی‌خیال شو
+      const anyFocused = [...editors.values()].some(o => o.cm.hasFocus());
+      if (anyFocused) return;
+      try { await loadCells(); } catch (e) { console.warn('polling error:', e); }
+    }, 5000);
+  }
+  function stopPolling() {
+    if (pollInterval) { clearInterval(pollInterval); pollInterval = null; }
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && currentSession) loadCells();
+  });
 
   async function enterSession(session) {
     currentSession = session;
@@ -505,11 +526,13 @@
     updateSessionUI();
     updateTeamBadge();
     subscribeToSession();
+    startPolling();
     await loadCells();
   }
 
   async function leaveSession() {
     if (cellsChannel) { supabase.removeChannel(cellsChannel); cellsChannel = null; }
+    stopPolling();
     currentSession = null;
     currentTeam = null;
     isTeacherMode = false;
@@ -639,18 +662,37 @@
     return data || [];
   }
 
+  // اعضا از جدول team_members خونده می‌شن (نه از روی سلول‌ها)
   async function loadTeamMembers() {
     if (!currentSession) return {};
+    const teams = await loadTeams();
+    const teamIds = teams.map(t => t.id);
+    if (!teamIds.length) return {};
     const { data, error } = await supabase
-      .from('cells')
-      .select('team_id, author_name')
-      .eq('class_id', currentSession.id);
-    if (error) { console.error('loadTeamMembers:', error); return {}; }
+      .from('team_members')
+      .select('team_id, display_name')
+      .in('team_id', teamIds);
+    if (error) {
+      console.warn('loadTeamMembers از team_members خطا داد، fallback به cells:', error);
+      // fallback: از روی cells
+      const { data: cData, error: cErr } = await supabase
+        .from('cells').select('team_id, author_name')
+        .eq('class_id', currentSession.id);
+      if (cErr) return {};
+      const map = {};
+      (cData || []).forEach(row => {
+        if (!row.team_id || !row.author_name) return;
+        if (!map[row.team_id]) map[row.team_id] = new Set();
+        map[row.team_id].add(row.author_name);
+      });
+      Object.keys(map).forEach(k => { map[k] = [...map[k]].sort(); });
+      return map;
+    }
     const map = {};
     (data || []).forEach(row => {
-      if (!row.team_id || !row.author_name) return;
+      if (!row.team_id || !row.display_name) return;
       if (!map[row.team_id]) map[row.team_id] = new Set();
-      map[row.team_id].add(row.author_name);
+      map[row.team_id].add(row.display_name);
     });
     Object.keys(map).forEach(k => { map[k] = [...map[k]].sort(); });
     return map;
@@ -672,12 +714,27 @@
     return data;
   }
 
-  function joinTeam(team) {
+  async function joinTeam(team) {
     if (!currentSession) return;
     if (team.class_id && team.class_id !== currentSession.id) {
       toast('این تیم به کلاس دیگری تعلق دارد', 'err', 3000);
       return;
     }
+    // اگه قبلاً توی تیم دیگه‌ای بودی، ازش خارج شو
+    if (currentTeam && currentTeam.id !== team.id) {
+      await supabase.from('team_members')
+        .delete()
+        .eq('team_id', currentTeam.id)
+        .eq('user_id', user.id);
+    }
+    // ثبت در جدول اعضا
+    const { error: memErr } = await supabase.from('team_members').upsert({
+      team_id: team.id,
+      user_id: user.id,
+      display_name: displayName
+    }, { onConflict: 'team_id,user_id' });
+    if (memErr) console.warn('team_members upsert:', memErr);
+
     currentTeam = { id: team.id, name: team.name, color: team.color };
     storeTeam(currentSession.id, currentTeam);
     updateTeamBadge();
@@ -686,11 +743,17 @@
     toast('به تیم «' + team.name + '» پیوستی', 'ok', 2000);
   }
 
-  function leaveTeam() {
+  async function leaveTeam() {
     if (!currentSession || !currentTeam) return;
     const teamName = currentTeam.name;
+    const teamId = currentTeam.id;
     currentTeam = null;
     clearStoredTeam(currentSession.id);
+    // پاک کردن از جدول اعضا
+    await supabase.from('team_members')
+      .delete()
+      .eq('team_id', teamId)
+      .eq('user_id', user.id);
     updateTeamBadge();
     document.getElementById('teamPickerModal').classList.remove('show');
     cellsEl.innerHTML = '';
@@ -826,14 +889,6 @@
       code, output, updated_at: new Date().toISOString()
     }).eq('id', id);
     if (error) console.error('saveCell error:', error);
-        // رفرش دستی لیست سلول‌ها
-    await loadCells();
-    if (!currentTeam) toast('سلول شخصی ساخته شد (فقط خودت می‌بینیش)', 'info', 2500);
-    // فوکوس روی ادیتور سلول جدید
-    setTimeout(() => {
-      const obj = editors.get(data.id);
-      if (obj) obj.cm.focus();
-    }, 300);
   }
   async function setOutput(outputEl, text, isErr) {
     outputEl.classList.add('show');
@@ -1148,15 +1203,16 @@
         runCode(cell.id, cm.getValue(), outputEl).finally(() => { svg.classList.remove('spin'); btn.disabled = false; });
       };
       el.querySelector('.save').onclick = async () => { await saveCell(cell.id, cm.getValue(), obj.lastOutput); toast('ذخیره شد', 'ok', 1500); };
+
+      // ---------- Delete با انیمیشن نرم ----------
       const delBtn = el.querySelector('.del');
       if (delBtn) delBtn.onclick = async () => {
         if (!confirm('این سلول حذف شود؟')) return;
-        // انیمیشن خروج نرم
+        // انیمیشن خروج
         el.style.transition = 'opacity .25s ease, transform .25s ease, max-height .35s ease, margin .25s ease';
         el.style.opacity = '0';
         el.style.transform = 'scale(.96)';
         el.style.maxHeight = el.offsetHeight + 'px';
-        // بعد از یه فریم، ارتفاع رو صفر کن
         requestAnimationFrame(() => {
           el.style.maxHeight = '0px';
           el.style.marginBottom = '0px';
@@ -1165,7 +1221,7 @@
 
         const { error } = await supabase.from('cells').delete().eq('id', cell.id);
         if (error) {
-          // اگه خطا داد، انیمیشن رو برگردون
+          // rollback
           el.style.opacity = '1';
           el.style.transform = 'scale(1)';
           el.style.maxHeight = el.offsetHeight + 'px';
@@ -1179,15 +1235,13 @@
         openCommentSections.delete(cell.id);
         commentsCache.delete(cell.id);
 
-        // حذف از DOM بعد از اتمام انیمیشن
+        // حذف از DOM
         setTimeout(() => {
           el.remove();
-          // اگه دیگه سلولی نمونده، empty state رو نشون بده
           if (editors.size === 0) {
             renderEmpty();
             document.getElementById('stats').textContent = '';
           } else {
-            // آمار رو آپدیت کن
             const remaining = editors.size;
             const students = new Set([...editors.values()].map(o => o.cellData.author_name)).size;
             document.getElementById('stats').textContent = `${remaining} سلول · ${students} دانشجو`;
@@ -1197,6 +1251,7 @@
 
         toast('حذف شد', 'ok', 1500);
       };
+
       el.querySelector('.comment-indicator').onclick = () => toggleComments(cell.id);
       el.querySelector('.action.comment').onclick = () => {
         openComments(cell.id);
@@ -1271,7 +1326,7 @@
     })
     .subscribe();
 
-  // ---------- Add cell (FIXED) ----------
+  // ---------- Add cell (با اسکرول نرم) ----------
   document.getElementById('addCell').onclick = async (ev) => {
     if (!currentSession) return;
     const btn = ev.currentTarget; btn.disabled = true;
@@ -1289,14 +1344,17 @@
       toast('خطا: ' + error.message, 'err', 6000);
       return;
     }
-    // رفرش دستی لیست سلول‌ها
     await loadCells();
     if (!currentTeam) toast('سلول شخصی ساخته شد (فقط خودت می‌بینیش)', 'info', 2500);
-    // فوکوس روی ادیتور سلول جدید
+
+    // اسکرول نرم + فوکوس
     setTimeout(() => {
       const obj = editors.get(data.id);
-      if (obj) obj.cm.focus();
-    }, 300);
+      if (obj) {
+        obj.cellEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => obj.cm.focus(), 400);
+      }
+    }, 250);
   };
 
   // ---------- Export ipynb ----------
@@ -1395,18 +1453,25 @@
     modal.classList.add('show');
     body.innerHTML = '<div class="loader" style="padding:20px"><div class="spinner"></div></div>';
 
-    const [teamsRes, cellsRes] = await Promise.all([
+    const [teamsRes, cellsRes, membersRes] = await Promise.all([
       supabase.from('teams').select('*').eq('class_id', currentSession.id),
-      supabase.from('cells').select('*').eq('class_id', currentSession.id)
+      supabase.from('cells').select('*').eq('class_id', currentSession.id),
+      supabase.from('team_members').select('team_id, display_name')
     ]);
 
     if (teamsRes.error || cellsRes.error) { body.innerHTML = `<div class="comments-empty">خطا در بارگذاری</div>`; return; }
 
     const teams = teamsRes.data || [];
     const cells = cellsRes.data || [];
+    const memberRows = membersRes.data || [];
 
     const stats = {};
     teams.forEach(t => { stats[t.id] = { team: t, cellCount: 0, totalCode: 0, completed: 0, errors: 0, members: new Set() }; });
+
+    // اعضا از team_members
+    memberRows.forEach(m => {
+      if (stats[m.team_id] && m.display_name) stats[m.team_id].members.add(m.display_name);
+    });
 
     cells.forEach(c => {
       if (!c.team_id || !stats[c.team_id]) return;
