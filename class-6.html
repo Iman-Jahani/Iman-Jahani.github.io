@@ -1091,7 +1091,7 @@
 
   async function loadSessionByCode(code) {
     const { data, error } = await supabase
-      .from('sessions').select('*')
+      .from('class_sessions').select('*')
       .eq('code', code.toUpperCase())
       .maybeSingle();
     if (error) { console.error('loadSessionByCode', error); return null; }
@@ -1102,7 +1102,7 @@
     const pinHash = await hashPin(pin);
     for (let attempt = 0; attempt < 6; attempt++) {
       const code = generateSessionCode();
-      const { data, error } = await supabase.from('sessions').insert({
+      const { data, error } = await supabase.from('class_sessions').insert({
         code, title, admin_pin_hash: pinHash, created_by: user.id
       }).select().single();
       if (!error) return data;
