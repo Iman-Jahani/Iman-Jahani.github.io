@@ -1,0 +1,1193 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>پنل مدیریت - کلاس پایتون</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
+<style>
+:root {
+  --bg: #0b1020; --bg-2: #0f172a; --card: #1e293b; --card-2: #253347;
+  --ink: #f1f5f9; --muted: #94a3b8; --line: #334155;
+  --primary: #6366f1; --primary-2: #8b5cf6;
+  --success: #10b981; --warning: #f59e0b; --danger: #ef4444; --info: #06b6d4;
+  --radius: 14px; --radius-sm: 10px;
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: radial-gradient(1200px 600px at 100% -10%, rgba(139,92,246,.10), transparent 60%),
+              radial-gradient(900px 500px at -10% 0%, rgba(99,102,241,.10), transparent 55%),
+              var(--bg);
+  color: var(--ink); font-family: 'Vazirmatn', sans-serif;
+  min-height: 100vh; line-height: 1.6;
+}
+
+/* ============ LOGIN ============ */
+.login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; position: fixed; inset: 0; background: linear-gradient(135deg, #0b1020, #1e293b); z-index: 9999; }
+.login-screen.hidden { display: none; }
+.login-box { background: var(--card); padding: 44px 36px; border-radius: 20px; box-shadow: var(--shadow); max-width: 420px; width: 100%; border: 1px solid var(--line); animation: pop .4s ease-out; }
+@keyframes pop { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
+.login-box h1 { font-size: 26px; margin-bottom: 8px; text-align: center; }
+.login-box p { color: var(--muted); text-align: center; margin-bottom: 26px; font-size: 14px; }
+.login-box input { width: 100%; padding: 14px 16px; border: 2px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font-size: 16px; font-family: inherit; margin-bottom: 16px; text-align: center; font-weight: 600; transition: border-color .2s; }
+.login-box input:focus { outline: none; border-color: var(--primary); }
+.login-box button { width: 100%; padding: 14px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: white; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all .2s; }
+.login-box button:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(99,102,241,.4); }
+.error-msg { color: var(--danger); text-align: center; margin-top: 12px; font-size: 13px; min-height: 20px; }
+
+/* ============ DASHBOARD ============ */
+.dashboard { display: none; max-width: 1400px; margin: 0 auto; padding: 28px 24px 80px; }
+.dashboard.show { display: block; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--line); flex-wrap: wrap; gap: 16px; }
+.header h1 { font-size: 26px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+.header-meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn { padding: 10px 16px; border-radius: var(--radius-sm); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--line); background: var(--card); color: var(--ink); transition: all .2s; display: inline-flex; align-items: center; gap: 7px; }
+.btn:hover { transform: translateY(-1px); border-color: var(--primary); }
+.btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-2)); border-color: transparent; color: white; }
+.btn-primary:hover { box-shadow: 0 8px 20px rgba(99,102,241,.35); }
+.btn-danger { color: var(--danger); border-color: rgba(239,68,68,.4); background: rgba(239,68,68,.08); }
+.btn-danger:hover { background: var(--danger); color: white; }
+.btn-ghost { background: transparent; }
+.btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* ============ STATS ============ */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: linear-gradient(135deg, var(--card), var(--card-2)); padding: 20px; border-radius: var(--radius); border: 1px solid var(--line); position: relative; overflow: hidden; transition: all .25s; }
+.stat-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+.stat-card .icon { position: absolute; top: 14px; left: 16px; font-size: 22px; opacity: .35; }
+.stat-card h3 { font-size: 12px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+.stat-card .value { font-size: 36px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--primary-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.1; }
+.stat-card .sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+/* ============ TABS ============ */
+.tabs { display: flex; gap: 6px; margin-bottom: 20px; padding: 6px; background: var(--card); border-radius: var(--radius); border: 1px solid var(--line); overflow-x: auto; flex-wrap: wrap; }
+.tab { padding: 10px 18px; border: none; background: transparent; border-radius: var(--radius-sm); font-family: inherit; font-size: 14px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all .2s; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+.tab:hover { color: var(--ink); background: rgba(99,102,241,.08); }
+.tab.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(99,102,241,.3); }
+
+/* ============ SEARCH ============ */
+.search-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+.search-input { flex: 1; min-width: 200px; padding: 12px 16px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--card); color: var(--ink); font-family: inherit; font-size: 14px; transition: border-color .2s; }
+.search-input:focus { outline: none; border-color: var(--primary); }
+.search-input::placeholder { color: var(--muted); }
+
+/* ============ SECTIONS ============ */
+.section { background: var(--card); padding: 24px; border-radius: var(--radius); border: 1px solid var(--line); margin-bottom: 20px; }
+.section h2 { font-size: 18px; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+.section h2 .count { font-size: 12px; background: var(--primary); color: white; padding: 2px 10px; border-radius: 999px; font-weight: 700; }
+
+/* ============ CLASS GROUP (leaderboard) ============ */
+.class-group { margin-bottom: 28px; }
+.class-group:last-child { margin-bottom: 0; }
+.class-group-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px dashed var(--line); }
+.class-group-head .code-chip { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--primary); background: rgba(99,102,241,.12); border: 1px solid rgba(99,102,241,.3); padding: 3px 10px; border-radius: 999px; }
+.class-group-head .name { font-weight: 700; font-size: 15px; }
+.class-group-head .count-badge { font-size: 11px; color: var(--muted); margin-right: auto; }
+
+/* ============ CLASS GRID ============ */
+.class-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.class-card { background: linear-gradient(180deg, var(--bg-2), var(--card)); padding: 20px; border-radius: var(--radius); border: 1px solid var(--line); transition: all .25s; cursor: pointer; position: relative; overflow: hidden; }
+.class-card::before { content: ''; position: absolute; top: 0; right: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--primary), var(--primary-2), #ec4899); }
+.class-card:hover { border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 14px 30px rgba(0,0,0,.35); }
+.class-card h3 { font-size: 17px; margin-bottom: 10px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.class-code { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: white; padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; margin-bottom: 12px; cursor: pointer; transition: all .2s; }
+.class-code:hover { transform: scale(1.05); }
+.class-meta { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
+.class-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding-top: 14px; border-top: 1px solid var(--line); }
+.class-stat { text-align: center; }
+.class-stat .num { font-size: 20px; font-weight: 800; color: var(--primary); }
+.class-stat .label { font-size: 10px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+
+/* ============ TEAM LIST ============ */
+.team-list { display: flex; flex-direction: column; gap: 10px; }
+.team-item { background: var(--bg-2); padding: 14px 18px; border-radius: var(--radius-sm); border: 1px solid var(--line); border-right: 4px solid; display: flex; justify-content: space-between; align-items: center; gap: 14px; transition: all .2s; cursor: pointer; flex-wrap: wrap; }
+.team-item:hover { background: var(--card-2); transform: translateX(-3px); }
+.team-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+.team-color { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: white; font-weight: 800; font-size: 14px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,.3); }
+.team-name { font-size: 15px; font-weight: 700; }
+.team-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.team-meta .class-link { color: var(--primary); font-weight: 700; cursor: pointer; }
+.team-meta .class-link:hover { text-decoration: underline; }
+.team-stats { display: flex; gap: 14px; }
+.team-stat { text-align: center; min-width: 44px; }
+.team-stat .num { font-size: 17px; font-weight: 800; color: var(--primary); }
+.team-stat .label { font-size: 10px; color: var(--muted); font-weight: 600; }
+
+/* ============ LEADERBOARD ============ */
+.lb-row { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius-sm); margin-bottom: 8px; transition: all .2s; }
+.lb-row:hover { transform: translateX(-3px); border-color: var(--primary); }
+.lb-rank { font-size: 22px; font-weight: 800; min-width: 44px; text-align: center; color: var(--muted); }
+.lb-rank.gold { color: #fbbf24; }
+.lb-rank.silver { color: #cbd5e1; }
+.lb-rank.bronze { color: #d97706; }
+.lb-body { flex: 1; min-width: 0; }
+.lb-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.lb-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.lb-bar { height: 6px; background: var(--line); border-radius: 999px; margin-top: 8px; overflow: hidden; max-width: 300px; }
+.lb-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-2)); border-radius: 999px; transition: width .5s; }
+.lb-score { font-size: 22px; font-weight: 800; color: var(--success); min-width: 60px; text-align: center; }
+
+/* ============ ACTIVITY ============ */
+.activity-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius-sm); margin-bottom: 8px; font-size: 13px; }
+.activity-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success); flex-shrink: 0; box-shadow: 0 0 0 4px rgba(16,185,129,.15); }
+.activity-time { color: var(--muted); font-size: 11px; margin-right: auto; }
+.activity-author { font-weight: 700; }
+
+/* ============ MEMBER CHIPS ============ */
+.member-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.member-chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; background: rgba(99,102,241,.12); border: 1px solid rgba(99,102,241,.3); color: #a5b4fc; border-radius: 999px; font-size: 11px; font-weight: 600; }
+.member-chip .dot { width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; color: white; font-size: 9px; font-weight: 800; }
+
+/* ============ TEAM-TAG (with class) ============ */
+.team-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(148,163,184,.12); border: 1px solid var(--line); border-radius: 999px; font-size: 11px; font-weight: 600; color: var(--ink); }
+.team-tag .tdot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.team-tag .tname { font-weight: 700; }
+.team-tag .tclass { color: var(--muted); font-size: 10px; }
+
+/* ============ MODAL ============ */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; z-index: 9000; padding: 20px; }
+.modal-overlay.show { display: flex; }
+.modal { background: var(--card); border-radius: 20px; border: 1px solid var(--line); max-width: 800px; width: 100%; max-height: 88vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.5); animation: modalIn .3s ease-out; position: relative; }
+@keyframes modalIn { from { opacity: 0; transform: scale(.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+.modal-head { padding: 24px 28px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: var(--card); z-index: 2; border-radius: 20px 20px 0 0; }
+.modal-head h2 { font-size: 20px; }
+.modal-close { width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(148,163,184,.15); color: var(--muted); font-size: 18px; cursor: pointer; transition: all .2s; }
+.modal-close:hover { background: var(--danger); color: white; }
+.modal-body { padding: 24px 28px; }
+
+.code-block { background: #0b1020; color: #d1fae5; padding: 14px 16px; border-radius: var(--radius-sm); font-family: 'JetBrains Mono', monospace; font-size: 12px; direction: ltr; text-align: left; white-space: pre-wrap; word-break: break-word; max-height: 300px; overflow-y: auto; border: 1px solid var(--line); }
+.code-block.err { color: #fca5a5; }
+
+.info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 13px; gap: 12px; flex-wrap: wrap; }
+.info-row:last-child { border-bottom: none; }
+.info-row .key { color: var(--muted); }
+.info-row .val { font-weight: 600; }
+
+/* ============ LOADER ============ */
+.loader { text-align: center; padding: 60px 20px; color: var(--muted); }
+.spinner { width: 40px; height: 40px; border: 4px solid var(--line); border-top-color: var(--primary); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 15px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============ TOAST ============ */
+.toasts { position: fixed; bottom: 24px; left: 24px; display: flex; flex-direction: column; gap: 10px; z-index: 99999; }
+.toast { background: var(--card); border: 1px solid var(--line); color: var(--ink); padding: 12px 18px; border-radius: var(--radius-sm); box-shadow: var(--shadow); font-size: 13px; display: flex; align-items: center; gap: 10px; animation: toastIn .3s ease-out; min-width: 220px; }
+.toast.ok { border-color: var(--success); background: linear-gradient(135deg, rgba(16,185,129,.15), var(--card)); }
+.toast.err { border-color: var(--danger); background: linear-gradient(135deg, rgba(239,68,68,.15), var(--card)); }
+.toast.info { border-color: var(--primary); background: linear-gradient(135deg, rgba(99,102,241,.15), var(--card)); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ============ EMPTY ============ */
+.empty { text-align: center; padding: 40px 20px; color: var(--muted); font-size: 14px; }
+.empty .emoji { font-size: 42px; margin-bottom: 10px; display: block; opacity: .6; }
+
+/* ============ AUTO REFRESH ============ */
+.auto-refresh { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.auto-refresh input { cursor: pointer; }
+.pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px rgba(16,185,129,.25); animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(16,185,129,.25); } 50% { box-shadow: 0 0 0 6px rgba(16,185,129,.1); } }
+
+/* ============ FILTER CHIP ============ */
+.active-filter { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; background: rgba(99,102,241,.12); border: 1px solid rgba(99,102,241,.35); color: #a5b4fc; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.active-filter button { background: transparent; border: none; color: inherit; cursor: pointer; font-size: 14px; padding: 0 2px; line-height: 1; }
+.active-filter button:hover { color: var(--danger); }
+
+@media (max-width: 640px) {
+  .dashboard { padding: 16px 12px 60px; }
+  .header h1 { font-size: 20px; }
+  .stat-card .value { font-size: 28px; }
+  .class-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .modal-body { padding: 18px; }
+  .modal-head { padding: 18px; }
+  .team-item { padding: 12px; }
+  .lb-score { font-size: 18px; min-width: 44px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <h1>🔐 پنل مدیریت</h1>
+    <p>برای دسترسی به پنل، رمز عبور را وارد کنید</p>
+    <input type="password" id="passwordInput" placeholder="رمز عبور" autofocus autocomplete="current-password">
+    <button id="loginBtn">ورود</button>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div class="dashboard" id="dashboard">
+  <div class="header">
+    <div>
+      <h1>📊 پنل مدیریت کلاس‌های پایتون</h1>
+      <div class="header-meta" id="timestamp">در حال بارگذاری…</div>
+    </div>
+    <div class="header-actions">
+      <label class="auto-refresh">
+        <input type="checkbox" id="autoRefreshToggle">
+        <span class="pulse-dot"></span>
+        به‌روزرسانی خودکار
+      </label>
+      <button class="btn" id="refreshBtn">🔄 به‌روزرسانی</button>
+      <button class="btn" id="exportAllBtn">💾 خروجی JSON</button>
+      <button class="btn btn-danger" id="logoutBtn">خروج</button>
+    </div>
+  </div>
+
+  <div class="stats-grid" id="statsGrid">
+    <div class="stat-card"><span class="icon">📚</span><h3>کلاس‌ها</h3><div class="value" id="statSessions">—</div><div class="sub" id="subSessions"></div></div>
+    <div class="stat-card"><span class="icon">🧑‍🤝‍🧑</span><h3>تیم‌ها</h3><div class="value" id="statTeams">—</div><div class="sub" id="subTeams"></div></div>
+    <div class="stat-card"><span class="icon">👤</span><h3>دانشجوها</h3><div class="value" id="statStudents">—</div><div class="sub" id="subStudents"></div></div>
+    <div class="stat-card"><span class="icon">💻</span><h3>سلول‌های کد</h3><div class="value" id="statCells">—</div><div class="sub" id="subCells"></div></div>
+    <div class="stat-card"><span class="icon">💬</span><h3>نظرات</h3><div class="value" id="statComments">—</div><div class="sub" id="subComments"></div></div>
+    <div class="stat-card"><span class="icon">🔥</span><h3>فعال ۲۴ ساعت</h3><div class="value" id="statActive">—</div><div class="sub" id="subActive"></div></div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="classes">📚 کلاس‌ها</button>
+    <button class="tab" data-tab="teams">🧑‍🤝‍🧑 تیم‌ها</button>
+    <button class="tab" data-tab="leaderboard">🏆 جدول امتیازات</button>
+    <button class="tab" data-tab="students">🎓 دانشجوها</button>
+    <button class="tab" data-tab="activity">📡 آخرین فعالیت‌ها</button>
+  </div>
+
+  <div class="search-bar">
+    <input type="text" class="search-input" id="searchInput" placeholder="🔍 جستجو در کلاس‌ها، تیم‌ها، دانشجوها…">
+    <select class="search-input" id="filterSession" style="flex:0 0 220px;min-width:0">
+      <option value="">همه کلاس‌ها</option>
+    </select>
+    <span id="activeFilterChip"></span>
+  </div>
+
+  <div id="content"></div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">جزئیات</h2>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+const SUPABASE_URL = 'https://fqwlbqpduxmpnlvxrmsy.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxd2xicXBkdXhtcG5sdnhybXN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MTUwNjEsImV4cCI6MjEwNTM5MTA2MX0.5qvPUi_grBuUgITLpG0-QShzLsLaiA07i7pWRtnsWPc';
+const ADMIN_PASSWORD = 'admin2025'; // ⚠️ عوض کن
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const PALETTE = ['#6366f1','#8b5cf6','#ec4899','#f43f5e','#f59e0b','#10b981','#06b6d4','#3b82f6','#84cc16','#eab308'];
+
+function colorOf(name) {
+  let h = 0;
+  const s = name || '؟';
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return PALETTE[h % PALETTE.length];
+}
+function initials(name) {
+  const s = (name || '؟').trim();
+  const parts = s.split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 1).toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
+}
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+}
+function fmtDate(iso) {
+  if (!iso) return '—';
+  try { return new Date(iso).toLocaleString('fa-IR'); } catch { return iso; }
+}
+function fmtRelative(iso) {
+  if (!iso) return '—';
+  const diff = Date.now() - new Date(iso).getTime();
+  const s = Math.floor(diff / 1000);
+  if (s < 60) return 'همین حالا';
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m} دقیقه پیش`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h} ساعت پیش`;
+  const d = Math.floor(h / 24);
+  if (d < 30) return `${d} روز پیش`;
+  return fmtDate(iso);
+}
+function toast(msg, type = 'info', ms = 3000) {
+  const icons = { ok: '✓', err: '✕', info: 'ℹ' };
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.innerHTML = `<b>${icons[type] || ''}</b><span>${escapeHtml(msg)}</span>`;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => t.remove(), ms);
+}
+
+// =============== STATE ===============
+let sessions = [];
+let teams = [];
+let cells = [];
+let comments = [];
+let activeTab = 'classes';
+let searchQuery = '';
+let filterSessionId = '';
+let autoRefreshInterval = null;
+
+// Derived
+let membersByTeam = {};
+let membersBySession = {};
+let cellsByTeam = {};
+let cellsBySession = {};
+let teamsBySession = {};
+let commentsByCell = {};
+let studentsByName = {};      // name -> { name, cells, comments, teamRefs:Set, sessionRefs:Set, lastActive }
+let classOfTeam = {};         // team_id -> session (object)
+
+// =============== LOGIN ===============
+function doLogin() {
+  const pw = document.getElementById('passwordInput').value;
+  if (pw === ADMIN_PASSWORD) {
+    sessionStorage.setItem('adminAuth', 'true');
+    showDashboard();
+  } else {
+    document.getElementById('errorMsg').textContent = 'رمز عبور اشتباه است';
+  }
+}
+function showDashboard() {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('dashboard').classList.add('show');
+  loadData();
+}
+function doLogout() {
+  sessionStorage.removeItem('adminAuth');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('dashboard').classList.remove('show');
+  document.getElementById('passwordInput').value = '';
+  document.getElementById('errorMsg').textContent = '';
+  if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
+}
+document.getElementById('loginBtn').onclick = doLogin;
+document.getElementById('passwordInput').addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('logoutBtn').onclick = doLogout;
+document.getElementById('refreshBtn').onclick = loadData;
+document.getElementById('exportAllBtn').onclick = exportAllJSON;
+
+// =============== AUTO REFRESH ===============
+document.getElementById('autoRefreshToggle').onchange = (e) => {
+  if (e.target.checked) {
+    autoRefreshInterval = setInterval(loadData, 30000);
+    toast('به‌روزرسانی خودکار فعال شد (هر ۳۰ ثانیه)', 'info');
+  } else {
+    if (autoRefreshInterval) { clearInterval(autoRefreshInterval); autoRefreshInterval = null; }
+    toast('به‌روزرسانی خودکار خاموش شد', 'info');
+  }
+};
+
+// =============== TABS ===============
+document.getElementById('tabs').addEventListener('click', (e) => {
+  const tab = e.target.closest('.tab');
+  if (!tab) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  activeTab = tab.getAttribute('data-tab');
+  render();
+});
+
+// =============== SEARCH & FILTER ===============
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  searchQuery = e.target.value.trim().toLowerCase();
+  render();
+});
+document.getElementById('filterSession').addEventListener('change', (e) => {
+  filterSessionId = e.target.value;
+  renderActiveFilterChip();
+  render();
+});
+function setFilterSession(id) {
+  filterSessionId = id || '';
+  document.getElementById('filterSession').value = filterSessionId;
+  renderActiveFilterChip();
+  render();
+}
+function renderActiveFilterChip() {
+  const wrap = document.getElementById('activeFilterChip');
+  if (!filterSessionId) { wrap.innerHTML = ''; return; }
+  const s = sessions.find(x => x.id === filterSessionId);
+  if (!s) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = `<span class="active-filter">📚 ${escapeHtml(s.title || 'بدون نام')} (${escapeHtml(s.code)}) <button id="clearFilterBtn" title="حذف فیلتر">✕</button></span>`;
+  const btn = document.getElementById('clearFilterBtn');
+  if (btn) btn.onclick = () => setFilterSession('');
+}
+
+// =============== LOAD DATA ===============
+async function loadData() {
+  const tsEl = document.getElementById('timestamp');
+  tsEl.textContent = 'در حال بارگذاری…';
+  try {
+    const [sessRes, teamsRes, cellsRes, commentsRes] = await Promise.all([
+      supabase.from('class_sessions').select('*').order('created_at', { ascending: false }),
+      supabase.from('teams').select('*').order('created_at', { ascending: true }),
+      supabase.from('cells').select('*').order('created_at', { ascending: false }),
+      supabase.from('comments').select('*').order('created_at', { ascending: false })
+    ]);
+    if (sessRes.error) throw new Error('خطا در کلاس‌ها: ' + sessRes.error.message);
+    if (teamsRes.error) throw new Error('خطا در تیم‌ها: ' + teamsRes.error.message);
+    if (cellsRes.error) throw new Error('خطا در سلول‌ها: ' + cellsRes.error.message);
+    if (commentsRes.error) throw new Error('خطا در نظرات: ' + commentsRes.error.message);
+
+    sessions = sessRes.data || [];
+    teams = teamsRes.data || [];
+    cells = cellsRes.data || [];
+    comments = commentsRes.data || [];
+
+    computeDerived();
+    populateFilter();
+    updateStats();
+    render();
+    renderActiveFilterChip();
+
+    tsEl.innerHTML = `<span class="pulse-dot"></span> آخرین به‌روزرسانی: ${new Date().toLocaleTimeString('fa-IR')}`;
+  } catch (err) {
+    console.error(err);
+    tsEl.textContent = 'خطا: ' + err.message;
+    toast('خطا: ' + err.message, 'err', 6000);
+  }
+}
+
+function computeDerived() {
+  membersByTeam = {}; membersBySession = {};
+  cellsByTeam = {}; cellsBySession = {};
+  teamsBySession = {}; commentsByCell = {}; studentsByName = {};
+  classOfTeam = {};
+
+  // Teams by session
+  teams.forEach(t => {
+    if (!teamsBySession[t.session_id]) teamsBySession[t.session_id] = [];
+    teamsBySession[t.session_id].push(t);
+    classOfTeam[t.id] = sessions.find(s => s.id === t.session_id) || null;
+  });
+
+  // Cells
+  cells.forEach(c => {
+    if (c.team_id) {
+      if (!cellsByTeam[c.team_id]) cellsByTeam[c.team_id] = [];
+      cellsByTeam[c.team_id].push(c);
+      if (c.author_name) {
+        if (!membersByTeam[c.team_id]) membersByTeam[c.team_id] = new Set();
+        membersByTeam[c.team_id].add(c.author_name);
+      }
+    }
+    if (c.session_id) {
+      if (!cellsBySession[c.session_id]) cellsBySession[c.session_id] = [];
+      cellsBySession[c.session_id].push(c);
+      if (c.author_name) {
+        if (!membersBySession[c.session_id]) membersBySession[c.session_id] = new Set();
+        membersBySession[c.session_id].add(c.author_name);
+      }
+    }
+    if (c.author_name) {
+      if (!studentsByName[c.author_name]) {
+        studentsByName[c.author_name] = { name: c.author_name, cells: 0, comments: 0, teamRefs: new Set(), sessionRefs: new Set(), lastActive: c.updated_at || c.created_at };
+      }
+      const s = studentsByName[c.author_name];
+      s.cells++;
+      if (c.team_id) s.teamRefs.add(c.team_id);
+      if (c.session_id) s.sessionRefs.add(c.session_id);
+      const d = c.updated_at || c.created_at;
+      if (d && (!s.lastActive || new Date(d) > new Date(s.lastActive))) s.lastActive = d;
+    }
+  });
+
+  // Comments
+  comments.forEach(cm => {
+    if (!commentsByCell[cm.cell_id]) commentsByCell[cm.cell_id] = [];
+    commentsByCell[cm.cell_id].push(cm);
+    if (cm.author_name) {
+      if (!studentsByName[cm.author_name]) {
+        studentsByName[cm.author_name] = { name: cm.author_name, cells: 0, comments: 0, teamRefs: new Set(), sessionRefs: new Set(), lastActive: cm.created_at };
+      }
+      studentsByName[cm.author_name].comments++;
+    }
+  });
+}
+
+function populateFilter() {
+  const sel = document.getElementById('filterSession');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">همه کلاس‌ها</option>' +
+    sessions.map(s => `<option value="${s.id}">${escapeHtml(s.title || 'بدون نام')} (${s.code})</option>`).join('');
+  sel.value = cur;
+  if (cur && !sessions.find(s => s.id === cur)) sel.value = '';
+}
+
+// =============== STATS ===============
+function updateStats() {
+  const totalStudents = Object.keys(studentsByName).length;
+  const last24 = Date.now() - 24 * 3600 * 1000;
+  document.getElementById('statSessions').textContent = sessions.length;
+  document.getElementById('statTeams').textContent = teams.length;
+  document.getElementById('statStudents').textContent = totalStudents;
+  document.getElementById('statCells').textContent = cells.length;
+  document.getElementById('statComments').textContent = comments.length;
+
+  const activeSet = new Set();
+  cells.forEach(c => {
+    const d = c.updated_at || c.created_at;
+    if (d && new Date(d).getTime() > last24 && c.author_name) activeSet.add(c.author_name);
+  });
+  document.getElementById('statActive').textContent = activeSet.size;
+
+  const totalTeamsPerClass = sessions.length ? (teams.length / sessions.length).toFixed(1) : '0';
+  document.getElementById('subSessions').textContent = `${teams.length} تیم · ${totalStudents} دانشجو`;
+  document.getElementById('subTeams').textContent = `میانگین ${totalTeamsPerClass} در هر کلاس`;
+  document.getElementById('subStudents').textContent = `${Object.values(studentsByName).reduce((a, s) => a + s.cells, 0)} سلول ثبت‌شده`;
+  const withCode = cells.filter(c => c.code && c.code.trim()).length;
+  document.getElementById('subCells').textContent = `${withCode} تا دارای کد`;
+  const errCells = cells.filter(c => c.output && (c.output.includes('Error') || c.output.includes('Pyodide'))).length;
+  document.getElementById('subComments').textContent = `${errCells} خطا در کدها`;
+  document.getElementById('subActive').textContent = `از ${totalStudents} دانشجو`;
+}
+
+// =============== RENDER ===============
+function render() {
+  const c = document.getElementById('content');
+  if (activeTab === 'classes') c.innerHTML = renderClasses();
+  else if (activeTab === 'teams') c.innerHTML = renderTeams();
+  else if (activeTab === 'leaderboard') c.innerHTML = renderLeaderboard();
+  else if (activeTab === 'students') c.innerHTML = renderStudents();
+  else if (activeTab === 'activity') c.innerHTML = renderActivity();
+  bindContentHandlers();
+}
+
+function matchesSearch(...strs) {
+  if (!searchQuery) return true;
+  return strs.filter(Boolean).join(' ').toLowerCase().includes(searchQuery);
+}
+
+// ---------- CLASSES ----------
+function renderClasses() {
+  const filtered = sessions.filter(s => {
+    if (filterSessionId && s.id !== filterSessionId) return false;
+    return matchesSearch(s.title, s.code);
+  });
+  if (!filtered.length) {
+    return `<div class="section"><div class="empty"><span class="emoji">📚</span>${sessions.length ? 'چیزی با این جستجو پیدا نشد' : 'هنوز هیچ کلاسی ساخته نشده'}</div></div>`;
+  }
+  const cards = filtered.map(s => {
+    const sTeams = teamsBySession[s.id] || [];
+    const sCells = cellsBySession[s.id] || [];
+    const sMembers = membersBySession[s.id] ? membersBySession[s.id].size : 0;
+    const sComments = sCells.reduce((sum, c) => sum + (commentsByCell[c.id]?.length || 0), 0);
+    return `
+      <div class="class-card" data-class-id="${s.id}">
+        <h3>${escapeHtml(s.title || 'بدون نام')}</h3>
+        <div class="class-code" data-copy-code="${escapeHtml(s.code)}" title="کلیک برای کپی">📋 ${escapeHtml(s.code)}</div>
+        <div class="class-meta">ایجاد: ${fmtDate(s.created_at)}</div>
+        <div class="class-stats">
+          <div class="class-stat"><div class="num">${sTeams.length}</div><div class="label">تیم</div></div>
+          <div class="class-stat"><div class="num">${sMembers}</div><div class="label">دانشجو</div></div>
+          <div class="class-stat"><div class="num">${sCells.length}</div><div class="label">سلول</div></div>
+          <div class="class-stat"><div class="num">${sComments}</div><div class="label">نظر</div></div>
+        </div>
+      </div>`;
+  }).join('');
+  return `<div class="section">
+    <h2>📚 کلاس‌ها <span class="count">${filtered.length}</span></h2>
+    <div class="class-grid">${cards}</div>
+  </div>`;
+}
+
+// ---------- TEAMS ----------
+function renderTeams() {
+  const filtered = teams.filter(t => {
+    if (filterSessionId && t.session_id !== filterSessionId) return false;
+    const s = sessions.find(x => x.id === t.session_id);
+    return matchesSearch(t.name, s?.title, s?.code);
+  });
+  if (!filtered.length) {
+    return `<div class="section"><div class="empty"><span class="emoji">🧑‍🤝‍🧑</span>${teams.length ? 'چیزی پیدا نشد' : 'هنوز تیمی ساخته نشده'}</div></div>`;
+  }
+
+  // گروه‌بندی بر اساس کلاس
+  const byClass = {};
+  filtered.forEach(t => {
+    if (!byClass[t.session_id]) byClass[t.session_id] = [];
+    byClass[t.session_id].push(t);
+  });
+
+  const classBlocks = Object.entries(byClass).map(([sid, tlist]) => {
+    const s = sessions.find(x => x.id === sid);
+    const rows = tlist.map(t => {
+      const color = t.color || colorOf(t.name);
+      const tCells = cellsByTeam[t.id] || [];
+      const members = membersByTeam[t.id] ? [...membersByTeam[t.id]] : [];
+      return `
+        <div class="team-item" data-team-id="${t.id}" style="border-right-color:${color}">
+          <div class="team-info">
+            <div class="team-color" style="background:${color}">${escapeHtml(initials(t.name))}</div>
+            <div>
+              <div class="team-name">${escapeHtml(t.name)}</div>
+              <div class="team-meta">${members.length} عضو</div>
+            </div>
+          </div>
+          <div class="team-stats">
+            <div class="team-stat"><div class="num">${tCells.length}</div><div class="label">سلول</div></div>
+            <div class="team-stat"><div class="num">${members.length}</div><div class="label">عضو</div></div>
+          </div>
+        </div>`;
+    }).join('');
+
+    return `<div class="class-group">
+      <div class="class-group-head">
+        <span class="code-chip">${escapeHtml(s?.code || '—')}</span>
+        <span class="name">${escapeHtml(s?.title || 'بدون نام')}</span>
+        <span class="count-badge">${tlist.length} تیم</span>
+      </div>
+      <div class="team-list">${rows}</div>
+    </div>`;
+  }).join('');
+
+  return `<div class="section">
+    <h2>🧑‍🤝‍🧑 تیم‌ها <span class="count">${filtered.length}</span></h2>
+    ${classBlocks}
+  </div>`;
+}
+
+// ---------- LEADERBOARD ----------
+function renderLeaderboard() {
+  const stats = teams.map(t => {
+    const tCells = cellsByTeam[t.id] || [];
+    const completed = tCells.filter(c => {
+      const out = (c.output || '').trim();
+      return out && out !== '(بدون خروجی)' && !out.includes('Error') && !out.includes('Pyodide');
+    }).length;
+    const errors = tCells.filter(c => c.output && (c.output.includes('Error') || c.output.includes('Pyodide'))).length;
+    const totalCode = tCells.reduce((sum, c) => sum + (c.code || '').length, 0);
+    const members = membersByTeam[t.id] ? membersByTeam[t.id].size : 0;
+    return { team: t, completed, errors, totalCode, members, cellCount: tCells.length };
+  }).filter(s => {
+    if (filterSessionId && s.team.session_id !== filterSessionId) return false;
+    const session = sessions.find(x => x.id === s.team.session_id);
+    return matchesSearch(s.team.name, session?.title);
+  }).sort((a, b) => b.completed - a.completed || b.totalCode - a.totalCode);
+
+  if (!stats.length) {
+    return `<div class="section"><div class="empty"><span class="emoji">🏆</span>هنوز تیمی برای رتبه‌بندی نیست</div></div>`;
+  }
+
+  // گروه‌بندی بر اساس کلاس
+  const byClass = {};
+  stats.forEach(s => {
+    const sid = s.team.session_id;
+    if (!byClass[sid]) byClass[sid] = [];
+    byClass[sid].push(s);
+  });
+
+  // رتبه‌دهی کلی (برای رنگ medal)
+  let globalRank = 0;
+  const classBlocks = Object.entries(byClass).map(([sid, list]) => {
+    const s = sessions.find(x => x.id === sid);
+    const maxCompleted = Math.max(1, ...list.map(x => x.completed));
+    const rows = list.map((st) => {
+      globalRank++;
+      const rank = globalRank;
+      const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+      const rankCls = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : '';
+      const color = st.team.color || colorOf(st.team.name);
+      const pct = Math.round((st.completed / maxCompleted) * 100);
+      return `
+        <div class="lb-row" data-team-id="${st.team.id}">
+          <div class="lb-rank ${rankCls}">${medal}</div>
+          <div class="lb-body">
+            <div class="lb-title">
+              <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${color}"></span>
+              ${escapeHtml(st.team.name)}
+            </div>
+            <div class="lb-sub">${st.members} عضو · ${st.cellCount} سلول · ${st.totalCode} کاراکتر</div>
+            <div class="lb-bar"><div class="lb-bar-fill" style="width:${pct}%"></div></div>
+          </div>
+          <div class="lb-score">${st.completed}</div>
+        </div>`;
+    }).join('');
+
+    return `<div class="class-group">
+      <div class="class-group-head">
+        <span class="code-chip">${escapeHtml(s?.code || '—')}</span>
+        <span class="name">${escapeHtml(s?.title || 'بدون نام')}</span>
+        <span class="count-badge">${list.length} تیم</span>
+      </div>
+      ${rows}
+    </div>`;
+  }).join('');
+
+  return `<div class="section">
+    <h2>🏆 جدول امتیازات <span class="count">${stats.length} تیم</span></h2>
+    ${classBlocks}
+  </div>`;
+}
+
+// ---------- STUDENTS ----------
+function renderStudents() {
+  const list = Object.values(studentsByName).filter(s => {
+    if (filterSessionId && !s.sessionRefs.has(filterSessionId)) return false;
+    return matchesSearch(s.name);
+  }).sort((a, b) => b.cells - a.cells || b.comments - a.comments);
+
+  if (!list.length) {
+    return `<div class="section"><div class="empty"><span class="emoji">🎓</span>هنوز دانشجویی فعالیت نکرده</div></div>`;
+  }
+
+  const rows = list.map(s => {
+    const color = colorOf(s.name);
+    // تیم‌ها با کلاسشون
+    const teamTags = [...s.teamRefs].map(tid => {
+      const t = teams.find(x => x.id === tid);
+      if (!t) return '';
+      const cls = sessions.find(x => x.id === t.session_id);
+      const tc = t.color || colorOf(t.name);
+      return `<span class="team-tag" title="کلاس: ${escapeHtml(cls?.title || '—')}">
+        <span class="tdot" style="background:${tc}"></span>
+        <span class="tname">${escapeHtml(t.name)}</span>
+        <span class="tclass">· ${escapeHtml(cls?.title || '—')}</span>
+      </span>`;
+    }).join('');
+
+    return `
+      <div class="team-item" data-student="${escapeHtml(s.name)}" style="border-right-color:${color}">
+        <div class="team-info">
+          <div class="team-color" style="background:${color}">${escapeHtml(initials(s.name))}</div>
+          <div style="min-width:0">
+            <div class="team-name">${escapeHtml(s.name)}</div>
+            <div class="team-meta">آخرین فعالیت: ${fmtRelative(s.lastActive)}</div>
+            ${teamTags ? `<div class="member-chips" style="margin-top:8px">${teamTags}</div>` : ''}
+          </div>
+        </div>
+        <div class="team-stats">
+          <div class="team-stat"><div class="num">${s.cells}</div><div class="label">سلول</div></div>
+          <div class="team-stat"><div class="num">${s.comments}</div><div class="label">نظر</div></div>
+          <div class="team-stat"><div class="num">${s.sessionRefs.size}</div><div class="label">کلاس</div></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  return `<div class="section">
+    <h2>🎓 دانشجوها <span class="count">${list.length}</span></h2>
+    <div class="team-list">${rows}</div>
+  </div>`;
+}
+
+// ---------- ACTIVITY ----------
+function renderActivity() {
+  const recent = [...cells]
+    .filter(c => !filterSessionId || c.session_id === filterSessionId)
+    .sort((a, b) => {
+      const da = new Date(a.updated_at || a.created_at).getTime();
+      const db = new Date(b.updated_at || b.created_at).getTime();
+      return db - da;
+    }).slice(0, 30);
+
+  if (!recent.length) {
+    return `<div class="section"><div class="empty"><span class="emoji">📡</span>هنوز فعالیتی ثبت نشده</div></div>`;
+  }
+
+  const rows = recent.map(c => {
+    const session = sessions.find(s => s.id === c.session_id);
+    const team = teams.find(t => t.id === c.team_id);
+    const hasCode = c.code && c.code.trim().length > 0;
+    const hasErr = c.output && (c.output.includes('Error') || c.output.includes('Pyodide'));
+    const dotColor = hasErr ? 'var(--danger)' : (hasCode ? 'var(--success)' : 'var(--muted)');
+    return `
+      <div class="activity-item" data-cell-id="${c.id}">
+        <span class="activity-dot" style="background:${dotColor};box-shadow:0 0 0 4px ${hasErr ? 'rgba(239,68,68,.15)' : hasCode ? 'rgba(16,185,129,.15)' : 'rgba(148,163,184,.15)'}"></span>
+        <div style="flex:1;min-width:0">
+          <div>
+            <span class="activity-author">${escapeHtml(c.author_name || 'ناشناس')}</span>
+            ${team ? ` در تیم <b>${escapeHtml(team.name)}</b>` : ''}
+            ${session ? ` — کلاس ${escapeHtml(session.title)}` : ''}
+          </div>
+          <div style="color:var(--muted);font-size:11px;margin-top:2px">
+            ${hasCode ? `${c.code.length} کاراکتر کد` : 'بدون کد'} ${hasErr ? '• خطا' : ''}
+          </div>
+        </div>
+        <div class="activity-time">${fmtRelative(c.updated_at || c.created_at)}</div>
+      </div>`;
+  }).join('');
+
+  return `<div class="section">
+    <h2>📡 آخرین فعالیت‌ها <span class="count">${recent.length}</span></h2>
+    ${rows}
+  </div>`;
+}
+
+// =============== HANDLERS ===============
+function bindContentHandlers() {
+  // Copy class code
+  document.querySelectorAll('[data-copy-code]').forEach(el => {
+    el.onclick = (e) => {
+      e.stopPropagation();
+      const code = el.getAttribute('data-copy-code');
+      navigator.clipboard.writeText(code).then(() => toast('کد کپی شد: ' + code, 'ok', 2000));
+    };
+  });
+  document.querySelectorAll('.class-card').forEach(el => {
+    el.onclick = () => openClassDetail(el.getAttribute('data-class-id'));
+  });
+  document.querySelectorAll('[data-team-id]').forEach(el => {
+    el.onclick = () => openTeamDetail(el.getAttribute('data-team-id'));
+  });
+  document.querySelectorAll('[data-student]').forEach(el => {
+    el.onclick = () => openStudentDetail(el.getAttribute('data-student'));
+  });
+  document.querySelectorAll('[data-cell-id]').forEach(el => {
+    el.onclick = () => openCellDetail(el.getAttribute('data-cell-id'));
+  });
+}
+
+// =============== MODALS ===============
+function openModal(title, bodyHtml) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = bodyHtml;
+  document.getElementById('detailModal').classList.add('show');
+}
+function closeModal() { document.getElementById('detailModal').classList.remove('show'); }
+document.getElementById('modalClose').onclick = closeModal;
+document.getElementById('detailModal').addEventListener('click', (e) => {
+  if (e.target.id === 'detailModal') closeModal();
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+// ---------- CLASS DETAIL ----------
+function openClassDetail(sessionId) {
+  const s = sessions.find(x => x.id === sessionId);
+  if (!s) return;
+  const sTeams = teamsBySession[s.id] || [];
+  const sCells = cellsBySession[s.id] || [];
+  const sMembers = membersBySession[s.id] ? [...membersBySession[s.id]] : [];
+  const sComments = sCells.reduce((sum, c) => sum + (commentsByCell[c.id]?.length || 0), 0);
+  const link = `${location.origin}${location.pathname.replace(/[^/]*$/, '')}?s=${s.code}`;
+
+  const teamsHtml = sTeams.length ? sTeams.map(t => {
+    const color = t.color || colorOf(t.name);
+    const members = membersByTeam[t.id] ? [...membersByTeam[t.id]] : [];
+    return `
+      <div class="info-row">
+        <span class="key" style="display:flex;align-items:center;gap:8px">
+          <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${color}"></span>
+          ${escapeHtml(t.name)}
+        </span>
+        <span class="val">${members.length} عضو · ${(cellsByTeam[t.id]||[]).length} سلول</span>
+      </div>`;
+  }).join('') : '<div class="empty" style="padding:20px">تیمی نیست</div>';
+
+  const membersHtml = sMembers.length ? `
+    <div class="member-chips">
+      ${sMembers.map(m => {
+        const c = colorOf(m);
+        return `<span class="member-chip"><span class="dot" style="background:${c}">${escapeHtml(initials(m))}</span>${escapeHtml(m)}</span>`;
+      }).join('')}
+    </div>` : '<div class="empty" style="padding:20px">هنوز کسی فعالیت نکرده</div>';
+
+  const body = `
+    <div class="info-row"><span class="key">کد کلاس</span><span class="val" style="font-family:monospace;letter-spacing:2px;color:var(--primary)">${escapeHtml(s.code)}</span></div>
+    <div class="info-row"><span class="key">ایجاد شده</span><span class="val">${fmtDate(s.created_at)}</span></div>
+    <div class="info-row"><span class="key">تیم‌ها</span><span class="val">${sTeams.length}</span></div>
+    <div class="info-row"><span class="key">دانشجوها</span><span class="val">${sMembers.length}</span></div>
+    <div class="info-row"><span class="key">سلول‌ها</span><span class="val">${sCells.length}</span></div>
+    <div class="info-row"><span class="key">نظرات</span><span class="val">${sComments}</span></div>
+
+    <div style="margin-top:20px">
+      <h3 style="font-size:14px;color:var(--muted);margin-bottom:10px">🔗 لینک اشتراک</h3>
+      <div style="display:flex;gap:8px">
+        <input class="search-input" value="${escapeHtml(link)}" readonly style="font-family:monospace;font-size:11px;direction:ltr">
+        <button class="btn btn-primary" id="copyLinkBtn">📋 کپی</button>
+      </div>
+    </div>
+
+    <div style="margin-top:24px">
+      <h3 style="font-size:14px;color:var(--muted);margin-bottom:10px">🧑‍🤝‍🧑 تیم‌ها</h3>
+      ${teamsHtml}
+    </div>
+
+    <div style="margin-top:24px">
+      <h3 style="font-size:14px;color:var(--muted);margin-bottom:10px">👥 دانشجوها</h3>
+      ${membersHtml}
+    </div>
+
+    <div style="margin-top:24px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-primary" id="filterThisClassBtn">🎯 نمایش فقط این کلاس</button>
+      <button class="btn" id="exportClassBtn">💾 خروجی JSON این کلاس</button>
+    </div>
+  `;
+  openModal('📚 ' + (s.title || 'بدون نام'), body);
+
+  setTimeout(() => {
+    document.getElementById('copyLinkBtn')?.addEventListener('click', () => {
+      navigator.clipboard.writeText(link).then(() => toast('لینک کپی شد', 'ok'));
+    });
+    document.getElementById('filterThisClassBtn')?.addEventListener('click', () => {
+      setFilterSession(s.id);
+      closeModal();
+      toast('فیلتر روی کلاس «' + (s.title || 'بدون نام') + '» اعمال شد', 'info');
+    });
+    document.getElementById('exportClassBtn')?.addEventListener('click', () => exportClassJSON(s.id));
+  }, 0);
+}
+
+// ---------- TEAM DETAIL ----------
+function openTeamDetail(teamId) {
+  const t = teams.find(x => x.id === teamId);
+  if (!t) return;
+  const color = t.color || colorOf(t.name);
+  const session = sessions.find(s => s.id === t.session_id);
+  const members = membersByTeam[t.id] ? [...membersByTeam[t.id]] : [];
+  const tCells = (cellsByTeam[t.id] || []).slice().sort((a, b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at));
+  const link = session ? `${location.origin}${location.pathname.replace(/[^/]*$/, '')}?s=${session.code}` : '';
+
+  const membersHtml = members.length ? `
+    <div class="member-chips">
+      ${members.map(m => {
+        const c = colorOf(m);
+        return `<span class="member-chip"><span class="dot" style="background:${c}">${escapeHtml(initials(m))}</span>${escapeHtml(m)}</span>`;
+      }).join('')}
+    </div>` : '<div class="empty" style="padding:16px">هنوز عضوی ندارد</div>';
+
+  const cellsHtml = tCells.length ? tCells.map(c => {
+    const hasErr = c.output && (c.output.includes('Error') || c.output.includes('Pyodide'));
+    const preview = (c.code || '').slice(0, 60).replace(/\n/g, ' ');
+    return `
+      <div class="info-row" data-cell-open="${c.id}" style="cursor:pointer">
+        <span class="key">
+          <b style="color:var(--ink)">${escapeHtml(c.author_name || 'ناشناس')}</b>
+          <span style="color:var(--muted);font-size:11px"> ${fmtRelative(c.updated_at || c.created_at)}</span>
+        </span>
+        <span class="val" style="color:${hasErr ? 'var(--danger)' : 'var(--muted)'};font-family:monospace;font-size:11px;direction:ltr;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+          ${escapeHtml(preview || '(خالی)')}
+        </span>
+      </div>`;
+  }).join('') : '<div class="empty" style="padding:16px">هنوز کدی نوشته نشده</div>';
+
+  const body = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+      <div class="team-color" style="background:${color};width:56px;height:56px;font-size:20px">${escapeHtml(initials(t.name))}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:20px;font-weight:800">${escapeHtml(t.name)}</div>
+        <div style="color:var(--muted);font-size:13px;margin-top:2px">
+          ${session ? `📚 <b>${escapeHtml(session.title)}</b> <span style="font-family:monospace;font-size:11px;color:var(--primary)">(${escapeHtml(session.code)})</span>` : 'بدون کلاس'}
+        </div>
+      </div>
+    </div>
+
+    <div class="info-row"><span class="key">ایجاد</span><span class="val">${fmtDate(t.created_at)}</span></div>
+    <div class="info-row"><span class="key">تعداد اعضا</span><span class="val">${members.length}</span></div>
+    <div class="info-row"><span class="key">تعداد سلول‌ها</span><span class="val">${tCells.length}</span></div>
+    <div class="info-row"><span class="key">مجموع کاراکتر کد</span><span class="val">${tCells.reduce((a, c) => a + (c.code || '').length, 0)}</span></div>
+
+    ${link ? `
+      <div style="margin-top:16px">
+        <div style="font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px;margin-bottom:8px">🔗 لینک کلاس این تیم</div>
+        <div style="display:flex;gap:8px">
+          <input class="search-input" value="${escapeHtml(link)}" readonly style="font-family:monospace;font-size:11px;direction:ltr">
+          <button class="btn btn-primary" id="copyTeamClassLink">📋 کپی</button>
+        </div>
+      </div>
+    ` : ''}
+
+    <div style="margin-top:20px">
+      <h3 style="font-size:14px;color:var(--muted);margin-bottom:10px">👥 اعضا</h3>
+      ${membersHtml}
+    </div>
+
+    <div style="margin-top:20px">
+      <h3 style="font-size:14px;color:var(--muted);margin-bottom:10px">💻 سلول‌ها (${tCells.length})</h3>
+      ${cellsHtml}
+    </div>
+
+    <div style="margin-top:24px;display:flex;gap:8px;flex-wrap:wrap">
+      ${session ? `<button class="btn btn-primary" id="filterFromTeamBtn">🎯 فیلتر روی کلاس «${escapeHtml(session.title)}»</button>` : ''}
+    </div>
+  `;
+  openModal('🧑‍🤝‍🧑 ' + t.name, body);
+
+  setTimeout(() => {
+    document.querySelectorAll('[data-cell-open]').forEach(el => {
+      el.onclick = () => openCellDetail(el.getAttribute('data-cell-open'));
+    });
+    document.getElementById('copyTeamClassLink')?.addEventListener('click', () => {
+      navigator.clipboard.writeText(link).then(() => toast('لینک کپی شد', 'ok'));
+    });
+    document.getElementById('filterFromTeamBtn')?.addEventListener('click', () => {
+      if (!session) return;
+      setFilterSession(session.id);
+      closeModal();
+      toast('فیلتر روی کلاس «' + session.title + '» اعمال شد', 'info');
+    });
+  }, 0);
+}
+
+// ---------- STUDENT DETAIL ----------
+function openStudentDetail(name) {
+  const s = studentsByName[name];
+  if (!s) return;
+  const color = colorOf(name);
+  const myCells = cells.filter(c => c.author_name === name).sort((a, b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at));
+
+  // گروه‌بندی تیم‌ها بر اساس کلاس
+  const teamsByClassForStudent = {};
+  [...s.teamRefs].forEach(tid => {
+    const t = teams.find(x => x.id === tid);
+    if (!t) return;
+    const sid = t.session_id;
+    if (!teamsByClassForStudent[sid]) teamsByClassForStudent[sid] = [];
+    teamsByClassForStudent[sid].push(t);
+  });
+
+  const classBlocksHtml = Object.entries(teamsByClassForStudent).map(([sid, list]) => {
+    const cls = sessions.find(x => x.id === sid);
+    const teamsHtml = list.map(t => {
+      const tc = t.color || colorOf(t.name);
+      return `<span class="team-tag"><span class="tdot" style="background:${tc}"></span><span class="tname">${escapeHtml(t.name)}</span></span>`;
+    }).join('');
+    return `
+      <div style="margin-bottom:14px;padding:12px 14px;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius-sm)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span class="code-chip" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px;color:var(--primary);background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);padding:3px 10px;border-radius:999px">${escapeHtml(cls?.code || '—')}</span>
+          <span style="font-weight:700">${escapeHtml(cls?.title || 'بدون نام')}</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">${teamsHtml}</div>
+      </div>`;
+  }).join('') || '<div class="empty" style="padding:16px">هنوز تیمی ندارد</div>';
+
+  const cellsHtml = myCells.map(c => {
+    const hasErr = c.output && (c.output.includes('Error') || c.output.includes('Pyodide'));
+    const preview = (c.code || '').slice(0, 60).replace(/\n/g, ' ');
+    const cls = sessions.find(x => x.id === c.session_id);
+    return `
+      <div class="info-row" data-cell-open="${c.id}" style="cursor:pointer">
+        <span class="key" style="color:var(--muted);font-size:11px">
+          ${escapeHtml(cls?.title || '—')} · ${fmtRelative(c.updated_at || c.created_at)}
+        </span>
+        <span class="val" style="color:${hasErr ? 'var(--danger)' : 'var(--muted)'};font-family:monospace;font-size:11px;direction:ltr;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+          ${escapeHtml(preview || '(خالی)')}
+        </span>
+      </div>`;
+  }).join('');
+
+  const body = `
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+      <div class="team-color" style="background:${color};width:56px;height:56px;font-size:20px">${escapeHtml(initials(name))}</div>
+      <div>
+        <div style="font-size:20px;font-weight:800">${escapeHtml(name)}</div>
+        <div style="color:var(--muted);font-size:13px">${s.sessionRefs.size} کلاس · ${s.teamRefs.size} تیم</div>
+      </div>
+    </div>
+
+    <div class="info-row"><span class="key">سلول‌ها</span><span class="val">${s.cells}</span></div>
+    <div class="info-row"><span class="key">نظرات</span><span class="val">${s.comments}</span></div>
+    <div class="info-row"><span class="key">آخرین فعالیت</span><span class="val">${fmtRelative(s.lastActive)}</span></div>
+
+    <div style="margin-top:20px">
+      <h3 style="font-size:14px;color:var(--muted);margin-bottom:10px">🧑‍🤝‍🧑 تیم‌ها بر اساس کلاس</h3>
+      ${classBlocksHtml}
+    </div>
+
+    <div style="margin-top:20px">
+      <h3 style="font-size:14px;color:var(--muted);margin-bottom:10px">💻 کدهای این دانشجو (${myCells.length})</h3>
+      ${cellsHtml || '<div class="empty" style="padding:16px">چیزی نیست</div>'}
+    </div>
+  `;
+  openModal('🎓 ' + name, body);
+
+  setTimeout(() => {
+    document.querySelectorAll('[data-cell-open]').forEach(el => {
+      el.onclick = () => openCellDetail(el.getAttribute('data-cell-open'));
+    });
+  }, 0);
+}
+
+// ---------- CELL DETAIL ----------
+function openCellDetail(cellId) {
+  const c = cells.find(x => x.id === cellId);
+  if (!c) return;
+  const session = sessions.find(s => s.id === c.session_id);
+  const team = teams.find(t => t.id === c.team_id);
+  const hasErr = c.output && (c.output.includes('Error') || c.output.includes('Pyodide'));
+
+  const body = `
+    <div class="info-row"><span class="key">نویسنده</span><span class="val">${escapeHtml(c.author_name || 'ناشناس')}</span></div>
+    <div class="info-row"><span class="key">تیم</span><span class="val">${team ? escapeHtml(team.name) : '—'}</span></div>
+    <div class="info-row"><span class="key">کلاس</span><span class="val">${session ? escapeHtml(session.title) + ' <span style="font-family:monospace;font-size:11px;color:var(--primary)">(' + escapeHtml(session.code) + ')</span>' : '—'}</span></div>
+    <div class="info-row"><span class="key">ایجاد</span><span class="val">${fmtDate(c.created_at)}</span></div>
+    <div class="info-row"><span class="key">آخرین ویرایش</span><span class="val">${fmtDate(c.updated_at || c.created_at)}</span></div>
+
+    <div style="margin-top:20px">
+      <h3 style="font-size:14px;color:var(--muted);margin-bottom:10px">💻 کد</h3>
+      <div class="code-block">${escapeHtml(c.code || '(خالی)')}</div>
+    </div>
+
+    ${c.output ? `
+      <div style="margin-top:20px">
+        <h3 style="font-size:14px;color:var(--muted);margin-bottom:10px">📤 خروجی</h3>
+        <div class="code-block ${hasErr ? 'err' : ''}">${escapeHtml(c.output)}</div>
+      </div>
+    ` : ''}
+  `;
+  openModal('💻 سلول ' + (c.id.slice(0, 8)), body);
+}
+
+// =============== EXPORT ===============
+function exportClassJSON(sessionId) {
+  const s = sessions.find(x => x.id === sessionId);
+  if (!s) return;
+  const data = {
+    session: s,
+    teams: teams.filter(t => t.session_id === sessionId),
+    cells: cells.filter(c => c.session_id === sessionId),
+    comments: comments.filter(cm => {
+      const cellIds = new Set(cells.filter(c => c.session_id === sessionId).map(c => c.id));
+      return cellIds.has(cm.cell_id);
+    }),
+    exported_at: new Date().toISOString()
+  };
+  downloadJSON(data, `class-${s.code}-${new Date().toISOString().slice(0, 10)}.json`);
+  toast('خروجی گرفته شد', 'ok');
+}
+function exportAllJSON() {
+  const data = {
+    exported_at: new Date().toISOString(),
+    stats: {
+      sessions: sessions.length,
+      teams: teams.length,
+      cells: cells.length,
+      comments: comments.length,
+      students: Object.keys(studentsByName).length
+    },
+    sessions, teams, cells, comments
+  };
+  downloadJSON(data, `admin-backup-${new Date().toISOString().slice(0, 10)}.json`);
+  toast('بکاپ کامل دانلود شد', 'ok');
+}
+function downloadJSON(obj, filename) {
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// =============== INIT ===============
+if (sessionStorage.getItem('adminAuth') === 'true') {
+  showDashboard();
+}
+</script>
+
+</body>
+</html>
