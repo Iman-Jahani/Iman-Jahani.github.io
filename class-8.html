@@ -1151,8 +1151,51 @@
       const delBtn = el.querySelector('.del');
       if (delBtn) delBtn.onclick = async () => {
         if (!confirm('این سلول حذف شود؟')) return;
+        // انیمیشن خروج نرم
+        el.style.transition = 'opacity .25s ease, transform .25s ease, max-height .35s ease, margin .25s ease';
+        el.style.opacity = '0';
+        el.style.transform = 'scale(.96)';
+        el.style.maxHeight = el.offsetHeight + 'px';
+        // بعد از یه فریم، ارتفاع رو صفر کن
+        requestAnimationFrame(() => {
+          el.style.maxHeight = '0px';
+          el.style.marginBottom = '0px';
+          el.style.overflow = 'hidden';
+        });
+
         const { error } = await supabase.from('cells').delete().eq('id', cell.id);
-        if (error) toast('خطای حذف: ' + error.message, 'err'); else toast('حذف شد', 'ok', 1500);
+        if (error) {
+          // اگه خطا داد، انیمیشن رو برگردون
+          el.style.opacity = '1';
+          el.style.transform = 'scale(1)';
+          el.style.maxHeight = el.offsetHeight + 'px';
+          el.style.marginBottom = '24px';
+          toast('خطای حذف: ' + error.message, 'err', 5000);
+          return;
+        }
+
+        // پاک کردن از state
+        editors.delete(cell.id);
+        openCommentSections.delete(cell.id);
+        commentsCache.delete(cell.id);
+
+        // حذف از DOM بعد از اتمام انیمیشن
+        setTimeout(() => {
+          el.remove();
+          // اگه دیگه سلولی نمونده، empty state رو نشون بده
+          if (editors.size === 0) {
+            renderEmpty();
+            document.getElementById('stats').textContent = '';
+          } else {
+            // آمار رو آپدیت کن
+            const remaining = editors.size;
+            const students = new Set([...editors.values()].map(o => o.cellData.author_name)).size;
+            document.getElementById('stats').textContent = `${remaining} سلول · ${students} دانشجو`;
+          }
+          if (isTeacherMode) updateTeacherStats();
+        }, 400);
+
+        toast('حذف شد', 'ok', 1500);
       };
       el.querySelector('.comment-indicator').onclick = () => toggleComments(cell.id);
       el.querySelector('.action.comment').onclick = () => {
