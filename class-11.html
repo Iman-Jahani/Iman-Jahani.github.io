@@ -1043,9 +1043,19 @@
     outputEl.textContent = text;
   }
 
-  let pyodide;
+    let pyodide;
   async function getPyodide() {
-    if (!pyodide) pyodide = await loadPyodide();
+    if (!pyodide) {
+      pyodide = await loadPyodide();
+      // prompt های input() رو نادیده بگیر که روی خروجی اثر نذارن
+      pyodide.runPython(`
+import builtins as _bi
+_orig_input = _bi.input
+def _clean_input(prompt=''):
+    return _orig_input()
+_bi.input = _clean_input
+`);
+    }
     return pyodide;
   }
   async function runCode(id, code, outputEl) {
