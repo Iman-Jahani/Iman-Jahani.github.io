@@ -826,6 +826,7 @@
       code, output, updated_at: new Date().toISOString()
     }).eq('id', id);
     if (error) console.error('saveCell error:', error);
+    await loadCells();
   }
   async function setOutput(outputEl, text, isErr) {
     outputEl.classList.add('show');
