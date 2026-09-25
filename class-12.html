@@ -544,6 +544,17 @@
   </div>
 </div>
 
+<!-- Submissions Modal -->
+<div class="modal-overlay" id="submissionsModal">
+  <div class="modal modal-wide">
+    <div class="modal-head-rel">
+      <button class="modal-close" id="closeSubmissions" title="بستن">✕</button>
+      <h2 id="submissionsTitle">👁 پاسخ‌ها</h2>
+    </div>
+    <div style="padding:24px 28px" id="submissionsBody"></div>
+  </div>
+</div>
+
 <div class="toasts" id="toasts"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
@@ -2010,7 +2021,6 @@ _bi.input = _clean_input
     renderExercisesModal();
   }
 
-  // ---------- Teacher: Submissions ----------
   async function openSubmissions(exerciseId) {
     const ex = exercises.find(e => e.id === exerciseId);
     if (!ex) return;
