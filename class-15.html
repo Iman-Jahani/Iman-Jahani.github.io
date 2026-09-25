@@ -821,7 +821,7 @@ document.getElementById('toggleTags').onclick = () => { tagsVisible = !tagsVisib
 
 function renderCells(cells, commentsByCell) {
   commentsByCell = commentsByCell || {};
-  if (!cells.length) renderEmpty(); else if (cellsEl.querySelector('.empty')) cellsEl.innerHTML = '';
+  if (!cells.length) renderEmpty(); else if (cellsEl.querySelector('.empty') || cellsEl.querySelector('.loader')) cellsEl.innerHTML = '';
   document.getElementById('stats').textContent = cells.length ? `${cells.length} سلول · ${new Set(cells.map(c=>c.author_name)).size} دانشجو` : '';
   for (const [id, o] of [...editors]) { if (!cells.find(c => c.id === id)) { o.cellEl.remove(); editors.delete(id); openCommentSections.delete(id); } }
 
