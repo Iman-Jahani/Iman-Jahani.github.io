@@ -1311,7 +1311,7 @@ function updateQuizBanner() {
   if (!activeQuiz || isTeacherMode) { banner.classList.remove('show'); return; }
   const remaining = () => {
     const elapsed = Math.floor((Date.now() - new Date(activeQuiz.started_at).getTime()) / 1000);
-    return Math.max(0, activeQuiz.time_limit - elapsed);
+    return Math.max(0, (activeQuiz.time_limit * 60) - elapsed);
   };
   const myAns = myQuizAnswers[activeQuiz.id];
   const updateBanner = () => {
@@ -1378,7 +1378,7 @@ function renderQuizTake(body, quiz) {
   const qs = Array.isArray(quiz.questions) ? quiz.questions : [];
   const myAns = myQuizAnswers[quiz.id];
   const elapsed = Math.floor((Date.now() - new Date(quiz.started_at).getTime()) / 1000);
-  const remaining = Math.max(0, quiz.time_limit - elapsed);
+  const remaining = Math.max(0, (quiz.time_limit * 60) - elapsed);
   const timeUp = remaining <= 0;
 
   if (myAns) {
