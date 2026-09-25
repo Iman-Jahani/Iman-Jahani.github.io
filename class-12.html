@@ -8,19 +8,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
 <style>
-  :root {
-    --bg: #f8fafc; --card: #ffffff; --ink: #1e293b; --muted: #64748b; --line: #e2e8f0;
-    --primary: #6366f1; --primary-2: #8b5cf6; --primary-light: #e0e7ff;
-    --primary-glow: rgba(99, 102, 241, .25);
-    --success: #10b981; --success-light: #d1fae5; --warning: #f59e0b; --warning-light: #fef3c7;
-    --danger: #ef4444; --danger-light: #fee2e2;
-    --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px;
-    --shadow-sm: 0 1px 3px rgba(15, 23, 42, .06);
-    --shadow-md: 0 4px 16px rgba(15, 23, 42, .08);
-    --shadow-lg: 0 12px 32px rgba(15, 23, 42, .12);
-    --shadow-xl: 0 20px 48px rgba(15, 23, 42, .15);
-    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+  :root { --bg: #f8fafc; --card: #ffffff; --ink: #1e293b; --muted: #64748b; --line: #e2e8f0; --primary: #6366f1; --primary-2: #8b5cf6; --primary-light: #e0e7ff; --primary-glow: rgba(99, 102, 241, .25); --success: #10b981; --success-light: #d1fae5; --warning: #f59e0b; --warning-light: #fef3c7; --danger: #ef4444; --danger-light: #fee2e2; --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px; --shadow-sm: 0 1px 3px rgba(15, 23, 42, .06); --shadow-md: 0 4px 16px rgba(15, 23, 42, .08); --shadow-lg: 0 12px 32px rgba(15, 23, 42, .12); --shadow-xl: 0 20px 48px rgba(15, 23, 42, .15); --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: var(--bg); color: var(--ink); font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif; -webkit-font-smoothing: antialiased; line-height: 1.6; }
   body { background: radial-gradient(1200px 600px at 100% -10%, rgba(139, 92, 246, .08), transparent 60%), radial-gradient(900px 500px at -10% 0%, rgba(99, 102, 241, .08), transparent 55%), linear-gradient(180deg, rgba(248, 250, 252, 0.9), rgba(248, 250, 252, 1)); min-height: 100vh; }
@@ -38,7 +26,6 @@
   .hero .who .dot { width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, #4ade80, #22c55e); box-shadow: 0 0 0 3px rgba(74, 222, 128, .4); animation: pulse 1.5s infinite; }
   .who-edit { background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3); color: white; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 11px; display: grid; place-items: center; transition: var(--transition); padding: 0; font-family: inherit; margin-right: 4px; }
   .who-edit:hover { background: rgba(255,255,255,.32); transform: scale(1.12) rotate(-8deg); }
-  .who-edit:active { transform: scale(.95); }
   .team-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
   @keyframes pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(74,222,128,.4); } 50% { box-shadow: 0 0 0 6px rgba(74,222,128,.2); } }
   main { max-width: 1000px; margin: -52px auto 80px; padding: 0 20px; position: relative; z-index: 2; animation: slideUp 0.6s ease-out 0.2s both; }
@@ -101,7 +88,6 @@
   .progress-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .progress-value { font-size: 16px; font-weight: 700; color: var(--primary); }
   .progress-label { font-size: 11px; color: var(--muted); font-weight: 600; }
-  .teacher-mode { background: linear-gradient(135deg, #fef3c7, #fde68a); border-color: #f59e0b; }
   .teacher-tools { display: none; padding: 14px 18px; background: #fffbeb; border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-md); margin-bottom: 20px; flex-wrap: wrap; gap: 12px; align-items: center; }
   .teacher-tools.show { display: flex; }
   .teacher-stats { display: flex; gap: 20px; background: white; padding: 10px 16px; border-radius: var(--radius-md); border: 1px solid rgba(245, 158, 11, 0.2); box-shadow: 0 2px 8px rgba(245, 158, 11, 0.1); }
@@ -208,8 +194,6 @@
   .current-team-banner { padding: 12px 16px; background: linear-gradient(135deg, #eef2ff, #e0e7ff); border: 1px solid rgba(99,102,241,.3); border-radius: var(--radius-md); margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
   .current-team-banner .label { font-size: 12px; color: var(--muted); font-weight: 600; }
   .current-team-banner .name { font-weight: 800; color: var(--primary); font-size: 15px; }
-
-  /* EXERCISES */
   .exercises-badge { position: absolute; top: -6px; right: -6px; background: var(--danger); color: white; font-size: 10px; font-weight: 800; min-width: 18px; height: 18px; border-radius: 999px; display: grid; place-items: center; padding: 0 5px; border: 2px solid white; box-shadow: 0 2px 6px rgba(239,68,68,.4); }
   .exercises-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
   .exercise-card { background: white; border: 1px solid var(--line); border-radius: var(--radius-md); padding: 16px; transition: var(--transition); display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; cursor: pointer; }
@@ -302,8 +286,6 @@
   .submission-info { flex: 1; min-width: 0; }
   .submission-name { font-weight: 700; font-size: 14px; }
   .submission-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
-  /* SHARED LIBRARY */
   .exercise-form-checkbox { display: flex; align-items: center; gap: 10px; padding: 12px 14px; background: #eff6ff; border: 1px dashed rgba(99,102,241,.4); border-radius: var(--radius-sm); cursor: pointer; font-size: 14px; font-weight: 600; color: #1e40af; transition: var(--transition); text-transform: none; letter-spacing: 0; }
   .exercise-form-checkbox:hover { background: #e0e7ff; border-color: var(--primary); }
   .exercise-form-checkbox input { width: 18px; height: 18px; margin: 0; cursor: pointer; accent-color: var(--primary); flex-shrink: 0; }
@@ -318,7 +300,6 @@
   .lib-meta .chip.uses { background: var(--success-light); color: #065f46; }
   .lib-delete { background: transparent; border: 1px solid rgba(239,68,68,.3); color: var(--danger); width: 32px; height: 32px; border-radius: 8px; cursor: pointer; display: grid; place-items: center; font-size: 14px; flex-shrink: 0; transition: var(--transition); }
   .lib-delete:hover { background: var(--danger); color: white; }
-
   @media (max-width: 600px) {
     .hero { padding: 22px 16px 60px; }
     .hero h1 { font-size: 20px; }
@@ -372,7 +353,6 @@
   <div id="cells"></div>
 </main>
 
-<!-- Welcome Modal -->
 <div class="modal-overlay" id="welcomeModal">
   <div class="modal">
     <h2>🐍 دفترچه اشتراکی کلاس پایتون</h2>
@@ -395,7 +375,6 @@
   </div>
 </div>
 
-<!-- Team Picker Modal -->
 <div class="modal-overlay" id="teamPickerModal">
   <div class="modal">
     <button class="modal-close" id="closeTeamPicker" title="بستن">✕</button>
@@ -410,7 +389,6 @@
   </div>
 </div>
 
-<!-- Leaderboard Modal -->
 <div class="modal-overlay" id="leaderboardModal">
   <div class="modal">
     <button class="modal-close" id="closeLeaderboard" title="بستن">✕</button>
@@ -420,7 +398,6 @@
   </div>
 </div>
 
-<!-- Share / Session Modal -->
 <div class="modal-overlay" id="shareModal">
   <div class="modal">
     <button class="modal-close" id="closeShare" title="بستن">✕</button>
@@ -442,7 +419,6 @@
   </div>
 </div>
 
-<!-- Exercises Modal -->
 <div class="modal-overlay" id="exercisesModal">
   <div class="modal modal-wide">
     <div class="modal-head-rel">
@@ -454,7 +430,6 @@
   </div>
 </div>
 
-<!-- Exercise Solve Modal -->
 <div class="modal-overlay" id="exerciseEditorModal">
   <div class="modal modal-wide">
     <div class="modal-head-rel">
@@ -474,7 +449,6 @@
   </div>
 </div>
 
-<!-- Exercise Form Modal (teacher) -->
 <div class="modal-overlay" id="exerciseFormModal">
   <div class="modal modal-wide">
     <div class="modal-head-rel">
@@ -529,7 +503,6 @@
   </div>
 </div>
 
-<!-- Shared Library Picker Modal -->
 <div class="modal-overlay" id="libraryPickerModal">
   <div class="modal modal-wide">
     <div class="modal-head-rel">
@@ -538,13 +511,12 @@
       <p style="color:var(--muted);font-size:14px;margin-top:6px">یه تمرین رو انتخاب کن تا فیلدهاش خودکار پر شه</p>
     </div>
     <div style="padding:24px 28px">
-      <input type="text" class="search-input" id="librarySearchInput" placeholder="🔍 جستجو در کتابخانه…" style="width:100%;margin-bottom:16px;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius-sm);font-family:inherit;font-size:14px">
+      <input type="text" id="librarySearchInput" placeholder="🔍 جستجو در کتابخانه…" style="width:100%;padding:12px 16px;border:1px solid var(--line);border-radius:var(--radius-sm);font-family:inherit;font-size:14px;margin-bottom:16px">
       <div id="libraryList"></div>
     </div>
   </div>
 </div>
 
-<!-- Submissions Modal -->
 <div class="modal-overlay" id="submissionsModal">
   <div class="modal modal-wide">
     <div class="modal-head-rel">
@@ -581,7 +553,6 @@
   let isTeacherMode = false;
   let cellsChannel = null;
   let pollInterval = null;
-
   let exercises = [];
   let mySubmissions = {};
   let currentExercise = null;
@@ -602,18 +573,8 @@
     setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, ms);
   }
   const PALETTE = ['#6366f1','#8b5cf6','#ec4899','#f43f5e','#f59e0b','#10b981','#06b6d4','#3b82f6','#84cc16','#eab308'];
-  function colorOf(name) {
-    let h = 0;
-    const s = name || 'ناشناس';
-    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
-    return PALETTE[h % PALETTE.length];
-  }
-  function initials(name) {
-    const s = (name || '؟').trim();
-    const parts = s.split(/\s+/);
-    if (parts.length === 1) return parts[0].slice(0, 1).toUpperCase();
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  }
+  function colorOf(name) { let h = 0; const s = name || 'ناشناس'; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return PALETTE[h % PALETTE.length]; }
+  function initials(name) { const s = (name || '؟').trim(); const parts = s.split(/\s+/); if (parts.length === 1) return parts[0].slice(0, 1).toUpperCase(); return (parts[0][0] + parts[1][0]).toUpperCase(); }
   function fmtRelative(iso) {
     if (!iso) return '—';
     const diff = Date.now() - new Date(iso).getTime();
@@ -629,13 +590,7 @@
   }
   function normalizeOutput(s) {
     if (s == null) return '';
-    return String(s)
-      .replace(/\r\n/g, '\n')
-      .replace(/\r/g, '\n')
-      .split('\n')
-      .map(l => l.replace(/\s+$/, ''))
-      .join('\n')
-      .replace(/^\n+|\n+$/g, '');
+    return String(s).replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').map(l => l.replace(/\s+$/, '')).join('\n').replace(/^\n+|\n+$/g, '');
   }
   async function hashPin(pin) {
     const enc = new TextEncoder();
@@ -735,9 +690,7 @@
     const pinHash = await hashPin(pin);
     for (let attempt = 0; attempt < 6; attempt++) {
       const code = generateSessionCode();
-      const { data, error } = await supabase.from('class_sessions').insert({
-        code, title, admin_pin_hash: pinHash, created_by: user.id
-      }).select().single();
+      const { data, error } = await supabase.from('class_sessions').insert({ code, title, admin_pin_hash: pinHash, created_by: user.id }).select().single();
       if (!error) return data;
       if (error.code !== '23505') throw error;
     }
@@ -757,8 +710,7 @@
   function subscribeToSession() {
     if (cellsChannel) { supabase.removeChannel(cellsChannel); cellsChannel = null; }
     if (!currentSession) return;
-    cellsChannel = supabase
-      .channel('cells-' + currentSession.id)
+    cellsChannel = supabase.channel('cells-' + currentSession.id)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'cells', filter: `class_id=eq.${currentSession.id}` }, () => loadCells())
       .subscribe();
   }
@@ -775,9 +727,7 @@
     }, 5000);
   }
   function stopPolling() { if (pollInterval) { clearInterval(pollInterval); pollInterval = null; } }
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && currentSession) { loadCells(); loadExercises(); }
-  });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && currentSession) { loadCells(); loadExercises(); } });
 
   async function enterSession(session) {
     currentSession = session;
@@ -830,14 +780,8 @@
     showWelcomeModal();
   }
 
-  function isTeacherUnlocked() {
-    if (!currentSession) return false;
-    return sessionStorage.getItem('teacherUnlocked_' + currentSession.id) === 'true';
-  }
-  function setTeacherUnlocked() {
-    if (!currentSession) return;
-    sessionStorage.setItem('teacherUnlocked_' + currentSession.id, 'true');
-  }
+  function isTeacherUnlocked() { if (!currentSession) return false; return sessionStorage.getItem('teacherUnlocked_' + currentSession.id) === 'true'; }
+  function setTeacherUnlocked() { if (!currentSession) return; sessionStorage.setItem('teacherUnlocked_' + currentSession.id, 'true'); }
   async function tryUnlockTeacher() {
     if (!currentSession) return false;
     if (isTeacherUnlocked()) return true;
@@ -911,11 +855,7 @@
   document.getElementById('shareModal').addEventListener('click', (e) => { if (e.target.id === 'shareModal') e.currentTarget.classList.remove('show'); });
   document.getElementById('copyCodeBtn').onclick = () => { navigator.clipboard.writeText(currentSession.code).then(() => toast('کد کپی شد', 'ok', 1500)); };
   document.getElementById('copyLinkBtn').onclick = () => { navigator.clipboard.writeText(document.getElementById('shareLink').value).then(() => toast('لینک کپی شد', 'ok', 1500)); };
-  document.getElementById('leaveClassBtn').onclick = () => {
-    if (!confirm('از این کلاس خارج می‌شوی. مطمئنی؟')) return;
-    document.getElementById('shareModal').classList.remove('show');
-    leaveSession();
-  };
+  document.getElementById('leaveClassBtn').onclick = () => { if (!confirm('از این کلاس خارج می‌شوی. مطمئنی؟')) return; document.getElementById('shareModal').classList.remove('show'); leaveSession(); };
 
   const TEAM_PALETTE = ['#ef4444','#f97316','#eab308','#22c55e','#06b6d4','#3b82f6','#8b5cf6','#ec4899','#14b8a6','#f43f5e'];
 
@@ -945,11 +885,7 @@
     if (!currentSession) return null;
     const color = TEAM_PALETTE[Math.floor(Math.random() * TEAM_PALETTE.length)];
     const { data, error } = await supabase.from('teams').insert({ class_id: currentSession.id, name, color }).select().single();
-    if (error) {
-      if (error.code === '23505') toast('این نام تیم توی این کلاس قبلاً استفاده شده', 'err', 3000);
-      else toast('خطای ساخت تیم: ' + error.message, 'err', 5000);
-      return null;
-    }
+    if (error) { if (error.code === '23505') toast('این نام تیم توی این کلاس قبلاً استفاده شده', 'err', 3000); else toast('خطای ساخت تیم: ' + error.message, 'err', 5000); return null; }
     return data;
   }
   async function joinTeam(team) {
@@ -992,25 +928,15 @@
     if (currentTeam) {
       const found = teams.find(t => t.id === currentTeam.id);
       if (!found) { currentTeam = null; clearStoredTeam(currentSession.id); updateTeamBadge(); }
-      else {
-        bannerWrap.innerHTML = `<div class="current-team-banner"><span class="team-dot" style="background:${currentTeam.color};width:14px;height:14px"></span><div style="flex:1"><div class="label">تیم فعلی شما</div><div class="name">${escapeHtml(currentTeam.name)}</div></div></div>`;
-      }
+      else { bannerWrap.innerHTML = `<div class="current-team-banner"><span class="team-dot" style="background:${currentTeam.color};width:14px;height:14px"></span><div style="flex:1"><div class="label">تیم فعلی شما</div><div class="name">${escapeHtml(currentTeam.name)}</div></div></div>`; }
     }
     if (!teams.length) { list.innerHTML = `<div class="comments-empty">هنوز تیمی در این کلاس ساخته نشده.</div>`; return; }
-    const sortedTeams = [...teams].sort((a, b) => {
-      if (a.id === currentTeam?.id) return -1;
-      if (b.id === currentTeam?.id) return 1;
-      return 0;
-    });
+    const sortedTeams = [...teams].sort((a, b) => { if (a.id === currentTeam?.id) return -1; if (b.id === currentTeam?.id) return 1; return 0; });
     list.innerHTML = sortedTeams.map(t => {
       const teamMembers = members[t.id] || [];
       const isMine = currentTeam && currentTeam.id === t.id;
       const membersHtml = teamMembers.length
-        ? teamMembers.map(m => {
-            const isYou = m === displayName;
-            const c = colorOf(m);
-            return `<span class="member-chip ${isYou ? 'you' : ''}"><span class="mini-avatar" style="background:${c}">${escapeHtml(initials(m))}</span>${escapeHtml(m)}${isYou ? ' (شما)' : ''}</span>`;
-          }).join('')
+        ? teamMembers.map(m => { const isYou = m === displayName; const c = colorOf(m); return `<span class="member-chip ${isYou ? 'you' : ''}"><span class="mini-avatar" style="background:${c}">${escapeHtml(initials(m))}</span>${escapeHtml(m)}${isYou ? ' (شما)' : ''}</span>`; }).join('')
         : '<span style="font-size:11px;color:var(--muted)">هنوز عضوی ندارد</span>';
       return `<div class="team-card ${isMine ? 'current' : ''}" data-team-id="${t.id}" data-team-name="${escapeHtml(t.name)}" data-team-color="${escapeHtml(t.color)}" style="border-right:4px solid ${t.color}">
         <div class="team-card-head">
@@ -1065,11 +991,7 @@
     const { error } = await supabase.from('cells').update({ code, output, updated_at: new Date().toISOString() }).eq('id', id);
     if (error) console.error('saveCell error:', error);
   }
-  async function setOutput(outputEl, text, isErr) {
-    outputEl.classList.add('show');
-    outputEl.classList.toggle('err', !!isErr);
-    outputEl.textContent = text;
-  }
+  async function setOutput(outputEl, text, isErr) { outputEl.classList.add('show'); outputEl.classList.toggle('err', !!isErr); outputEl.textContent = text; }
 
   let pyodide;
   async function getPyodide() {
@@ -1093,10 +1015,7 @@ _bi.input = _clean_input
       await setOutput(outputEl, '⏳ در حال اجرا…', false);
       py.setStdout({ batched: (s) => { out += s + '\n'; } });
       py.setStderr({ batched: (s) => { out += s + '\n'; } });
-      try {
-        const r = await py.runPythonAsync(code);
-        if (r !== undefined && r !== null) out += String(r);
-      } catch (e) { out += 'Error: ' + (e.message || e); }
+      try { const r = await py.runPythonAsync(code); if (r !== undefined && r !== null) out += String(r); } catch (e) { out += 'Error: ' + (e.message || e); }
     } catch (e) { out = 'Pyodide error: ' + e.message; }
     out = out.trim() || '(بدون خروجی)';
     await setOutput(outputEl, out, out.startsWith('Error') || out.startsWith('Pyodide'));
@@ -1110,16 +1029,14 @@ _bi.input = _clean_input
         <div class="empty">
           <div class="emoji">✨</div>
           <h3>آماده‌ای شروع کنی؟</h3>
-          <p>می‌تونی همین الان یه سلول شخصی بسازی (فقط خودت می‌بینیش) یا اگه می‌خوای با بقیه کار کنی، به یه تیم بپیوندی.</p>
+          <p>می‌تونی همین الان یه سلول شخصی بسازی یا اگه می‌خوای با بقیه کار کنی، به یه تیم بپیوندی.</p>
           <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap">
             <button class="btn btn-primary" id="emptyAddCell">سلول شخصی جدید</button>
             <button class="btn btn-ghost" id="emptyPickTeam">پیوستن به تیم</button>
           </div>
         </div>`;
-      const btnAdd = document.getElementById('emptyAddCell');
-      if (btnAdd) btnAdd.onclick = () => document.getElementById('addCell').click();
-      const btnTeam = document.getElementById('emptyPickTeam');
-      if (btnTeam) btnTeam.onclick = showTeamPicker;
+      const btnAdd = document.getElementById('emptyAddCell'); if (btnAdd) btnAdd.onclick = () => document.getElementById('addCell').click();
+      const btnTeam = document.getElementById('emptyPickTeam'); if (btnTeam) btnTeam.onclick = showTeamPicker;
       return;
     }
     cellsEl.innerHTML = `<div class="empty"><div class="emoji">✨</div><h3>تیم شما هنوز سلولی ندارد</h3><p>روی «سلول جدید» بزن.</p></div>`;
@@ -1135,11 +1052,7 @@ _bi.input = _clean_input
     const list = document.getElementById(`comments-list-${cellId}`);
     if (!list) return;
     if (!comments.length) { list.innerHTML = `<div class="comments-empty">هنوز نظری ثبت نشده.</div>`; return; }
-    list.innerHTML = comments.map(c => {
-      const name = c.author_name || 'ناشناس';
-      const color = colorOf(name);
-      return `<div class="comment-item"><div class="comment-header"><div class="comment-avatar" style="background:${color}">${escapeHtml(initials(name))}</div><div class="comment-author">${escapeHtml(name)}</div><div class="comment-time">${new Date(c.created_at).toLocaleString('fa-IR')}</div></div><div class="comment-text">${escapeHtml(c.text || '')}</div></div>`;
-    }).join('');
+    list.innerHTML = comments.map(c => { const name = c.author_name || 'ناشناس'; const color = colorOf(name); return `<div class="comment-item"><div class="comment-header"><div class="comment-avatar" style="background:${color}">${escapeHtml(initials(name))}</div><div class="comment-author">${escapeHtml(name)}</div><div class="comment-time">${new Date(c.created_at).toLocaleString('fa-IR')}</div></div><div class="comment-text">${escapeHtml(c.text || '')}</div></div>`; }).join('');
   }
   function updateCommentIndicators(cellId, count) {
     const obj = editors.get(cellId);
@@ -1162,18 +1075,8 @@ _bi.input = _clean_input
     renderComments(cellId, comments);
     updateCommentIndicators(cellId, comments.length);
   }
-  function closeComments(cellId) {
-    const section = document.getElementById(`comments-${cellId}`);
-    if (!section) return;
-    openCommentSections.delete(cellId);
-    section.classList.remove('show');
-  }
-  function toggleComments(cellId) {
-    const section = document.getElementById(`comments-${cellId}`);
-    if (!section) return;
-    if (section.classList.contains('show')) closeComments(cellId);
-    else openComments(cellId);
-  }
+  function closeComments(cellId) { const section = document.getElementById(`comments-${cellId}`); if (!section) return; openCommentSections.delete(cellId); section.classList.remove('show'); }
+  function toggleComments(cellId) { const section = document.getElementById(`comments-${cellId}`); if (!section) return; if (section.classList.contains('show')) closeComments(cellId); else openComments(cellId); }
   async function submitComment(cellId) {
     const textarea = document.querySelector(`.comment-textarea[data-cell-id="${cellId}"]`);
     if (!textarea) return;
@@ -1194,64 +1097,40 @@ _bi.input = _clean_input
     const arr = Array.isArray(tags) ? tags : [];
     const tagList = arr.map(t => `<span class="tag" data-tag="${escapeHtml(t)}" title="حذف تگ">${escapeHtml(t)} <span class="tag-remove">×</span></span>`).join('');
     container.innerHTML = `${tagList}<button class="tag-btn add-tag" data-cell-id="${cellId}">+ افزودن تگ</button>`;
-    container.querySelector('.add-tag').onclick = () => {
-      const tag = prompt('نام تگ:');
-      if (!tag || !tag.trim()) return;
-      addTag(cellId, tag.trim());
-    };
-    container.querySelectorAll('.tag').forEach(el => {
-      el.onclick = () => {
-        const t = el.getAttribute('data-tag');
-        if (!confirm(`تگ «${t}» حذف شود؟`)) return;
-        removeTag(cellId, t);
-      };
-    });
+    container.querySelector('.add-tag').onclick = () => { const tag = prompt('نام تگ:'); if (!tag || !tag.trim()) return; addTag(cellId, tag.trim()); };
+    container.querySelectorAll('.tag').forEach(el => { el.onclick = () => { const t = el.getAttribute('data-tag'); if (!confirm(`تگ «${t}» حذف شود؟`)) return; removeTag(cellId, t); }; });
   }
   async function addTag(cellId, tag) {
-    const obj = editors.get(cellId);
-    if (!obj) return;
+    const obj = editors.get(cellId); if (!obj) return;
     const current = Array.isArray(obj.cellData.tags) ? [...obj.cellData.tags] : [];
     if (current.includes(tag)) { toast('این تگ قبلاً اضافه شده', 'info', 2000); return; }
     current.push(tag);
     const { error } = await supabase.from('cells').update({ tags: current }).eq('id', cellId);
     if (error) { toast('خطای تگ: ' + error.message, 'err', 6000); return; }
-    obj.cellData.tags = current;
-    renderTags(cellId, current);
-    toast('تگ اضافه شد', 'ok', 1500);
+    obj.cellData.tags = current; renderTags(cellId, current); toast('تگ اضافه شد', 'ok', 1500);
   }
   async function removeTag(cellId, tag) {
-    const obj = editors.get(cellId);
-    if (!obj) return;
+    const obj = editors.get(cellId); if (!obj) return;
     const current = (Array.isArray(obj.cellData.tags) ? obj.cellData.tags : []).filter(t => t !== tag);
     const { error } = await supabase.from('cells').update({ tags: current }).eq('id', cellId);
     if (error) { toast('خطای حذف تگ: ' + error.message, 'err', 5000); return; }
-    obj.cellData.tags = current;
-    renderTags(cellId, current);
+    obj.cellData.tags = current; renderTags(cellId, current);
   }
   let tagsVisible = localStorage.getItem('tagsVisible') !== 'false';
   function applyTagsVisibility() {
     document.querySelectorAll('.tags-container').forEach(el => { el.classList.toggle('hidden', !tagsVisible); });
-    const btn = document.getElementById('toggleTags');
-    if (btn) btn.classList.toggle('active', tagsVisible);
+    const btn = document.getElementById('toggleTags'); if (btn) btn.classList.toggle('active', tagsVisible);
   }
-  document.getElementById('toggleTags').onclick = () => {
-    tagsVisible = !tagsVisible;
-    localStorage.setItem('tagsVisible', tagsVisible);
-    applyTagsVisibility();
-    toast(tagsVisible ? 'تگ‌ها نمایش داده می‌شوند' : 'تگ‌ها پنهان شدند', 'info', 1500);
-  };
+  document.getElementById('toggleTags').onclick = () => { tagsVisible = !tagsVisible; localStorage.setItem('tagsVisible', tagsVisible); applyTagsVisibility(); toast(tagsVisible ? 'تگ‌ها نمایش داده می‌شوند' : 'تگ‌ها پنهان شدند', 'info', 1500); };
 
   function renderCells(cells, commentsByCell) {
     commentsByCell = commentsByCell || {};
     if (!cells.length) renderEmpty();
     else if (cellsEl.querySelector('.empty')) cellsEl.innerHTML = '';
 
-    document.getElementById('stats').textContent =
-      cells.length ? `${cells.length} سلول · ${new Set(cells.map(c=>c.author_name)).size} دانشجو` : '';
+    document.getElementById('stats').textContent = cells.length ? `${cells.length} سلول · ${new Set(cells.map(c=>c.author_name)).size} دانشجو` : '';
 
-    for (const [id, obj] of [...editors]) {
-      if (!cells.find(c => c.id === id)) { obj.cellEl.remove(); editors.delete(id); openCommentSections.delete(id); }
-    }
+    for (const [id, obj] of [...editors]) { if (!cells.find(c => c.id === id)) { obj.cellEl.remove(); editors.delete(id); openCommentSections.delete(id); } }
 
     for (const cell of cells) {
       const count = cell.comments_count != null ? cell.comments_count : (commentsByCell[cell.id] || 0);
@@ -1270,23 +1149,12 @@ _bi.input = _clean_input
         renderTags(cell.id, cell.tags || []);
         updateCommentIndicators(cell.id, count);
         const tb = obj.cellEl.querySelector('.cell-team-badge');
-        if (tb) {
-          if (cell.team_name) { tb.textContent = cell.team_name; tb.style.background = colorOf(cell.team_name); tb.classList.remove('personal-badge'); }
-          else { tb.textContent = '📝 شخصی'; tb.style.background = ''; tb.classList.add('personal-badge'); }
-        }
+        if (tb) { if (cell.team_name) { tb.textContent = cell.team_name; tb.style.background = colorOf(cell.team_name); tb.classList.remove('personal-badge'); } else { tb.textContent = '📝 شخصی'; tb.style.background = ''; tb.classList.add('personal-badge'); } }
         const nameEl = obj.cellEl.querySelector('.cell-head .name');
-        if (nameEl) {
-          const isOwn = cell.author_id === user.id;
-          nameEl.innerHTML = `${escapeHtml(cell.author_name || 'ناشناس')}${isOwn ? ' <span class="badge">شما</span>' : ''}`;
-        }
+        if (nameEl) { const isOwn = cell.author_id === user.id; nameEl.innerHTML = `${escapeHtml(cell.author_name || 'ناشناس')}${isOwn ? ' <span class="badge">شما</span>' : ''}`; }
         const avatarEl = obj.cellEl.querySelector('.avatar');
         if (avatarEl) { avatarEl.textContent = initials(cell.author_name || 'ناشناس'); avatarEl.style.background = colorOf(cell.author_name || 'ناشناس'); }
-        if (openCommentSections.has(cell.id)) {
-          const comments = commentsCache.get(cell.id) || [];
-          renderComments(cell.id, comments);
-          const section = document.getElementById(`comments-${cell.id}`);
-          if (section) section.classList.add('show');
-        }
+        if (openCommentSections.has(cell.id)) { const comments = commentsCache.get(cell.id) || []; renderComments(cell.id, comments); const section = document.getElementById(`comments-${cell.id}`); if (section) section.classList.add('show'); }
         continue;
       }
 
@@ -1294,9 +1162,7 @@ _bi.input = _clean_input
       const name = cell.author_name || 'ناشناس';
       const color = colorOf(name);
       const isPersonal = !cell.team_name;
-      const teamBadgeHtml = isPersonal
-        ? `<div class="cell-team-badge personal-badge">📝 شخصی</div>`
-        : `<div class="cell-team-badge" style="background:${colorOf(cell.team_name)}">${escapeHtml(cell.team_name)}</div>`;
+      const teamBadgeHtml = isPersonal ? `<div class="cell-team-badge personal-badge">📝 شخصی</div>` : `<div class="cell-team-badge" style="background:${colorOf(cell.team_name)}">${escapeHtml(cell.team_name)}</div>`;
 
       const el = document.createElement('div');
       el.className = 'cell' + (isOwn ? ' own' : '') + (isPersonal ? ' personal' : '');
@@ -1334,10 +1200,7 @@ _bi.input = _clean_input
       `;
       cellsEl.appendChild(el);
 
-      const cm = CodeMirror.fromTextArea(el.querySelector('textarea'), {
-        mode: 'python', theme: 'dracula', lineNumbers: true, indentUnit: 4, tabSize: 4,
-        indentWithTabs: false, autoCloseBrackets: true, matchBrackets: true, viewportMargin: Infinity,
-      });
+      const cm = CodeMirror.fromTextArea(el.querySelector('textarea'), { mode: 'python', theme: 'dracula', lineNumbers: true, indentUnit: 4, tabSize: 4, indentWithTabs: false, autoCloseBrackets: true, matchBrackets: true, viewportMargin: Infinity });
       cm.setValue(cell.code || '');
       const outputEl = el.querySelector('.output');
       const obj = { cm, cellEl: el, outputEl, lastOutput: cell.output || '', cellData: cell };
@@ -1349,18 +1212,9 @@ _bi.input = _clean_input
       cm.on('paste', (instance, e) => { e.preventDefault(); toast('کپی‌پیست مجاز نیست', 'err', 2500); });
       cm.on('drop', (instance, e) => { e.preventDefault(); toast('کشیدن متن مجاز نیست', 'err', 2500); });
       cm.on('contextmenu', (instance, e) => { e.preventDefault(); toast('راست‌کلیک غیرفعال است', 'info', 2000); });
-      cm.setOption('extraKeys', {
-        'Ctrl-Enter': () => el.querySelector('.run').click(),
-        'Cmd-Enter': () => el.querySelector('.run').click(),
-        'Ctrl-V': () => { toast('پیست مجاز نیست', 'err', 2000); return; },
-        'Cmd-V': () => { toast('پیست مجاز نیست', 'err', 2000); return; },
-        'Shift-Insert': () => { toast('پیست مجاز نیست', 'err', 2000); return; },
-      });
+      cm.setOption('extraKeys', { 'Ctrl-Enter': () => el.querySelector('.run').click(), 'Cmd-Enter': () => el.querySelector('.run').click(), 'Ctrl-V': () => { toast('پیست مجاز نیست', 'err', 2000); return; }, 'Cmd-V': () => { toast('پیست مجاز نیست', 'err', 2000); return; }, 'Shift-Insert': () => { toast('پیست مجاز نیست', 'err', 2000); return; } });
 
-      el.querySelector('.run').onclick = (ev) => {
-        const btn = ev.currentTarget; btn.disabled = true;
-        runCode(cell.id, cm.getValue(), outputEl).finally(() => { btn.disabled = false; });
-      };
+      el.querySelector('.run').onclick = (ev) => { const btn = ev.currentTarget; btn.disabled = true; runCode(cell.id, cm.getValue(), outputEl).finally(() => { btn.disabled = false; }); };
       el.querySelector('.save').onclick = async () => { await saveCell(cell.id, cm.getValue(), obj.lastOutput); toast('ذخیره شد', 'ok', 1500); };
       const delBtn = el.querySelector('.del');
       if (delBtn) delBtn.onclick = async () => {
@@ -1371,16 +1225,7 @@ _bi.input = _clean_input
         const { error } = await supabase.from('cells').delete().eq('id', cell.id);
         if (error) { el.style.opacity = '1'; el.style.transform = 'scale(1)'; el.style.maxHeight = el.offsetHeight + 'px'; el.style.marginBottom = '24px'; toast('خطای حذف: ' + error.message, 'err', 5000); return; }
         editors.delete(cell.id); openCommentSections.delete(cell.id); commentsCache.delete(cell.id);
-        setTimeout(() => {
-          el.remove();
-          if (editors.size === 0) { renderEmpty(); document.getElementById('stats').textContent = ''; }
-          else {
-            const remaining = editors.size;
-            const students = new Set([...editors.values()].map(o => o.cellData.author_name)).size;
-            document.getElementById('stats').textContent = `${remaining} سلول · ${students} دانشجو`;
-          }
-          if (isTeacherMode) updateTeacherStats();
-        }, 400);
+        setTimeout(() => { el.remove(); if (editors.size === 0) { renderEmpty(); document.getElementById('stats').textContent = ''; } else { const remaining = editors.size; const students = new Set([...editors.values()].map(o => o.cellData.author_name)).size; document.getElementById('stats').textContent = `${remaining} سلول · ${students} دانشجو`; } if (isTeacherMode) updateTeacherStats(); }, 400);
         toast('حذف شد', 'ok', 1500);
       };
       el.querySelector('.comment-indicator').onclick = () => toggleComments(cell.id);
@@ -1400,10 +1245,7 @@ _bi.input = _clean_input
     if (!currentSession) return;
     try {
       let query = supabase.from('cells').select('*').eq('class_id', currentSession.id).order('created_at', { ascending: true });
-      if (!isTeacherMode) {
-        if (currentTeam?.id) query = query.or(`team_id.eq.${currentTeam.id},and(team_id.is.null,author_id.eq.${user.id})`);
-        else query = query.is('team_id', null).eq('author_id', user.id);
-      }
+      if (!isTeacherMode) { if (currentTeam?.id) query = query.or(`team_id.eq.${currentTeam.id},and(team_id.is.null,author_id.eq.${user.id})`); else query = query.is('team_id', null).eq('author_id', user.id); }
       const { data, error } = await query;
       if (error) { cellsEl.innerHTML = `<div class="empty"><div class="emoji">⚠️</div><h3>خطا</h3><p>${escapeHtml(error.message)}</p></div>`; toast('خطا: ' + error.message, 'err', 6000); return; }
       const cells = data || [];
@@ -1417,9 +1259,7 @@ _bi.input = _clean_input
     } catch (e) { console.error(e); cellsEl.innerHTML = `<div class="empty"><div class="emoji">💥</div><h3>خطا</h3><p>${escapeHtml(e.message)}</p></div>`; }
   }
 
-  // ============================================================
   // EXERCISES
-  // ============================================================
   async function loadExercises() {
     if (!currentSession) return;
     try {
@@ -1429,10 +1269,7 @@ _bi.input = _clean_input
       if (exercises.length) {
         const exIds = exercises.map(e => e.id);
         const { data: subData, error: subErr } = await supabase.from('exercise_submissions').select('*').in('exercise_id', exIds).eq('user_id', user.id);
-        if (!subErr) {
-          mySubmissions = {};
-          (subData || []).forEach(s => { mySubmissions[s.exercise_id] = s; });
-        }
+        if (!subErr) { mySubmissions = {}; (subData || []).forEach(s => { mySubmissions[s.exercise_id] = s; }); }
       } else mySubmissions = {};
       updateExercisesBadge();
       if (document.getElementById('exercisesModal').classList.contains('show')) renderExercisesModal();
@@ -1443,31 +1280,18 @@ _bi.input = _clean_input
     const badge = document.getElementById('exercisesBadge');
     if (!badge) return;
     if (isTeacherMode || !currentSession) { badge.style.display = 'none'; return; }
-    const unsolved = exercises.filter(e => {
-      const sub = mySubmissions[e.id];
-      return !sub || sub.status !== 'correct';
-    }).length;
-    if (unsolved > 0) { badge.textContent = unsolved; badge.style.display = 'grid'; }
-    else badge.style.display = 'none';
+    const unsolved = exercises.filter(e => { const sub = mySubmissions[e.id]; return !sub || sub.status !== 'correct'; }).length;
+    if (unsolved > 0) { badge.textContent = unsolved; badge.style.display = 'grid'; } else badge.style.display = 'none';
   }
 
-  function openExercisesModal() {
-    document.getElementById('exercisesModal').classList.add('show');
-    renderExercisesModal();
-  }
+  function openExercisesModal() { document.getElementById('exercisesModal').classList.add('show'); renderExercisesModal(); }
 
   function renderExercisesModal() {
     const body = document.getElementById('exercisesBody');
     const isTeacher = isTeacherMode;
-
-    const toolbarHtml = isTeacher ? `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap">
-        <div style="font-size:13px;color:var(--muted)">${exercises.length} تمرین در این کلاس</div>
-        <button class="btn btn-primary" id="addExerciseBtn">+ تمرین جدید</button>
-      </div>
-    ` : `
-      <div style="font-size:13px;color:var(--muted);margin-bottom:16px">${exercises.length} تمرین — هر کدوم همه‌ی تست‌هاش پاس شه، سبز می‌شه</div>
-    `;
+    const toolbarHtml = isTeacher
+      ? `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap"><div style="font-size:13px;color:var(--muted)">${exercises.length} تمرین در این کلاس</div><button class="btn btn-primary" id="addExerciseBtn">+ تمرین جدید</button></div>`
+      : `<div style="font-size:13px;color:var(--muted);margin-bottom:16px">${exercises.length} تمرین — هر کدوم همه‌ی تست‌هاش پاس شه، سبز می‌شه</div>`;
 
     if (!exercises.length) {
       body.innerHTML = toolbarHtml + `<div class="empty" style="padding:40px 20px"><div class="emoji">📝</div><h3>${isTeacher ? 'هنوز تمرینی نساختی' : 'هنوز تمرینی گذاشته نشده'}</h3></div>`;
@@ -1487,10 +1311,7 @@ _bi.input = _clean_input
         return `<div class="exercise-card" data-exercise-id="${ex.id}" style="cursor:default">
           <div class="exercise-title"><span class="exercise-title-text">📝 ${escapeHtml(ex.title)}</span></div>
           ${ex.description ? `<div class="exercise-desc">${escapeHtml(ex.description)}</div>` : ''}
-          <div class="exercise-meta">
-            <span class="test-cases-count">${total} تست</span>
-            <span>${fmtRelative(ex.created_at)}</span>
-          </div>
+          <div class="exercise-meta"><span class="test-cases-count">${total} تست</span><span>${fmtRelative(ex.created_at)}</span></div>
           <div class="exercise-actions">
             <button class="btn btn-ghost" data-action="view-subs" data-id="${ex.id}">👁 پاسخ‌ها</button>
             <button class="btn btn-ghost" data-action="edit" data-id="${ex.id}">✏️ ویرایش</button>
@@ -1503,16 +1324,11 @@ _bi.input = _clean_input
           ${ex.description ? `<div class="exercise-desc">${escapeHtml(ex.description)}</div>` : ''}
           <div class="exercise-meta">
             <span class="exercise-status-badge ${status}">
-              ${status === 'correct' ? '✓ حل شد' :
-                status === 'partial' ? `◐ ${passed}/${total}` :
-                status === 'wrong' ? '✗ نادرست' :
-                status === 'error' ? '⚠ خطا' : '○ حل نشده'}
+              ${status === 'correct' ? '✓ حل شد' : status === 'partial' ? `◐ ${passed}/${total}` : status === 'wrong' ? '✗ نادرست' : status === 'error' ? '⚠ خطا' : '○ حل نشده'}
             </span>
             <span class="test-cases-count">${total} تست</span>
           </div>
-          <button class="btn btn-primary" data-action="solve" data-id="${ex.id}" style="width:100%">
-            ${solved ? '🔁 دوباره حل کن' : '▶ حل کن'}
-          </button>
+          <button class="btn btn-primary" data-action="solve" data-id="${ex.id}" style="width:100%">${solved ? '🔁 دوباره حل کن' : '▶ حل کن'}</button>
         </div>`;
       }
     }).join('');
@@ -1533,10 +1349,7 @@ _bi.input = _clean_input
     });
     if (!isTeacher) {
       body.querySelectorAll('.exercise-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-          if (e.target.closest('button')) return;
-          openExerciseEditor(card.getAttribute('data-exercise-id'));
-        });
+        card.addEventListener('click', (e) => { if (e.target.closest('button')) return; openExerciseEditor(card.getAttribute('data-exercise-id')); });
       });
     }
   }
@@ -1569,22 +1382,14 @@ _bi.input = _clean_input
       container.innerHTML = '<textarea></textarea>';
       const ta = container.querySelector('textarea');
       ta.value = initialCode;
-      editorInstance = CodeMirror.fromTextArea(ta, {
-        mode: 'python', theme: 'dracula', lineNumbers: true, indentUnit: 4, tabSize: 4,
-        indentWithTabs: false, autoCloseBrackets: true, matchBrackets: true, viewportMargin: Infinity,
-      });
+      editorInstance = CodeMirror.fromTextArea(ta, { mode: 'python', theme: 'dracula', lineNumbers: true, indentUnit: 4, tabSize: 4, indentWithTabs: false, autoCloseBrackets: true, matchBrackets: true, viewportMargin: Infinity });
       editorInstance.setSize('100%', 240);
       editorInstance.refresh();
       editorInstance.focus();
       editorInstance.on('change', () => { try { localStorage.setItem(draftKey, editorInstance.getValue()); } catch {} });
       editorInstance.on('paste', (inst, e) => { e.preventDefault(); toast('کپی‌پیست مجاز نیست', 'err', 2000); });
       editorInstance.on('drop', (inst, e) => { e.preventDefault(); toast('کشیدن متن مجاز نیست', 'err', 2000); });
-      editorInstance.setOption('extraKeys', {
-        'Ctrl-Enter': () => runExercise(),
-        'Cmd-Enter': () => runExercise(),
-        'Ctrl-V': () => { toast('پیست مجاز نیست', 'err', 2000); return; },
-        'Cmd-V': () => { toast('پیست مجاز نیست', 'err', 2000); return; },
-      });
+      editorInstance.setOption('extraKeys', { 'Ctrl-Enter': () => runExercise(), 'Cmd-Enter': () => runExercise(), 'Ctrl-V': () => { toast('پیست مجاز نیست', 'err', 2000); return; }, 'Cmd-V': () => { toast('پیست مجاز نیست', 'err', 2000); return; } });
     }, 100);
   }
 
@@ -1602,9 +1407,7 @@ _bi.input = _clean_input
     const resultsWrap = document.getElementById('exerciseResultsWrap');
     const runBtn = document.getElementById('exerciseRunBtn');
 
-    const tests = (currentExercise.test_cases && currentExercise.test_cases.length)
-      ? currentExercise.test_cases
-      : [{ input: '', expected: '' }];
+    const tests = (currentExercise.test_cases && currentExercise.test_cases.length) ? currentExercise.test_cases : [{ input: '', expected: '' }];
 
     runBtn.disabled = true;
     const origText = runBtn.innerHTML;
@@ -1625,28 +1428,14 @@ _bi.input = _clean_input
       const inputStr = test.input == null ? '' : String(test.input);
       let inputQueue;
       if (inputStr.length === 0) inputQueue = [];
-      else {
-        const parts = inputStr.split('\n');
-        while (parts.length > 0 && parts[parts.length - 1] === '') parts.pop();
-        inputQueue = parts.map(l => l + '\n');
-      }
-      py.setStdin({
-        stdin: () => {
-          if (inputQueue.length === 0) return null;
-          return inputQueue.shift();
-        }
-      });
+      else { const parts = inputStr.split('\n'); while (parts.length > 0 && parts[parts.length - 1] === '') parts.pop(); inputQueue = parts.map(l => l + '\n'); }
+      py.setStdin({ stdin: () => { if (inputQueue.length === 0) return null; return inputQueue.shift(); } });
 
       let errorMsg = null;
       let freshGlobals = null;
-      try {
-        freshGlobals = py.globals.get('dict')();
-        await py.runPythonAsync(code, { globals: freshGlobals });
-      } catch (e) {
-        errorMsg = String(e.message || e);
-      } finally {
-        if (freshGlobals) { try { freshGlobals.destroy(); } catch {} }
-      }
+      try { freshGlobals = py.globals.get('dict')(); await py.runPythonAsync(code, { globals: freshGlobals }); }
+      catch (e) { errorMsg = String(e.message || e); }
+      finally { if (freshGlobals) { try { freshGlobals.destroy(); } catch {} } }
 
       const actualRaw = out.replace(/\n$/, '');
       const actual = errorMsg ? ('Error: ' + errorMsg) : actualRaw;
@@ -1667,10 +1456,7 @@ _bi.input = _clean_input
     const resultsHtml = results.map((r, i) => `
       <div class="test-result-row ${r.passed ? 'pass' : 'fail'}">
         <div class="test-result-head">
-          <div class="test-result-num">
-            <span class="test-case-num-badge" style="background:${r.passed ? 'var(--success)' : 'var(--danger)'}">${i + 1}</span>
-            تست ${i + 1}
-          </div>
+          <div class="test-result-num"><span class="test-case-num-badge" style="background:${r.passed ? 'var(--success)' : 'var(--danger)'}">${i + 1}</span>تست ${i + 1}</div>
           <span class="test-result-status">${r.passed ? '✓ پاس' : '✗ ناموفق'}</span>
         </div>
         <div class="test-result-compare">
@@ -1681,27 +1467,12 @@ _bi.input = _clean_input
       </div>`).join('');
 
     const scoreClass = status === 'correct' ? 'pass' : (status === 'partial' ? 'partial' : 'fail');
-    const scoreTitle = status === 'correct' ? '🎉 همه‌ی تست‌ها پاس شد!' :
-                       status === 'partial' ? `${passedCount} از ${total} تست پاس شد` :
-                       'هیچ تستی پاس نشد';
-    const scoreSub = status === 'correct' ? 'آفرین! کدت درست کار می‌کنه' :
-                     status === 'partial' ? 'نزدیک بودی — نتایج هر تست رو ببین و کدت رو اصلاح کن' :
-                     'نتایج رو ببین و دوباره تلاش کن';
+    const scoreTitle = status === 'correct' ? '🎉 همه‌ی تست‌ها پاس شد!' : status === 'partial' ? `${passedCount} از ${total} تست پاس شد` : 'هیچ تستی پاس نشد';
+    const scoreSub = status === 'correct' ? 'آفرین! کدت درست کار می‌کنه' : status === 'partial' ? 'نزدیک بودی — نتایج هر تست رو ببین' : 'نتایج رو ببین و دوباره تلاش کن';
 
-    resultsWrap.innerHTML = `
-      <div class="score-display ${scoreClass}">
-        <div class="score-circle">${passedCount}/${total}</div>
-        <div class="score-details">
-          <div class="score-title">${scoreTitle}</div>
-          <div class="score-sub">${scoreSub}</div>
-        </div>
-      </div>
-      <div class="test-results-grid">${resultsHtml}</div>
-    `;
+    resultsWrap.innerHTML = `<div class="score-display ${scoreClass}"><div class="score-circle">${passedCount}/${total}</div><div class="score-details"><div class="score-title">${scoreTitle}</div><div class="score-sub">${scoreSub}</div></div></div><div class="test-results-grid">${resultsHtml}</div>`;
 
-    await saveExerciseSubmission(currentExercise.id, code, results.map(r => r.actual).join('\n---\n'), status, {
-      score, passed_tests: passedCount, total_tests: total, test_results: results
-    });
+    await saveExerciseSubmission(currentExercise.id, code, results.map(r => r.actual).join('\n---\n'), status, { score, passed_tests: passedCount, total_tests: total, test_results: results });
 
     runBtn.disabled = false;
     runBtn.innerHTML = origText;
@@ -1714,36 +1485,16 @@ _bi.input = _clean_input
   document.getElementById('exerciseRunBtn').onclick = runExercise;
 
   async function saveExerciseSubmission(exerciseId, code, output, status, extra) {
-    const payload = {
-      exercise_id: exerciseId,
-      user_id: user.id,
-      author_name: displayName,
-      code, output, status,
-      score: extra.score || 0,
-      passed_tests: extra.passed_tests || 0,
-      total_tests: extra.total_tests || 0,
-      test_results: extra.test_results || [],
-      submitted_at: new Date().toISOString()
-    };
+    const payload = { exercise_id: exerciseId, user_id: user.id, author_name: displayName, code, output, status, score: extra.score || 0, passed_tests: extra.passed_tests || 0, total_tests: extra.total_tests || 0, test_results: extra.test_results || [], submitted_at: new Date().toISOString() };
     const { error } = await supabase.from('exercise_submissions').upsert(payload, { onConflict: 'exercise_id,user_id' });
-    if (error) {
-      console.error('saveExerciseSubmission:', error);
-      toast('خطا در ذخیره: ' + error.message, 'err', 5000);
-      return;
-    }
+    if (error) { console.error('saveExerciseSubmission:', error); toast('خطا در ذخیره: ' + error.message, 'err', 5000); return; }
     mySubmissions[exerciseId] = { ...payload };
     updateExercisesBadge();
   }
 
-  // ============================================================
-  // SHARED EXERCISE LIBRARY
-  // ============================================================
+  // SHARED LIBRARY
   async function loadSharedExercises() {
-    const { data, error } = await supabase
-      .from('shared_exercises')
-      .select('*')
-      .order('use_count', { ascending: false })
-      .order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('shared_exercises').select('*').order('use_count', { ascending: false }).order('created_at', { ascending: false });
     if (error) { console.error('loadSharedExercises:', error); sharedExercises = []; return; }
     sharedExercises = data || [];
   }
@@ -1759,49 +1510,28 @@ _bi.input = _clean_input
   function renderLibraryList(query) {
     const list = document.getElementById('libraryList');
     const q = (query || '').trim().toLowerCase();
-    const filtered = q
-      ? sharedExercises.filter(ex =>
-          (ex.title || '').toLowerCase().includes(q) ||
-          (ex.description || '').toLowerCase().includes(q))
-      : sharedExercises;
-
+    const filtered = q ? sharedExercises.filter(ex => (ex.title || '').toLowerCase().includes(q) || (ex.description || '').toLowerCase().includes(q)) : sharedExercises;
     if (!filtered.length) {
-      list.innerHTML = sharedExercises.length
-        ? '<div class="comments-empty">چیزی با این جستجو پیدا نشد</div>'
-        : '<div class="comments-empty">کتابخانه خالیه — اولین نفر باش که یه تمرین به اشتراک می‌ذاره 📚</div>';
+      list.innerHTML = sharedExercises.length ? '<div class="comments-empty">چیزی با این جستجو پیدا نشد</div>' : '<div class="comments-empty">کتابخانه خالیه — اولین نفر باش که یه تمرین به اشتراک می‌ذاره 📚</div>';
       return;
     }
-
     list.innerHTML = filtered.map(ex => {
       const tests = Array.isArray(ex.test_cases) ? ex.test_cases : [];
-      return `
-        <div class="lib-item" data-lib-id="${ex.id}">
-          <div class="lib-info">
-            <div class="lib-title">📝 ${escapeHtml(ex.title)}</div>
-            ${ex.description ? `<div class="lib-desc">${escapeHtml(ex.description)}</div>` : ''}
-            <div class="lib-meta">
-              <span class="chip tests">${tests.length} تست</span>
-              <span class="chip uses">${ex.use_count || 0} بار استفاده</span>
-              <span style="margin-right:auto">${escapeHtml(ex.created_by_name || 'ناشناس')} · ${fmtRelative(ex.created_at)}</span>
-            </div>
+      return `<div class="lib-item" data-lib-id="${ex.id}">
+        <div class="lib-info">
+          <div class="lib-title">📝 ${escapeHtml(ex.title)}</div>
+          ${ex.description ? `<div class="lib-desc">${escapeHtml(ex.description)}</div>` : ''}
+          <div class="lib-meta">
+            <span class="chip tests">${tests.length} تست</span>
+            <span class="chip uses">${ex.use_count || 0} بار استفاده</span>
+            <span style="margin-right:auto">${escapeHtml(ex.created_by_name || 'ناشناس')} · ${fmtRelative(ex.created_at)}</span>
           </div>
-          <button class="lib-delete" data-lib-del="${ex.id}" title="حذف از کتابخانه">🗑</button>
         </div>
-      `;
+        <button class="lib-delete" data-lib-del="${ex.id}" title="حذف از کتابخانه">🗑</button>
+      </div>`;
     }).join('');
-
-    list.querySelectorAll('[data-lib-id]').forEach(el => {
-      el.onclick = (e) => {
-        if (e.target.closest('[data-lib-del]')) return;
-        pickFromLibrary(el.getAttribute('data-lib-id'));
-      };
-    });
-    list.querySelectorAll('[data-lib-del]').forEach(btn => {
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        deleteSharedExercise(btn.getAttribute('data-lib-del'));
-      };
-    });
+    list.querySelectorAll('[data-lib-id]').forEach(el => { el.onclick = (e) => { if (e.target.closest('[data-lib-del]')) return; pickFromLibrary(el.getAttribute('data-lib-id')); }; });
+    list.querySelectorAll('[data-lib-del]').forEach(btn => { btn.onclick = (e) => { e.stopPropagation(); deleteSharedExercise(btn.getAttribute('data-lib-del')); }; });
   }
 
   async function pickFromLibrary(id) {
@@ -1810,31 +1540,16 @@ _bi.input = _clean_input
     document.getElementById('exerciseFormTitleInput').value = ex.title || '';
     document.getElementById('exerciseFormDesc').value = ex.description || '';
     document.getElementById('exerciseFormHint').value = ex.hint || '';
-    formTestCases = Array.isArray(ex.test_cases) && ex.test_cases.length
-      ? ex.test_cases.map(tc => ({ input: tc.input || '', expected: tc.expected || '' }))
-      : [{ input: '', expected: '' }];
+    formTestCases = Array.isArray(ex.test_cases) && ex.test_cases.length ? ex.test_cases.map(tc => ({ input: tc.input || '', expected: tc.expected || '' })) : [{ input: '', expected: '' }];
     renderFormTestCases();
-
-    supabase.from('shared_exercises')
-      .update({ use_count: (ex.use_count || 0) + 1 })
-      .eq('id', id)
-      .then(({ error }) => { if (error) console.warn('increment use_count:', error); });
-
+    supabase.from('shared_exercises').update({ use_count: (ex.use_count || 0) + 1 }).eq('id', id).then(({ error }) => { if (error) console.warn('increment use_count:', error); });
     document.getElementById('libraryPickerModal').classList.remove('show');
     toast('تمرین از کتابخانه بارگذاری شد — می‌تونی ویرایشش کنی', 'ok', 2500);
   }
 
   async function saveToSharedLibrary(title, description, hint, testCases) {
-    const { error } = await supabase.from('shared_exercises').insert({
-      title, description, hint,
-      test_cases: testCases,
-      created_by_name: displayName
-    });
-    if (error) {
-      console.error('saveToSharedLibrary:', error);
-      toast('خطا در افزودن به کتابخانه: ' + error.message, 'err', 5000);
-      return false;
-    }
+    const { error } = await supabase.from('shared_exercises').insert({ title, description, hint, test_cases: testCases, created_by_name: displayName });
+    if (error) { console.error('saveToSharedLibrary:', error); toast('خطا در افزودن به کتابخانه: ' + error.message, 'err', 5000); return false; }
     return true;
   }
 
@@ -1850,17 +1565,11 @@ _bi.input = _clean_input
   }
 
   document.getElementById('pickFromLibraryBtn').onclick = openLibraryPicker;
-  document.getElementById('closeLibraryPicker').onclick = () => {
-    document.getElementById('libraryPickerModal').classList.remove('show');
-  };
-  document.getElementById('libraryPickerModal').addEventListener('click', (e) => {
-    if (e.target.id === 'libraryPickerModal') e.currentTarget.classList.remove('show');
-  });
-  document.getElementById('librarySearchInput').addEventListener('input', (e) => {
-    renderLibraryList(e.target.value);
-  });
+  document.getElementById('closeLibraryPicker').onclick = () => { document.getElementById('libraryPickerModal').classList.remove('show'); };
+  document.getElementById('libraryPickerModal').addEventListener('click', (e) => { if (e.target.id === 'libraryPickerModal') e.currentTarget.classList.remove('show'); });
+  document.getElementById('librarySearchInput').addEventListener('input', (e) => { renderLibraryList(e.target.value); });
 
-  // ---------- Teacher: Form ----------
+  // TEACHER FORM
   function openExerciseForm(id) {
     editingExerciseId = id || null;
     const modal = document.getElementById('exerciseFormModal');
@@ -1883,9 +1592,7 @@ _bi.input = _clean_input
       formTestCases = tcs.length ? tcs.map(tc => ({ input: tc.input || '', expected: tc.expected || '' })) : [{ input: '', expected: '' }];
     } else {
       titleEl.textContent = '📝 تمرین جدید';
-      titleInput.value = '';
-      descInput.value = '';
-      hintInput.value = '';
+      titleInput.value = ''; descInput.value = ''; hintInput.value = '';
       formTestCases = [{ input: '', expected: '' }];
     }
 
@@ -1898,68 +1605,28 @@ _bi.input = _clean_input
     const container = document.getElementById('testCasesEditor');
     const countEl = document.getElementById('testCasesCount');
     countEl.textContent = `${formTestCases.length} تست`;
-
     container.innerHTML = formTestCases.map((tc, i) => `
       <div class="test-case-row" data-idx="${i}">
         <div class="test-case-header">
-          <div class="test-case-num">
-            <span class="test-case-num-badge">${i + 1}</span>
-            تست ${i + 1}
-          </div>
+          <div class="test-case-num"><span class="test-case-num-badge">${i + 1}</span>تست ${i + 1}</div>
           ${formTestCases.length > 1 ? `<button class="test-case-remove" data-idx="${i}" title="حذف این تست">×</button>` : ''}
         </div>
         <div class="test-case-fields">
-          <div class="test-case-field">
-            <label>ورودی (stdin)</label>
-            <textarea class="tc-input" data-idx="${i}" placeholder="مثلاً:&#10;5&#10;3" spellcheck="false">${escapeHtml(tc.input || '')}</textarea>
-          </div>
-          <div class="test-case-field">
-            <label>خروجی مورد انتظار</label>
-            <textarea class="tc-expected" data-idx="${i}" placeholder="مثلاً: 8" spellcheck="false">${escapeHtml(tc.expected || '')}</textarea>
-          </div>
+          <div class="test-case-field"><label>ورودی (stdin)</label><textarea class="tc-input" data-idx="${i}" placeholder="مثلاً:&#10;5&#10;3" spellcheck="false">${escapeHtml(tc.input || '')}</textarea></div>
+          <div class="test-case-field"><label>خروجی مورد انتظار</label><textarea class="tc-expected" data-idx="${i}" placeholder="مثلاً: 8" spellcheck="false">${escapeHtml(tc.expected || '')}</textarea></div>
         </div>
       </div>
     `).join('');
-
-    container.querySelectorAll('.tc-input').forEach(el => {
-      el.oninput = () => { formTestCases[parseInt(el.getAttribute('data-idx'))].input = el.value; };
-    });
-    container.querySelectorAll('.tc-expected').forEach(el => {
-      el.oninput = () => { formTestCases[parseInt(el.getAttribute('data-idx'))].expected = el.value; };
-    });
-    container.querySelectorAll('.test-case-remove').forEach(el => {
-      el.onclick = () => {
-        const idx = parseInt(el.getAttribute('data-idx'));
-        formTestCases.splice(idx, 1);
-        renderFormTestCases();
-      };
-    });
+    container.querySelectorAll('.tc-input').forEach(el => { el.oninput = () => { formTestCases[parseInt(el.getAttribute('data-idx'))].input = el.value; }; });
+    container.querySelectorAll('.tc-expected').forEach(el => { el.oninput = () => { formTestCases[parseInt(el.getAttribute('data-idx'))].expected = el.value; }; });
+    container.querySelectorAll('.test-case-remove').forEach(el => { el.onclick = () => { const idx = parseInt(el.getAttribute('data-idx')); formTestCases.splice(idx, 1); renderFormTestCases(); }; });
   }
 
-  document.getElementById('addTestCaseBtn').onclick = () => {
-    formTestCases.push({ input: '', expected: '' });
-    renderFormTestCases();
-    const rows = document.querySelectorAll('.test-case-row');
-    if (rows.length) rows[rows.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
+  document.getElementById('addTestCaseBtn').onclick = () => { formTestCases.push({ input: '', expected: '' }); renderFormTestCases(); const rows = document.querySelectorAll('.test-case-row'); if (rows.length) rows[rows.length - 1].scrollIntoView({ behavior: 'smooth', block: 'center' }); };
 
-  document.getElementById('closeExerciseForm').onclick = () => {
-    document.getElementById('exerciseFormModal').classList.remove('show');
-    editingExerciseId = null;
-    formTestCases = [];
-  };
-  document.getElementById('exerciseFormCancel').onclick = () => {
-    document.getElementById('exerciseFormModal').classList.remove('show');
-    editingExerciseId = null;
-    formTestCases = [];
-  };
-  document.getElementById('exerciseFormModal').addEventListener('click', (e) => {
-    if (e.target.id === 'exerciseFormModal') {
-      e.currentTarget.classList.remove('show');
-      editingExerciseId = null;
-      formTestCases = [];
-    }
-  });
+  document.getElementById('closeExerciseForm').onclick = () => { document.getElementById('exerciseFormModal').classList.remove('show'); editingExerciseId = null; formTestCases = []; };
+  document.getElementById('exerciseFormCancel').onclick = () => { document.getElementById('exerciseFormModal').classList.remove('show'); editingExerciseId = null; formTestCases = []; };
+  document.getElementById('exerciseFormModal').addEventListener('click', (e) => { if (e.target.id === 'exerciseFormModal') { e.currentTarget.classList.remove('show'); editingExerciseId = null; formTestCases = []; } });
 
   document.getElementById('exerciseFormSave').onclick = async () => {
     const title = document.getElementById('exerciseFormTitleInput').value.trim();
@@ -1968,9 +1635,7 @@ _bi.input = _clean_input
     const addToLib = document.getElementById('addToLibraryCheckbox').checked;
 
     if (!title) { toast('عنوان تمرین را وارد کن', 'err', 2500); return; }
-    const cleanTests = formTestCases
-      .map(tc => ({ input: tc.input || '', expected: tc.expected || '' }))
-      .filter(tc => tc.expected.trim() !== '');
+    const cleanTests = formTestCases.map(tc => ({ input: tc.input || '', expected: tc.expected || '' })).filter(tc => tc.expected.trim() !== '');
     if (cleanTests.length === 0) { toast('حداقل یه تست‌کیس با خروجی مورد انتظار وارد کن', 'err', 3000); return; }
 
     const btn = document.getElementById('exerciseFormSave');
@@ -1978,36 +1643,23 @@ _bi.input = _clean_input
 
     try {
       if (editingExerciseId) {
-        const { error } = await supabase.from('exercises').update({
-          title, description, hint, test_cases: cleanTests,
-          updated_at: new Date().toISOString()
-        }).eq('id', editingExerciseId);
+        const { error } = await supabase.from('exercises').update({ title, description, hint, test_cases: cleanTests, updated_at: new Date().toISOString() }).eq('id', editingExerciseId);
         if (error) throw error;
         toast('تمرین ویرایش شد', 'ok', 2000);
       } else {
-        const { error } = await supabase.from('exercises').insert({
-          class_id: currentSession.id,
-          title, description, hint, test_cases: cleanTests
-        });
+        const { error } = await supabase.from('exercises').insert({ class_id: currentSession.id, title, description, hint, test_cases: cleanTests });
         if (error) throw error;
-
-        if (addToLib) {
-          await saveToSharedLibrary(title, description, hint, cleanTests);
-        }
+        if (addToLib) await saveToSharedLibrary(title, description, hint, cleanTests);
         toast('تمرین ساخته شد' + (addToLib ? ' + به کتابخانه اضافه شد' : ''), 'ok', 2500);
       }
-
       document.getElementById('exerciseFormModal').classList.remove('show');
       editingExerciseId = null;
       formTestCases = [];
       document.getElementById('addToLibraryCheckbox').checked = false;
       await loadExercises();
       renderExercisesModal();
-    } catch (e) {
-      toast('خطا: ' + e.message, 'err', 5000);
-    } finally {
-      btn.disabled = false;
-    }
+    } catch (e) { toast('خطا: ' + e.message, 'err', 5000); }
+    finally { btn.disabled = false; }
   };
 
   async function deleteExercise(id) {
@@ -2024,7 +1676,6 @@ _bi.input = _clean_input
   async function openSubmissions(exerciseId) {
     const ex = exercises.find(e => e.id === exerciseId);
     if (!ex) return;
-
     document.getElementById('submissionsTitle').textContent = '👁 پاسخ‌ها — ' + ex.title;
     const body = document.getElementById('submissionsBody');
     body.innerHTML = '<div class="loader" style="padding:20px"><div class="spinner"></div></div>';
@@ -2047,43 +1698,31 @@ _bi.input = _clean_input
     const submittedNames = new Set(subs.map(s => s.author_name));
     const notSubmitted = [...allStudents].filter(n => !submittedNames.has(n));
 
-    const statsHtml = `
-      <div class="submissions-stats">
-        <div class="submissions-stat"><div class="num">${subs.length}</div><div class="label">پاسخ</div></div>
-        <div class="submissions-stat"><div class="num" style="color:var(--success)">${correct}</div><div class="label">کامل</div></div>
-        <div class="submissions-stat"><div class="num" style="color:var(--warning)">${partial}</div><div class="label">ناقص</div></div>
-        <div class="submissions-stat"><div class="num" style="color:var(--danger)">${wrong}</div><div class="label">ناموفق</div></div>
-        <div class="submissions-stat"><div class="num" style="color:var(--muted)">${notSubmitted.length}</div><div class="label">بی‌پاسخ</div></div>
-      </div>`;
+    const statsHtml = `<div class="submissions-stats">
+      <div class="submissions-stat"><div class="num">${subs.length}</div><div class="label">پاسخ</div></div>
+      <div class="submissions-stat"><div class="num" style="color:var(--success)">${correct}</div><div class="label">کامل</div></div>
+      <div class="submissions-stat"><div class="num" style="color:var(--warning)">${partial}</div><div class="label">ناقص</div></div>
+      <div class="submissions-stat"><div class="num" style="color:var(--danger)">${wrong}</div><div class="label">ناموفق</div></div>
+      <div class="submissions-stat"><div class="num" style="color:var(--muted)">${notSubmitted.length}</div><div class="label">بی‌پاسخ</div></div>
+    </div>`;
 
     const subsHtml = subs.length ? subs.map(s => {
       const color = colorOf(s.author_name);
       const passed = s.passed_tests || 0;
       const total = s.total_tests || totalTests;
-      return `
-        <div class="submission-row" data-sub-id="${s.id}">
-          <div class="submission-avatar" style="background:${color}">${escapeHtml(initials(s.author_name))}</div>
-          <div class="submission-info">
-            <div class="submission-name">${escapeHtml(s.author_name)}</div>
-            <div class="submission-time">${fmtRelative(s.submitted_at)} · ${passed}/${total} تست</div>
-          </div>
-          <span class="exercise-status-badge ${s.status}">
-            ${s.status === 'correct' ? '✓ کامل' :
-              s.status === 'partial' ? '◐ ناقص' :
-              s.status === 'wrong' ? '✗ نادرست' :
-              s.status === 'error' ? '⚠ خطا' : '○ نامشخص'}
-          </span>
-        </div>`;
+      return `<div class="submission-row" data-sub-id="${s.id}">
+        <div class="submission-avatar" style="background:${color}">${escapeHtml(initials(s.author_name))}</div>
+        <div class="submission-info">
+          <div class="submission-name">${escapeHtml(s.author_name)}</div>
+          <div class="submission-time">${fmtRelative(s.submitted_at)} · ${passed}/${total} تست</div>
+        </div>
+        <span class="exercise-status-badge ${s.status}">
+          ${s.status === 'correct' ? '✓ کامل' : s.status === 'partial' ? '◐ ناقص' : s.status === 'wrong' ? '✗ نادرست' : s.status === 'error' ? '⚠ خطا' : '○ نامشخص'}
+        </span>
+      </div>`;
     }).join('') : '<div class="comments-empty">هنوز کسی پاسخی نداده</div>';
 
-    const notSubmittedHtml = notSubmitted.length ? `
-      <h3 style="font-size:14px;color:var(--muted);margin:20px 0 10px">هنوز پاسخ نداده (${notSubmitted.length})</h3>
-      <div class="member-chips">
-        ${notSubmitted.map(n => {
-          const c = colorOf(n);
-          return `<span class="member-chip"><span class="mini-avatar" style="background:${c}">${escapeHtml(initials(n))}</span>${escapeHtml(n)}</span>`;
-        }).join('')}
-      </div>` : '';
+    const notSubmittedHtml = notSubmitted.length ? `<h3 style="font-size:14px;color:var(--muted);margin:20px 0 10px">هنوز پاسخ نداده (${notSubmitted.length})</h3><div class="member-chips">${notSubmitted.map(n => { const c = colorOf(n); return `<span class="member-chip"><span class="mini-avatar" style="background:${c}">${escapeHtml(initials(n))}</span>${escapeHtml(n)}</span>`; }).join('')}</div>` : '';
 
     body.innerHTML = statsHtml + subsHtml + notSubmittedHtml;
 
@@ -2116,11 +1755,9 @@ _bi.input = _clean_input
                 </div>
               </div>`).join('');
         }
-        div.innerHTML = `
-          <div style="font-size:12px;color:var(--muted);font-weight:800;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">💻 کد</div>
+        div.innerHTML = `<div style="font-size:12px;color:var(--muted);font-weight:800;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px">💻 کد</div>
           <div style="background:#0b1020;color:#d1fae5;padding:12px 14px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word;max-height:280px;overflow-y:auto;border:1px solid var(--line)">${escapeHtml(sub.code || '(خالی)')}</div>
-          ${resultsHtml}
-        `;
+          ${resultsHtml}`;
         el.insertAdjacentElement('afterend', div);
       };
     });
@@ -2132,64 +1769,35 @@ _bi.input = _clean_input
   document.getElementById('exercisesModal').addEventListener('click', (e) => { if (e.target.id === 'exercisesModal') e.currentTarget.classList.remove('show'); });
   document.getElementById('exercisesBtn').onclick = openExercisesModal;
 
-  supabase.channel('comments-realtime')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'comments' }, async (payload) => {
-      const cellId = payload.new ? payload.new.cell_id : (payload.old ? payload.old.cell_id : null);
-      if (!cellId || !openCommentSections.has(cellId)) return;
-      const comments = await fetchComments(cellId);
-      renderComments(cellId, comments);
-      updateCommentIndicators(cellId, comments.length);
-    })
-    .subscribe();
+  supabase.channel('comments-realtime').on('postgres_changes', { event: '*', schema: 'public', table: 'comments' }, async (payload) => {
+    const cellId = payload.new ? payload.new.cell_id : (payload.old ? payload.old.cell_id : null);
+    if (!cellId || !openCommentSections.has(cellId)) return;
+    const comments = await fetchComments(cellId);
+    renderComments(cellId, comments);
+    updateCommentIndicators(cellId, comments.length);
+  }).subscribe();
 
   document.getElementById('addCell').onclick = async (ev) => {
     if (!currentSession) return;
     const btn = ev.currentTarget; btn.disabled = true;
-    const { data, error } = await supabase.from('cells').insert({
-      class_id: currentSession.id,
-      team_id: currentTeam?.id || null,
-      team_name: currentTeam?.name || null,
-      author_id: user.id,
-      author_name: displayName,
-      code: '', output: '', tags: []
-    }).select().single();
+    const { data, error } = await supabase.from('cells').insert({ class_id: currentSession.id, team_id: currentTeam?.id || null, team_name: currentTeam?.name || null, author_id: user.id, author_name: displayName, code: '', output: '', tags: [] }).select().single();
     btn.disabled = false;
     if (error) { console.error('addCell error:', error); toast('خطا: ' + error.message, 'err', 6000); return; }
     await loadCells();
     if (!currentTeam) toast('سلول شخصی ساخته شد (فقط خودت می‌بینیش)', 'info', 2500);
-    setTimeout(() => {
-      const obj = editors.get(data.id);
-      if (obj) { obj.cellEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => obj.cm.focus(), 400); }
-    }, 250);
+    setTimeout(() => { const obj = editors.get(data.id); if (obj) { obj.cellEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => obj.cm.focus(), 400); } }, 250);
   };
 
   document.getElementById('exportBtn').onclick = async () => {
     if (!currentSession) return;
     toast('در حال ساخت فایل…', 'info', 1500);
     let query = supabase.from('cells').select('*').eq('class_id', currentSession.id).order('created_at');
-    if (!isTeacherMode) {
-      if (currentTeam?.id) query = query.or(`team_id.eq.${currentTeam.id},and(team_id.is.null,author_id.eq.${user.id})`);
-      else query = query.is('team_id', null).eq('author_id', user.id);
-    }
+    if (!isTeacherMode) { if (currentTeam?.id) query = query.or(`team_id.eq.${currentTeam.id},and(team_id.is.null,author_id.eq.${user.id})`); else query = query.is('team_id', null).eq('author_id', user.id); }
     const { data, error } = await query;
     if (error) return toast('خطا: ' + error.message, 'err');
-    const nb = {
-      cells: data.map(c => ({
-        cell_type: 'code',
-        metadata: { author: c.author_name, team: c.team_name || null, created_at: c.created_at, tags: c.tags || [] },
-        source: (c.code || '').split('\n'),
-        outputs: c.output ? [{ output_type: 'stream', name: 'stdout', text: c.output.split('\n').map(l => l + '\n') }] : [],
-        execution_count: null
-      })),
-      metadata: { kernelspec: { name: 'python3', display_name: 'Python 3' }, language_info: { name: 'python', file_extension: '.py' } },
-      nbformat: 4, nbformat_minor: 5
-    };
+    const nb = { cells: data.map(c => ({ cell_type: 'code', metadata: { author: c.author_name, team: c.team_name || null, created_at: c.created_at, tags: c.tags || [] }, source: (c.code || '').split('\n'), outputs: c.output ? [{ output_type: 'stream', name: 'stdout', text: c.output.split('\n').map(l => l + '\n') }] : [], execution_count: null })), metadata: { kernelspec: { name: 'python3', display_name: 'Python 3' }, language_info: { name: 'python', file_extension: '.py' } }, nbformat: 4, nbformat_minor: 5 };
     const blob = new Blob([JSON.stringify(nb, null, 1)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'class-' + new Date().toISOString().slice(0, 10) + '.ipynb';
-    a.click();
-    URL.revokeObjectURL(a.href);
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'class-' + new Date().toISOString().slice(0, 10) + '.ipynb'; a.click(); URL.revokeObjectURL(a.href);
     toast('دانلود شد', 'ok');
   };
 
@@ -2211,12 +1819,7 @@ _bi.input = _clean_input
       toast(`در حال آپلود ${codeCells.length} سلول…`, 'info', 2000);
       const rows = codeCells.map((c) => {
         const src = Array.isArray(c.source) ? c.source.join('') : String(c.source || '');
-        const out = Array.isArray(c.outputs) ? c.outputs.map(o => {
-          if (o.output_type === 'stream') return Array.isArray(o.text) ? o.text.join('') : String(o.text || '');
-          if (o.output_type === 'execute_result' && o.data) { const d = o.data['text/plain']; return Array.isArray(d) ? d.join('') : String(d || ''); }
-          if (o.output_type === 'error') return (o.ename || 'Error') + ': ' + (o.evalue || '');
-          return '';
-        }).filter(Boolean).join('\n') : '';
+        const out = Array.isArray(c.outputs) ? c.outputs.map(o => { if (o.output_type === 'stream') return Array.isArray(o.text) ? o.text.join('') : String(o.text || ''); if (o.output_type === 'execute_result' && o.data) { const d = o.data['text/plain']; return Array.isArray(d) ? d.join('') : String(d || ''); } if (o.output_type === 'error') return (o.ename || 'Error') + ': ' + (o.evalue || ''); return ''; }).filter(Boolean).join('\n') : '';
         return { class_id: currentSession.id, team_id: currentTeam?.id || null, team_name: currentTeam?.name || null, author_id: user.id, author_name: displayName, code: src, output: out, tags: [] };
       });
       const { error } = await supabase.from('cells').insert(rows);
@@ -2252,18 +1855,12 @@ _bi.input = _clean_input
     teams.forEach(t => { stats[t.id] = { team: t, cellCount: 0, totalCode: 0, completed: 0, errors: 0, members: new Set(), solvedEx: new Set(), totalScore: 0, totalPassed: 0, totalTests: 0 }; });
 
     const membersByTeamId = {};
-    memberRows.forEach(m => {
-      if (!stats[m.team_id]) return;
-      stats[m.team_id].members.add(m.display_name);
-      if (!membersByTeamId[m.team_id]) membersByTeamId[m.team_id] = new Set();
-      membersByTeamId[m.team_id].add(m.display_name);
-    });
+    memberRows.forEach(m => { if (!stats[m.team_id]) return; stats[m.team_id].members.add(m.display_name); if (!membersByTeamId[m.team_id]) membersByTeamId[m.team_id] = new Set(); membersByTeamId[m.team_id].add(m.display_name); });
 
     cells.forEach(c => {
       if (!c.team_id || !stats[c.team_id]) return;
       const s = stats[c.team_id];
-      s.cellCount++;
-      s.totalCode += (c.code || '').length;
+      s.cellCount++; s.totalCode += (c.code || '').length;
       if (c.author_name) s.members.add(c.author_name);
       const out = c.output || '';
       const hasOut = out.trim() && out.trim() !== '(بدون خروجی)';
@@ -2284,11 +1881,7 @@ _bi.input = _clean_input
       }
     });
 
-    const sorted = Object.values(stats).sort((a, b) => {
-      if (b.solvedEx.size !== a.solvedEx.size) return b.solvedEx.size - a.solvedEx.size;
-      if (b.totalScore !== a.totalScore) return b.totalScore - a.totalScore;
-      return b.completed - a.completed;
-    });
+    const sorted = Object.values(stats).sort((a, b) => { if (b.solvedEx.size !== a.solvedEx.size) return b.solvedEx.size - a.solvedEx.size; if (b.totalScore !== a.totalScore) return b.totalScore - a.totalScore; return b.completed - a.completed; });
     if (!sorted.length) { body.innerHTML = `<div class="comments-empty">هنوز تیمی ثبت نشده</div>`; return; }
 
     const hasExercises = exIds.size > 0;
@@ -2411,45 +2004,24 @@ _bi.input = _clean_input
     const headers = Object.keys(report[0] || {});
     const csvContent = [headers.join(','), ...report.map(row => headers.map(h => `"${String(row[h]).replace(/"/g, '""')}"`).join(','))].join('\n');
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `گزارش-${currentSession.code}-${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(a.href);
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `گزارش-${currentSession.code}-${new Date().toISOString().slice(0, 10)}.csv`; a.click(); URL.revokeObjectURL(a.href);
     toast('گزارش دانلود شد', 'ok');
   };
 
   let timerInterval = null, remainingTime = 0, totalTime = 0, isTimerRunning = false;
   const timerWrapper = document.createElement('div');
   timerWrapper.className = 'timer-container';
-  timerWrapper.innerHTML = `
-    <div class="timer-display" id="timerDisplay">00:00</div>
-    <div class="timer-controls">
-      <button class="timer-btn start" id="timerStart">شروع</button>
-      <button class="timer-btn pause" id="timerPause" disabled>توقف</button>
-      <button class="timer-btn stop" id="timerStop">پایان</button>
-    </div>
-    <div class="progress-container"><div class="progress-bar" id="progressBar" style="width: 0%"></div><div class="progress-text" id="progressText">0%</div></div>
-  `;
+  timerWrapper.innerHTML = `<div class="timer-display" id="timerDisplay">00:00</div><div class="timer-controls"><button class="timer-btn start" id="timerStart">شروع</button><button class="timer-btn pause" id="timerPause" disabled>توقف</button><button class="timer-btn stop" id="timerStop">پایان</button></div><div class="progress-container"><div class="progress-bar" id="progressBar" style="width: 0%"></div><div class="progress-text" id="progressText">0%</div></div>`;
   document.querySelector('main').insertBefore(timerWrapper, document.querySelector('#cells'));
   const progressStats = document.createElement('div');
   progressStats.className = 'progress-stats';
-  progressStats.innerHTML = `
-    <div class="progress-item"><div class="progress-value" id="completedCells">0</div><div class="progress-label">سلول تکمیل</div></div>
-    <div class="progress-item"><div class="progress-value" id="avgCodePerStudent">0</div><div class="progress-label">میانگین کد</div></div>
-    <div class="progress-item"><div class="progress-value" id="completionRate">0%</div><div class="progress-label">نرخ تکمیل</div></div>
-    <div class="progress-item"><div class="progress-value" id="timePerCell">0</div><div class="progress-label">ثانیه/سلول</div></div>
-  `;
+  progressStats.innerHTML = `<div class="progress-item"><div class="progress-value" id="completedCells">0</div><div class="progress-label">سلول تکمیل</div></div><div class="progress-item"><div class="progress-value" id="avgCodePerStudent">0</div><div class="progress-label">میانگین کد</div></div><div class="progress-item"><div class="progress-value" id="completionRate">0%</div><div class="progress-label">نرخ تکمیل</div></div><div class="progress-item"><div class="progress-value" id="timePerCell">0</div><div class="progress-label">ثانیه/سلول</div></div>`;
   document.querySelector('main').insertBefore(progressStats, document.querySelector('#cells'));
 
   function formatTime(seconds) { const m = Math.floor(seconds / 60), s = seconds % 60; return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`; }
   function updateTimerDisplay() {
     const t = document.getElementById('timerDisplay'); t.textContent = formatTime(remainingTime);
-    if (totalTime > 0) {
-      const p = Math.min(100, Math.round(((totalTime - remainingTime) / totalTime) * 100));
-      document.getElementById('progressBar').style.width = `${p}%`;
-      document.getElementById('progressText').textContent = `${p}%`;
-    }
+    if (totalTime > 0) { const p = Math.min(100, Math.round(((totalTime - remainingTime) / totalTime) * 100)); document.getElementById('progressBar').style.width = `${p}%`; document.getElementById('progressText').textContent = `${p}%`; }
   }
   function startTimer(mins) {
     if (isTimerRunning) return;
@@ -2457,10 +2029,7 @@ _bi.input = _clean_input
     isTimerRunning = true;
     document.getElementById('timerStart').disabled = true;
     document.getElementById('timerPause').disabled = false;
-    timerInterval = setInterval(() => {
-      remainingTime--; updateTimerDisplay();
-      if (remainingTime <= 0) { clearInterval(timerInterval); isTimerRunning = false; remainingTime = 0; updateTimerDisplay(); toast('زمان تمام شد!', 'info', 5000); }
-    }, 1000);
+    timerInterval = setInterval(() => { remainingTime--; updateTimerDisplay(); if (remainingTime <= 0) { clearInterval(timerInterval); isTimerRunning = false; remainingTime = 0; updateTimerDisplay(); toast('زمان تمام شد!', 'info', 5000); } }, 1000);
     updateTimerDisplay();
   }
   function pauseTimer() { if (!isTimerRunning) return; isTimerRunning = false; clearInterval(timerInterval); document.getElementById('timerStart').disabled = false; document.getElementById('timerPause').disabled = true; }
