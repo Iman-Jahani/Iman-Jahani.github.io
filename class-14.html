@@ -1552,28 +1552,44 @@ async function openQuizResults(quizId) {
   title.textContent = '👁 نتایج: ' + q.title;
 
   const render = async () => {
-    const { data, error } = await supabase.from('quiz_answers').select('*').eq('quiz_id', quizId).order('score', { ascending: false }).order('submitted_at', { ascending: true });
-    if (error) { body.innerHTML = `<div class="empty">خطا: ${escapeHtml(error.message)}</div>`; return; }
-    const ans = data || [];
-    const qs = Array.isArray(q.questions) ? q.questions : [];
-    const clsTeams = teams.filter(t => t.class_id === q.class_id);
-    const classTeamIds = new Set(clsTeams.map(t => t.id));
-    const classMembers = new Set();
-    teamMembers.forEach(m => { if (classTeamIds.has(m.team_id)) classMembers.add(m.display_name); });
-    cells.filter(c => c.class_id === q.class_id && c.author_name).forEach(c => classMembers.add(c.author_name));
-    const avg = ans.length ? Math.round(ans.reduce((s, a) => s + a.score, 0) / ans.length * 10) / 10 : 0;
-    const notSubmitted = [...classMembers].filter(n => !ans.some(a => a.author_name === n)).length;
+    try {
+      // همه‌ی دیتای لازم رو مستقیم از دیتابیس بگیر (به متغیرهای global وابسته نباش)
+      const [ansRes, teamsRes, membersRes, cellsRes] = await Promise.all([
+        supabase.from('quiz_answers').select('*').eq('quiz_id', quizId).order('score', { ascending: false }).order('submitted_at', { ascending: true }),
+        supabase.from('teams').select('id, class_id').eq('class_id', q.class_id),
+        supabase.from('team_members').select('team_id, display_name'),
+        supabase.from('cells').select('author_name').eq('class_id', q.class_id)
+      ]);
 
-    body.innerHTML = `
-      <div class="quiz-live-stats"><div class="quiz-live-stat"><div class="num">${ans.length}</div><div class="label">شرکت کردن</div></div><div class="quiz-live-stat"><div class="num">${avg}</div><div class="label">میانگین</div></div><div class="quiz-live-stat"><div class="num">${notSubmitted}</div><div class="label">شرکت نکردن</div></div></div>
-      <h3 style="font-size:14px;color:var(--muted);margin:16px 0 10px">🏆 رتبه‌بندی</h3>
-      ${ans.length ? ans.map((a, i) => { const color = colorOf(a.author_name); const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`; const isMe = a.user_id === user.id; return `<div class="quiz-result-row ${isMe ? 'me' : ''}"><div class="quiz-result-rank">${medal}</div><div class="team-color" style="background:${color};width:32px;height:32px;font-size:12px">${escapeHtml(initials(a.author_name))}</div><div class="quiz-result-name">${escapeHtml(a.author_name)}${isMe ? ' <span class="badge">شما</span>' : ''}</div><div class="quiz-result-score">${a.score}/${a.total_questions}</div></div>`; }).join('') : '<div class="empty">هنوز کسی شرکت نکرده</div>'}
-      <h3 style="font-size:14px;color:var(--muted);margin:20px 0 10px">📋 سوالات و پاسخ‌های درست</h3>
-      ${qs.map((q, i) => `<div class="quiz-question-block"><h4>${i+1}. ${escapeHtml(q.question)}</h4>${(q.options || []).map((o, j) => `<div class="quiz-q-option ${j === q.correct ? 'correct' : ''}">${String.fromCharCode(65+j)}. ${escapeHtml(o)} ${j === q.correct ? '✓' : ''}</div>`).join('')}</div>`).join('')}
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:20px"><button class="btn btn-ghost" id="backToQuizList">← برگشت</button>${q.status === 'active' ? `<button class="btn btn-warning" id="stopQuizFromResults">⏹ پایان کوییز</button>` : ''}</div>
-    `;
-    document.getElementById('backToQuizList').onclick = () => renderQuizModal();
-    document.getElementById('stopQuizFromResults')?.addEventListener('click', async () => { await stopQuiz(quizId); });
+      if (ansRes.error) { body.innerHTML = `<div class="empty">خطا: ${escapeHtml(ansRes.error.message)}</div>`; return; }
+      const ans = ansRes.data || [];
+      const qs = Array.isArray(q.questions) ? q.questions : [];
+      const clsTeams = teamsRes.data || [];
+      const allMembers = membersRes.data || [];
+      const clsCells = cellsRes.data || [];
+
+      const classTeamIds = new Set(clsTeams.map(t => t.id));
+      const classMembers = new Set();
+      allMembers.forEach(m => { if (classTeamIds.has(m.team_id) && m.display_name) classMembers.add(m.display_name); });
+      clsCells.forEach(c => { if (c.author_name) classMembers.add(c.author_name); });
+
+      const avg = ans.length ? Math.round(ans.reduce((sum, a) => sum + (a.score || 0), 0) / ans.length * 10) / 10 : 0;
+      const notSubmitted = [...classMembers].filter(n => !ans.some(a => a.author_name === n)).length;
+
+      body.innerHTML = `
+        <div class="quiz-live-stats"><div class="quiz-live-stat"><div class="num">${ans.length}</div><div class="label">شرکت کردن</div></div><div class="quiz-live-stat"><div class="num">${avg}</div><div class="label">میانگین</div></div><div class="quiz-live-stat"><div class="num">${notSubmitted}</div><div class="label">شرکت نکردن</div></div></div>
+        <h3 style="font-size:14px;color:var(--muted);margin:16px 0 10px">🏆 رتبه‌بندی</h3>
+        ${ans.length ? ans.map((a, i) => { const color = colorOf(a.author_name); const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`; const isMe = a.user_id === user.id; return `<div class="quiz-result-row ${isMe ? 'me' : ''}"><div class="quiz-result-rank">${medal}</div><div class="team-color" style="background:${color};width:32px;height:32px;font-size:12px">${escapeHtml(initials(a.author_name))}</div><div class="quiz-result-name">${escapeHtml(a.author_name)}${isMe ? ' <span class="badge">شما</span>' : ''}</div><div class="quiz-result-score">${a.score}/${a.total_questions}</div></div>`; }).join('') : '<div class="empty">هنوز کسی شرکت نکرده</div>'}
+        <h3 style="font-size:14px;color:var(--muted);margin:20px 0 10px">📋 سوالات و پاسخ‌های درست</h3>
+        ${qs.map((qq, i) => `<div class="quiz-question-block"><h4>${i+1}. ${escapeHtml(qq.question)}</h4>${(qq.options || []).map((o, j) => `<div class="quiz-q-option ${j === qq.correct ? 'correct' : ''}">${String.fromCharCode(65+j)}. ${escapeHtml(o)} ${j === qq.correct ? '✓' : ''}</div>`).join('')}</div>`).join('')}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:20px"><button class="btn btn-ghost" id="backToQuizList">← برگشت</button>${q.status === 'active' ? `<button class="btn btn-warning" id="stopQuizFromResults">⏹ پایان کوییز</button>` : ''}</div>
+      `;
+      document.getElementById('backToQuizList').onclick = () => renderQuizModal();
+      document.getElementById('stopQuizFromResults')?.addEventListener('click', async () => { await stopQuiz(quizId); });
+    } catch (e) {
+      console.error('openQuizResults error:', e);
+      body.innerHTML = `<div class="empty">خطا در بارگذاری نتایج: ${escapeHtml(e.message)}</div>`;
+    }
   };
   await render();
   const refreshInterval = setInterval(() => {
