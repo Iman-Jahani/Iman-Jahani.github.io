@@ -1287,7 +1287,12 @@ async function loadQuizzes() {
     } else myQuizAnswers = {};
     updateQuizzesBadge();
     updateQuizBanner();
-    if (document.getElementById('quizModal').classList.contains('show')) renderQuizModal();
+    const quizModalEl = document.getElementById('quizModal');
+    const quizTitleEl = document.getElementById('quizModalTitle');
+    const isShowingResults = quizTitleEl && quizTitleEl.textContent.includes('نتایج');
+    if (quizModalEl.classList.contains('show') && !isShowingResults) {
+      renderQuizModal();
+    }
   } catch (e) { console.error(e); }
 }
 
