@@ -777,10 +777,22 @@ function renderCells(cells, commentsByCell) {
       <div class="tags-container ${tagsVisible ? '' : 'hidden'}" id="tags-${cell.id}"></div>
       <div class="editor-wrap"><textarea></textarea></div>
       <div class="cell-actions">
-        <button class="action run"><span class="label">اجرا</span></button>
-        <button class="action save"><span class="label">ذخیره</span></button>
-        <button class="action comment"><span class="label">نظر</span></button>
-        ${isOwn ? `<button class="action del"><span class="label">حذف</span></button>` : ''}
+        <button class="action run" title="Ctrl+Enter">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <span class="label">اجرا</span>
+        </button>
+        <button class="action save" title="ذخیره">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+          <span class="label">ذخیره</span>
+        </button>
+        <button class="action comment" title="نظر دادن">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"/></svg>
+          <span class="label">نظر</span>
+        </button>
+        ${isOwn ? `<button class="action del" title="حذف">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14"/></svg>
+          <span class="label">حذف</span>
+        </button>` : ''}
       </div>
       <div class="comments-section" id="comments-${cell.id}">
         <div class="comments-header"><span>نظرات (${count})</span><button class="close-comments" data-cell-id="${cell.id}">✕</button></div>
