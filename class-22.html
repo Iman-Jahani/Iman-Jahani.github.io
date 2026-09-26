@@ -429,6 +429,7 @@ main{max-width:1000px;margin:-52px auto 80px;padding:0 20px;position:relative;z-
 .quiz-score-badge .num{font-size:15px}
 .quiz-not-taken{flex:1;display:flex;align-items:center;justify-content:center;padding:9px 14px;border-radius:10px;background:#f8fafc;color:var(--muted);font-size:12.5px;font-weight:600;border:1px dashed var(--line)}
 .contest-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.submission-row.mine { background: linear-gradient(135deg,#eef2ff,#e0e7ff); border-color: var(--primary); }
 .contest-live-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:var(--radius-md);margin-bottom:16px;border:1px solid rgba(245,158,11,.4)}
 .contest-live-stat{text-align:center}
 .contest-live-stat .num{font-size:22px;font-weight:800;color:#b45309}
@@ -764,7 +765,7 @@ main{max-width:1000px;margin:-52px auto 80px;padding:0 20px;position:relative;z-
 
 <div class="modal-overlay" id="quizFormModal"><div class="modal modal-wide"><div class="modal-head-rel"><button class="modal-close" id="closeQuizForm" title="بستن">✕</button><h2 id="quizFormTitle">🧠 کوییز جدید</h2></div><div style="padding:24px 28px"><div class="exercise-form-field"><label>عنوان کوییز *</label><input type="text" id="quizFormTitleInput" placeholder="مثلاً: کوییز فصل ۲" maxlength="100"></div><div class="exercise-form-field"><label>زمان کل (دقیقه) *</label><input type="number" id="quizFormTime" value="5" min="1" max="180"></div><div class="exercise-form-field"><label>سوالات *</label><div id="quizQuestionsEditor"></div><button class="add-test-btn" id="addQuestionBtn" style="margin-top:10px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg>افزودن سوال</button></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px"><button class="btn btn-ghost" id="quizFormCancel">لغو</button><button class="btn btn-primary" id="quizFormSave">💾 ذخیره</button></div></div></div></div>
 
-<div class="modal-overlay" id="contestFormModal"><div class="modal modal-wide"><div class="modal-head-rel"><button class="modal-close" id="closeContestForm" title="بستن">✕</button><h2 id="contestFormTitle">🏁 مسابقه جدید</h2></div><div style="padding:24px 28px"><div class="exercise-form-field"><label>عنوان مسابقه *</label><input type="text" id="contestFormTitleInput" placeholder="مثلاً: مسابقه‌ی سرعت — جمع دو عدد" maxlength="100"></div><div class="exercise-form-field"><label>مدت زمان (دقیقه) *</label><input type="number" id="contestFormDuration" value="5" min="1" max="180"></div><div class="exercise-form-field"><label>توضیحات مسئله</label><textarea id="contestFormDesc" placeholder="مسئله رو اینجا توضیح بده... مثلاً: یه برنامه بنویس که دو عدد از ورودی بگیره و جمعشون رو چاپ کنه."></textarea></div><div class="exercise-form-field"><label>راهنمایی (اختیاری)</label><textarea id="contestFormHint" placeholder="راهنمایی..."></textarea></div><div class="exercise-form-field"><label>تست‌کیس‌ها *</label><div class="test-cases-info"><span id="contestTestCasesCount" class="test-cases-count">۱ تست</span><span style="margin-right:6px">ورودی و خروجی مورد انتظار</span></div><div class="test-cases-editor" id="contestTestCasesEditor"></div><button class="add-test-btn" id="addContestTestCaseBtn" style="margin-top:10px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg>افزودن تست جدید</button></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px"><button class="btn btn-ghost" id="contestFormCancel">لغو</button><button class="btn btn-primary" id="contestFormStart">🚀 شروع مسابقه</button></div></div></div></div>
+<div class="modal-overlay" id="contestFormModal"><div class="modal modal-wide"><div class="modal-head-rel"><button class="modal-close" id="closeContestForm" title="بستن">✕</button><h2 id="contestFormTitle">🏁 مسابقه جدید</h2></div><div style="padding:24px 28px"><div class="exercise-form-field"><label>عنوان مسابقه *</label><input type="text" id="contestFormTitleInput" placeholder="مثلاً: مسابقه‌ی سرعت — فصل ۳" maxlength="100"></div><div class="exercise-form-field"><label>مدت زمان (دقیقه) *</label><input type="number" id="contestFormDuration" value="10" min="1" max="180"></div><div class="exercise-form-field"><label>متن مسئله *</label><textarea id="contestFormDesc" placeholder="مسئله رو کامل توضیح بده... مثلاً:&#10;یه برنامه بنویس که دو عدد از ورودی بگیره و جمعشون رو چاپ کنه." style="min-height:200px"></textarea></div><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px"><button class="btn btn-ghost" id="contestFormCancel">لغو</button><button class="btn btn-primary" id="contestFormStart">🚀 شروع مسابقه</button></div></div></div></div>
 
 <div class="modal-overlay" id="contestPlayModal"><div class="modal modal-wide"><div class="modal-head-rel"><button class="modal-close" id="closeContestPlay" title="بستن">✕</button><h2 id="contestPlayTitle">🏁 مسابقه</h2></div><div style="padding:24px 28px" id="contestPlayBody"></div></div></div>
 
@@ -793,8 +794,8 @@ const commentsCache = new Map();
 let currentSession = null, currentTeam = null, isTeacherMode = false, cellsChannel = null, pollInterval = null;
 let exercises = [], mySubmissions = {}, currentExercise = null, editorInstance = null, editingExerciseId = null, formTestCases = [], sharedExercises = [];
 let quizzes = [], myQuizAnswers = {}, activeQuiz = null, quizCountdownInterval = null, editingQuizId = null, formQuizQuestions = [];
-let contests = [], activeContest = null, myContestAnswer = {}, contestTickInterval = null, formContestTestCases = [], contestEditorInstance = null;
-
+let contests = [], activeContest = null, myContestAnswer = {}, contestTickInterval = null, contestEditorInstance = null;
+  
 const AVATAR_PALETTE = [
   '🐱','😺','😸','😻','😽','🙀','😿','😾','🐈','🐈‍⬛',
   '🐶','🐕','🦮','🐩','🐕‍🦺','🌭',
@@ -1979,14 +1980,44 @@ function openContestForm() {
   if (!isTeacherMode) { toast('فقط استاد می‌تونه مسابقه بسازه', 'err', 2500); return; }
   document.getElementById('contestFormTitle').textContent = '🏁 مسابقه جدید';
   document.getElementById('contestFormTitleInput').value = '';
-  document.getElementById('contestFormDuration').value = 5;
+  document.getElementById('contestFormDuration').value = 10;
   document.getElementById('contestFormDesc').value = '';
-  document.getElementById('contestFormHint').value = '';
-  formContestTestCases = [{ input: '', expected: '' }];
-  renderContestTestCasesEditor();
   document.getElementById('contestFormModal').classList.add('show');
   setTimeout(() => document.getElementById('contestFormTitleInput').focus(), 200);
 }
+document.getElementById('closeContestForm').onclick = () => document.getElementById('contestFormModal').classList.remove('show');
+document.getElementById('contestFormCancel').onclick = () => document.getElementById('contestFormModal').classList.remove('show');
+document.getElementById('contestFormModal').addEventListener('click', e => { if (e.target.id === 'contestFormModal') e.currentTarget.classList.remove('show'); });
+
+document.getElementById('contestFormStart').onclick = async () => {
+  const title = document.getElementById('contestFormTitleInput').value.trim();
+  const duration = parseInt(document.getElementById('contestFormDuration').value) || 10;
+  const description = document.getElementById('contestFormDesc').value.trim();
+  if (!title) { toast('عنوان رو وارد کن', 'err', 2500); return; }
+  if (duration < 1 || duration > 180) { toast('زمان بین ۱ تا ۱۸۰ دقیقه', 'err', 2500); return; }
+  if (!description) { toast('متن مسئله رو وارد کن', 'err', 2500); return; }
+  const btn = document.getElementById('contestFormStart'); btn.disabled = true;
+  const orig = btn.textContent; btn.textContent = '⏳ در حال شروع…';
+  try {
+    const actives = contests.filter(c => c.status === 'active');
+    for (const a of actives) await supabase.from('contests').update({ status: 'ended', ended_at: new Date().toISOString() }).eq('id', a.id);
+    const { data, error } = await supabase.from('contests').insert({
+      class_id: currentSession.id,
+      title, duration_minutes: duration,
+      description,
+      questions: [],
+      status: 'active',
+      started_at: new Date().toISOString(),
+      created_by: user.id
+    }).select().single();
+    if (error) throw error;
+    document.getElementById('contestFormModal').classList.remove('show');
+    toast('🏁 مسابقه شروع شد!', 'ok', 3000);
+    await loadContests();
+    startContestTimer(duration);
+  } catch (e) { console.error(e); toast('خطا: ' + e.message, 'err', 5000); }
+  finally { btn.disabled = false; btn.textContent = orig; }
+};
 
 function renderContestTestCasesEditor() {
   const c = document.getElementById('contestTestCasesEditor');
@@ -2078,33 +2109,31 @@ function openContestPlay() {
 }
 document.getElementById('closeContestPlay').onclick = () => document.getElementById('contestPlayModal').classList.remove('show');
 document.getElementById('contestPlayModal').addEventListener('click', e => { if (e.target.id === 'contestPlayModal') e.currentTarget.classList.remove('show'); });
+
+
 function renderContestPlay() {
   const body = document.getElementById('contestPlayBody');
   if (!activeContest) { body.innerHTML = '<div class="empty">مسابقه‌ای فعال نیست</div>'; return; }
-  const tests = Array.isArray(activeContest.test_cases) ? activeContest.test_cases : [];
   const myAns = myContestAnswer[activeContest.id];
   const elapsed = Math.floor((Date.now() - new Date(activeContest.started_at).getTime()) / 1000);
   const remaining = Math.max(0, (activeContest.duration_minutes * 60) - elapsed);
   const timeUp = remaining <= 0;
 
-  let descHtml = '';
-  if (activeContest.description) descHtml += `<div class="exercise-editor-desc">${escapeHtml(activeContest.description)}</div>`;
-  descHtml += `<div class="exercise-expected"><div class="exercise-expected-label">🎯 ${tests.length} تست</div><div style="font-size:13px;color:#3730a3">کدهات باید برای همه‌ی ورودی‌ها خروجی درست بده</div></div>`;
-  if (activeContest.hint) descHtml += `<div class="exercise-hint">💡 <b>راهنمایی:</b> ${escapeHtml(activeContest.hint)}</div>`;
-
-  const scoreHtml = `<div class="contest-live-stats"><div class="contest-live-stat"><div class="num">${myAns ? `${myAns.score}/${myAns.total_questions}` : '—'}</div><div class="label">نمره فعلی</div></div><div class="contest-live-stat"><div class="num" id="contestTimerDisplay">${Math.floor(remaining/60)}:${(remaining%60).toString().padStart(2,'0')}</div><div class="label">زمان باقی</div></div><div class="contest-live-stat"><div class="num">${tests.length}</div><div class="label">تعداد تست</div></div></div>`;
+  const problemHtml = `<div class="exercise-editor-desc" style="white-space:pre-wrap">${escapeHtml(activeContest.description || '')}</div>`;
+  const statsHtml = `<div class="contest-live-stats"><div class="contest-live-stat"><div class="num">${myAns ? '✓' : '—'}</div><div class="label">وضعیت ارسال</div></div><div class="contest-live-stat"><div class="num" id="contestTimerDisplay">${Math.floor(remaining/60)}:${(remaining%60).toString().padStart(2,'0')}</div><div class="label">زمان باقی</div></div><div class="contest-live-stat"><div class="num">${activeContest.duration_minutes}</div><div class="label">دقیقه کل</div></div></div>`;
 
   if (timeUp) {
-    let extra = '';
-    if (myAns && Array.isArray(myAns.test_results)) {
-      extra = '<h3 style="font-size:14px;color:var(--muted);margin:16px 0 10px">📋 نتایج آخرین تلاش</h3>' + myAns.test_results.map((r, i) => `<div class="test-result-row ${r.passed?'pass':'fail'}" style="margin-bottom:6px"><div class="test-result-head"><div class="test-result-num"><span class="test-case-num-badge" style="background:${r.passed?'var(--success)':'var(--danger)'}">${i+1}</span>تست ${i+1}</div><span class="test-result-status">${r.passed?'✓':'✗'}</span></div><div class="test-result-compare"><div class="test-result-col input"><div class="label">ورودی</div><div class="value">${escapeHtml(r.input || '(خالی)')}</div></div><div class="test-result-col expected"><div class="label">انتظار</div><div class="value">${escapeHtml(r.expected || '(خالی)')}</div></div><div class="test-result-col actual"><div class="label">خروجی</div><div class="value">${escapeHtml(r.actual || '(خالی)')}</div></div></div></div>`).join('');
+    let codeHtml = '';
+    if (myAns && myAns.code) {
+      codeHtml = `<h3 style="font-size:14px;color:var(--muted);margin:16px 0 10px">📋 کد ارسالی شما</h3><div style="background:#0b1020;color:#d1fae5;padding:14px 16px;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:13px;direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word;max-height:400px;overflow-y:auto;border:1px solid var(--line)">${escapeHtml(myAns.code)}</div>`;
     }
-    body.innerHTML = scoreHtml + descHtml + '<div class="empty" style="padding:30px 20px"><div class="emoji">⏰</div><h3>زمان مسابقه تموم شد</h3></div>' + extra;
+    body.innerHTML = statsHtml + problemHtml + '<div class="empty" style="padding:30px 20px"><div class="emoji">⏰</div><h3>زمان مسابقه تموم شد</h3></div>' + codeHtml;
     return;
   }
 
   const code = (myAns && myAns.code) || localStorage.getItem('contest_draft_' + activeContest.id) || '';
-  body.innerHTML = scoreHtml + descHtml + `<div class="exercise-editor-wrap" id="contestEditorContainer"><textarea></textarea></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" id="contestRunBtn">▶ اجرا و ارسال پاسخ</button></div><div id="contestResultsWrap"></div>`;
+  const submittedNote = myAns ? `<div style="padding:10px 14px;background:var(--success-light);color:#065f46;border-radius:8px;font-size:13px;font-weight:700;margin-bottom:12px">✓ کدت رو فرستادی — می‌تونی تا پایان وقت ویرایش کنی و دوباره بفرستی</div>` : '';
+  body.innerHTML = statsHtml + problemHtml + submittedNote + `<div class="exercise-editor-wrap" id="contestEditorContainer"><textarea></textarea></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary" id="contestSubmitBtn" style="flex:1">📤 ارسال کد</button></div>`;
 
   setTimeout(() => {
     if (contestEditorInstance) { try { contestEditorInstance.toTextArea(); } catch {} contestEditorInstance = null; }
@@ -2113,12 +2142,12 @@ function renderContestPlay() {
     c.innerHTML = '<textarea></textarea>';
     const ta = c.querySelector('textarea'); ta.value = code;
     contestEditorInstance = CodeMirror.fromTextArea(ta, { mode: 'python', theme: 'dracula', lineNumbers: true, indentUnit: 4, tabSize: 4, indentWithTabs: false, autoCloseBrackets: true, matchBrackets: true, viewportMargin: Infinity });
-    contestEditorInstance.setSize('100%', 240);
+    contestEditorInstance.setSize('100%', 300); contestEditorInstance.refresh(); contestEditorInstance.focus();
     contestEditorInstance.on('change', () => { try { localStorage.setItem('contest_draft_' + activeContest.id, contestEditorInstance.getValue()); } catch {} });
     contestEditorInstance.on('paste', (i, e) => { e.preventDefault(); toast('پیست غیرفعال', 'err', 2000); });
     contestEditorInstance.on('drop', (i, e) => { e.preventDefault(); toast('کشیدن غیرفعال', 'err', 2000); });
-    contestEditorInstance.setOption('extraKeys', { 'Ctrl-Enter': () => runContestCode(), 'Cmd-Enter': () => runContestCode(), 'Ctrl-V': () => { toast('پیست غیرفعال', 'err', 2000); return; }, 'Cmd-V': () => { toast('پیست غیرفعال', 'err', 2000); return; } });
-    document.getElementById('contestRunBtn').onclick = runContestCode;
+    contestEditorInstance.setOption('extraKeys', { 'Ctrl-Enter': () => submitContestCode(), 'Cmd-Enter': () => submitContestCode(), 'Ctrl-V': () => { toast('پیست غیرفعال', 'err', 2000); return; }, 'Cmd-V': () => { toast('پیست غیرفعال', 'err', 2000); return; } });
+    document.getElementById('contestSubmitBtn').onclick = submitContestCode;
   }, 100);
 
   let localRemaining = remaining;
@@ -2130,48 +2159,22 @@ function renderContestPlay() {
   }, 1000);
 }
 
-async function runContestCode() {
+async function submitContestCode() {
   if (!activeContest || !contestEditorInstance) return;
   const code = contestEditorInstance.getValue();
-  const rw = document.getElementById('contestResultsWrap'); const rb = document.getElementById('contestRunBtn');
-  if (!rw) return;
-  const tests = Array.isArray(activeContest.test_cases) ? activeContest.test_cases : [];
-  if (!tests.length) { toast('تستی تعریف نشده', 'err', 2500); return; }
-  rb.disabled = true; const orig = rb.innerHTML; rb.innerHTML = '⏳ در حال اجرا…';
-  rw.innerHTML = loaderHTML('در حال اجرای تست‌ها…');
-  let py; try { py = await getPyodide(); } catch (e) { rw.innerHTML = `<div class="empty">خطا: ${escapeHtml(e.message)}</div>`; rb.disabled = false; rb.innerHTML = orig; return; }
-  const results = [];
-  for (let i = 0; i < tests.length; i++) {
-    const test = tests[i]; let out = '';
-    py.setStdout({ batched: s => { out += s + '\n'; } }); py.setStderr({ batched: s => { out += s + '\n'; } });
-    const inputStr = test.input == null ? '' : String(test.input);
-    let iq;
-    if (inputStr.length === 0) iq = [];
-    else { const p = inputStr.split('\n'); while (p.length > 0 && p[p.length-1] === '') p.pop(); iq = p.map(l => l + '\n'); }
-    py.setStdin({ stdin: () => { if (iq.length === 0) return null; return iq.shift(); } });
-    let err = null; let g = null;
-    try { g = py.globals.get('dict')(); await py.runPythonAsync(code, { globals: g }); }
-    catch (e) { err = String(e.message || e); }
-    finally { if (g) { try { g.destroy(); } catch {} } }
-    const ar = out.replace(/\n$/, ''); const a = err ? ('Error: ' + err) : ar;
-    const passed = !err && normalizeOutput(ar) === normalizeOutput(test.expected);
-    results.push({ input: test.input || '', expected: test.expected || '', actual: a || '(بدون خروجی)', passed, error: err });
-  }
-  try { py.setStdin({ stdin: () => null }); } catch {}
-  const pc = results.filter(r => r.passed).length, total = results.length;
-  const rh = results.map((r, i) => `<div class="test-result-row ${r.passed ? 'pass' : 'fail'}"><div class="test-result-head"><div class="test-result-num"><span class="test-case-num-badge" style="background:${r.passed?'var(--success)':'var(--danger)'}">${i+1}</span>تست ${i+1}</div><span class="test-result-status">${r.passed?'✓ پاس':'✗ ناموفق'}</span></div><div class="test-result-compare"><div class="test-result-col input"><div class="label">ورودی</div><div class="value">${escapeHtml(r.input || '(خالی)')}</div></div><div class="test-result-col expected"><div class="label">انتظار</div><div class="value">${escapeHtml(r.expected || '(خالی)')}</div></div><div class="test-result-col actual"><div class="label">خروجی تو</div><div class="value">${escapeHtml(r.actual || '(خالی)')}</div></div></div></div>`).join('');
-  const sc = pc === total ? 'pass' : (pc > 0 ? 'partial' : 'fail');
-  const st = pc === total ? '🎉 همه پاس!' : `${pc} از ${total} تست`;
-  rw.innerHTML = `<div class="score-display ${sc}"><div class="score-circle">${pc}/${total}</div><div class="score-details"><div class="score-title">${st}</div></div></div><div class="test-results-grid">${rh}</div>`;
-  const payload = { contest_id: activeContest.id, user_id: user.id, author_name: displayName, code, answers: [], score: pc, total_questions: total, test_results: results, submitted_at: new Date().toISOString() };
+  if (!code.trim()) { toast('کدت رو بنویس', 'err', 2200); return; }
+  const btn = document.getElementById('contestSubmitBtn'); btn.disabled = true;
+  const orig = btn.textContent; btn.textContent = '⏳ در حال ارسال…';
+  const payload = { contest_id: activeContest.id, user_id: user.id, author_name: displayName, code, answers: [], score: 0, total_questions: 0, submitted_at: new Date().toISOString() };
   const { error } = await supabase.from('contest_answers').upsert(payload, { onConflict: 'contest_id,user_id' });
-  if (error) { toast('خطا در ذخیره: ' + error.message, 'err', 5000); }
+  if (error) { toast('خطا: ' + error.message, 'err', 5000); }
   else {
     myContestAnswer[activeContest.id] = payload;
-    toast(pc === total ? '🎉 کامل پاس شد!' : `${pc} از ${total} تست`, pc === total ? 'ok' : 'info', 3000);
+    toast('✓ کدت ارسال شد', 'ok', 2500);
     updateContestBadge();
+    renderContestPlay();
   }
-  rb.disabled = false; rb.innerHTML = orig;
+  btn.disabled = false; btn.textContent = orig;
 }
 async function openContestResults(contestId) {
   const modal = document.getElementById('contestResultsModal');
@@ -2179,6 +2182,7 @@ async function openContestResults(contestId) {
   const title = document.getElementById('contestResultsTitle');
   modal.classList.add('show');
   body.innerHTML = loaderHTML('در حال بارگذاری…');
+
   if (!contestId) {
     title.textContent = '🏁 مسابقه‌ها';
     await loadContests();
@@ -2186,20 +2190,48 @@ async function openContestResults(contestId) {
     body.innerHTML = `<div class="contest-card-grid">${contests.map(c => {
       const isActive = c.status === 'active';
       const statusChip = isActive ? '<span class="quiz-status-chip active">● فعال</span>' : '<span class="quiz-status-chip ended">پایان یافته</span>';
-      return `<div class="quiz-card ${isActive ? 'active' : 'ended'}"><div class="quiz-card-head"><div class="quiz-card-icon ${isActive ? 'active' : 'ended'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div><div class="quiz-card-info"><div class="quiz-card-title">${escapeHtml(c.title)}</div><div class="quiz-card-meta"><span class="quiz-meta-chip">${(c.test_cases||[]).length} تست</span><span class="quiz-meta-chip">${c.duration_minutes} دقیقه</span></div></div></div><div style="display:flex;justify-content:flex-end">${statusChip}</div><div class="quiz-card-actions"><button class="quiz-action-btn ghost" data-cid="${c.id}">👁 مشاهده نتایج</button></div></div>`;
+      return `<div class="quiz-card ${isActive ? 'active' : 'ended'}"><div class="quiz-card-head"><div class="quiz-card-icon ${isActive ? 'active' : 'ended'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div><div class="quiz-card-info"><div class="quiz-card-title">${escapeHtml(c.title)}</div><div class="quiz-card-meta"><span class="quiz-meta-chip">${c.duration_minutes} دقیقه</span><span class="quiz-meta-chip">${fmtRelative(c.created_at)}</span></div></div></div><div style="display:flex;justify-content:flex-end">${statusChip}</div><div class="quiz-card-actions"><button class="quiz-action-btn ghost" data-cid="${c.id}">👁 مشاهده پاسخ‌ها</button></div></div>`;
     }).join('')}</div>`;
     body.querySelectorAll('[data-cid]').forEach(b => { b.onclick = () => openContestResults(b.getAttribute('data-cid')); });
     return;
   }
+
   const c = contests.find(x => x.id === contestId);
   if (!c) { body.innerHTML = '<div class="empty">مسابقه پیدا نشد</div>'; return; }
-  title.textContent = '🏁 نتایج: ' + c.title;
-  const { data: ans, error } = await supabase.from('contest_answers').select('*').eq('contest_id', contestId).order('score', { ascending: false }).order('submitted_at', { ascending: true });
+  title.textContent = '🏁 ' + c.title;
+
+  const { data: ans, error } = await supabase.from('contest_answers').select('*').eq('contest_id', contestId).order('submitted_at', { ascending: true });
   if (error) { body.innerHTML = `<div class="empty">خطا: ${escapeHtml(error.message)}</div>`; return; }
   const arr = ans || [];
-  const qs = Array.isArray(c.questions) ? c.questions : [];
-  const avg = arr.length ? Math.round(arr.reduce((s, a) => s + (a.score||0), 0) / arr.length * 10) / 10 : 0;
-  body.innerHTML = `<div class="contest-live-stats"><div class="contest-live-stat"><div class="num">${arr.length}</div><div class="label">شرکت کردن</div></div><div class="contest-live-stat"><div class="num">${avg}</div><div class="label">میانگین</div></div><div class="contest-live-stat"><div class="num">${qs.length}</div><div class="label">تعداد سوال</div></div></div><h3 style="font-size:14px;color:var(--muted);margin:16px 0 10px">🏆 رتبه‌بندی</h3>${arr.length ? arr.map((a, i) => { const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`; const isMe = a.user_id === user.id; return `<div class="quiz-result-row ${isMe ? 'me' : ''}"><div class="quiz-result-rank">${medal}</div>${renderAvatar(a.user_id, a.author_name, 'md')}<div class="quiz-result-name">${escapeHtml(a.author_name)}${isMe ? ' <span class="badge">شما</span>' : ''}</div><div class="quiz-result-score">${a.score}/${a.total_questions}</div></div>`; }).join('') : '<div class="empty">هنوز کسی شرکت نکرده</div>'}`;
+
+  const statsHtml = `<div class="contest-live-stats"><div class="contest-live-stat"><div class="num">${arr.length}</div><div class="label">ارسال کردن</div></div><div class="contest-live-stat"><div class="num">${c.duration_minutes}</div><div class="label">دقیقه</div></div><div class="contest-live-stat"><div class="num">${c.status === 'active' ? '●' : '✓'}</div><div class="label">${c.status === 'active' ? 'فعال' : 'پایان'}</div></div></div>`;
+
+  const problemHtml = c.description ? `<div class="exercise-editor-desc" style="white-space:pre-wrap;margin-bottom:16px">${escapeHtml(c.description)}</div>` : '';
+
+  if (!arr.length) {
+    body.innerHTML = statsHtml + problemHtml + '<div class="empty"><div class="emoji">📭</div><h3>هنوز کسی کد نفرستاده</h3></div>';
+    return;
+  }
+
+  const subsHtml = arr.map((a, i) => {
+    const isMe = a.user_id === user.id;
+    return `<div class="submission-row ${isMe ? 'mine' : ''}" data-sub-idx="${i}">${renderAvatar(a.user_id, a.author_name, 'md')}<div class="submission-info"><div class="submission-name">${escapeHtml(a.author_name)}${isMe ? ' <span class="badge">شما</span>' : ''}</div><div class="submission-time">${fmtRelative(a.submitted_at)}</div></div><span class="exercise-status-badge correct">✓ ارسال شده</span></div>`;
+  }).join('');
+
+  body.innerHTML = statsHtml + problemHtml + `<h3 style="font-size:14px;color:var(--muted);margin:0 0 10px">📋 کدهای ارسالی (${arr.length})</h3>` + subsHtml;
+
+  body.querySelectorAll('[data-sub-idx]').forEach(el => {
+    el.onclick = () => {
+      const idx = +el.getAttribute('data-sub-idx'); const sub = arr[idx];
+      const next = el.nextElementSibling;
+      if (next && next.classList.contains('submission-detail')) { next.remove(); return; }
+      body.querySelectorAll('.submission-detail').forEach(d => d.remove());
+      const div = document.createElement('div'); div.className = 'submission-detail';
+      div.style.cssText = 'padding:16px;background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);margin:-2px 0 10px 0;';
+      div.innerHTML = `<div style="font-size:12px;color:var(--muted);font-weight:800;margin-bottom:8px;text-transform:uppercase">💻 کد ${escapeHtml(sub.author_name)}</div><div style="background:#0b1020;color:#d1fae5;padding:14px 16px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:13px;direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-word;max-height:400px;overflow-y:auto;border:1px solid var(--line)">${escapeHtml(sub.code || '(خالی)')}</div>`;
+      el.insertAdjacentElement('afterend', div);
+    };
+  });
 }
 document.getElementById('closeContestResults').onclick = () => document.getElementById('contestResultsModal').classList.remove('show');
 document.getElementById('contestResultsModal').addEventListener('click', e => { if (e.target.id === 'contestResultsModal') e.currentTarget.classList.remove('show'); });
