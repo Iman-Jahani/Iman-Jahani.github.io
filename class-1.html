@@ -1090,19 +1090,48 @@ function decodePyChunk(s) {
 }
 async function runCode(id, code, outputEl) {
   await setOutput(outputEl, '⏳ آماده‌سازی Pyodide…', false);
+
+  window.__pyBuf.text = '';
+  window.__pyBuf.flush = () => setOutput(outputEl, window.__pyBuf.text || '⏳ در حال اجرا…', false);
+
+  // ✅ هندلر ضدگلوله — هر نوع داده‌ای رو قبول می‌کنه
+  const writeHandler = s => {
+    let str = '';
+    let byteLen = 0;
+    try {
+      if (typeof s === 'string') {
+        str = s;
+        byteLen = new TextEncoder().encode(s).length;
+      } else if (s instanceof Uint8Array) {
+        str = new TextDecoder('utf-8').decode(s);
+        byteLen = s.byteLength;
+      } else if (s && ArrayBuffer.isView(s)) {
+        const buf = s.buffer.slice(s.byteOffset, s.byteOffset + s.byteLength);
+        str = new TextDecoder('utf-8').decode(buf);
+        byteLen = s.byteLength;
+      } else if (s instanceof ArrayBuffer) {
+        str = new TextDecoder('utf-8').decode(s);
+        byteLen = s.byteLength;
+      } else if (Array.isArray(s)) {
+        // 🟢 بعضی بیلدهای Pyodide آرایه‌ی عددی می‌فرستن
+        const u8 = new Uint8Array(s);
+        str = new TextDecoder('utf-8').decode(u8);
+        byteLen = u8.byteLength;
+      } else {
+        str = String(s);
+        byteLen = str.length;
+      }
+    } catch (err) {
+      str = '';
+      byteLen = 0;
+    }
+    window.__pyBuf.text += str;
+    window.__pyBuf.flush();
+    return byteLen;   // ❗ باید عدد برگردونیم وگرنه OSError
+  };
+
   try {
     const py = await getPyodide();
-
-    window.__pyBuf.text = '';
-    window.__pyBuf.flush = () => setOutput(outputEl, window.__pyBuf.text || '⏳ در حال اجرا…', false);
-
-    // ✅ write بایت می‌گیره و باید عدد برگردونه
-    const writeHandler = s => {
-      const { str, len } = decodePyChunk(s);
-      window.__pyBuf.text += str;
-      window.__pyBuf.flush();
-      return len;
-    };
     py.setStdout({ write: writeHandler, isatty: true });
     py.setStderr({ write: writeHandler, isatty: true });
 
@@ -1115,7 +1144,6 @@ async function runCode(id, code, outputEl) {
     } catch (e) {
       window.__pyBuf.text += 'Error: ' + (e.message || e);
     }
-
   } catch (e) {
     window.__pyBuf.text = 'Pyodide error: ' + e.message;
   }
