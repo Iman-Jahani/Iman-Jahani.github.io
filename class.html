@@ -1262,10 +1262,10 @@ function renderCells(cells, commentsByCell) {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z"/></svg>
           <span class="label">نظر</span>
         </button>
-        ${isOwn ? `<button class="action del" title="حذف">
+        ${(isOwn || isTeacherMode) ? `<button class="action del" title="حذف">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14"/></svg>
           <span class="label">حذف</span>
-        </button>` : ''}
+         </button>` : ''}
       </div>
       <div class="comments-section" id="comments-${cell.id}">
         <div class="comments-header"><span>نظرات (${count})</span><button class="close-comments" data-cell-id="${cell.id}">✕</button></div>
@@ -1299,7 +1299,15 @@ function renderCells(cells, commentsByCell) {
     el.querySelector('.save').onclick = async () => { await saveCell(cell.id, cm.getValue(), o.lastOutput); toast('ذخیره شد', 'ok', 1500); };
     const db = el.querySelector('.del');
     if (db) db.onclick = async () => {
-      if (!confirm('این سلول حذف شود؟')) return;
+      // ✅ پیام تأیید متناسب با نقش
+      let confirmMsg;
+      if (isOwn) {
+        confirmMsg = 'این سلول حذف شود؟';
+      } else {
+        const who = cell.team_name ? `تیم «${cell.team_name}»` : (cell.author_name || 'ناشناس');
+        confirmMsg = `⚠️ سلول ${who} حذف شود؟ (به عنوان معلم)`;
+      }
+      if (!confirm(confirmMsg)) return;
       el.style.transition = 'opacity .25s, transform .25s, max-height .35s, margin .25s';
       el.style.opacity = '0'; el.style.transform = 'scale(.96)'; el.style.maxHeight = el.offsetHeight + 'px';
       requestAnimationFrame(() => { el.style.maxHeight = '0'; el.style.marginBottom = '0'; el.style.overflow = 'hidden'; });
