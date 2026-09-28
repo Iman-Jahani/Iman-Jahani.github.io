@@ -1052,19 +1052,29 @@ let pyodide;
 async function getPyodide() {
   if (!pyodide) {
     pyodide = await loadPyodide();
-    // ✅ default stdin: وقتی input() صدا زده شد و چیزی تنظیم نبود،
-    //    به جای OSError، رشته خالی برگردون
-    pyodide.setStdin({ stdin: () => null });
-    // ✅ wrapper مقاوم‌تر که هر دو خطای EOF و IO رو می‌گیره
+    // ✅ input() رو کاملاً بازنویسی می‌کنیم — دیگه به stdin کاری نداریم
     pyodide.runPython(`
-import builtins as _bi
-_orig_input = _bi.input
-def _safe_input(prompt=''):
-    try:
-        return _orig_input(prompt)
-    except (EOFError, OSError):
-        return ''
-_bi.input = _safe_input
+import builtins
+import sys
+import js
+
+def _patched_input(prompt=''):
+    # ۱. پرامپت رو بدون newline چاپ کن و فوری flush کن
+    if prompt:
+        sys.stdout.write(str(prompt))
+        sys.stdout.flush()
+    # ۲. دیالوگ مرورگر رو باز کن
+    val = js.window.prompt(str(prompt) if prompt else '')
+    # ۳. اگه Cancel زد → رشته خالی
+    if val is None:
+        val = ''
+    val = str(val)
+    # ۴. جواب کاربر رو echo کن (مثل ترمینال واقعی)
+    sys.stdout.write(val + '\\n')
+    sys.stdout.flush()
+    return val
+
+builtins.input = _patched_input
 `);
   }
   return pyodide;
@@ -1077,32 +1087,15 @@ async function runCode(id, code, outputEl) {
     const py = await getPyodide();
     await setOutput(outputEl, '⏳ در حال اجرا…', false);
 
-    // ✅ write به جای batched → بدون تأخیر
-    // ✅ isatty: true → Python فکر می‌کنه ترمیناله، پس prompt رو فوری flush می‌کنه
+    // ✅ write به جای batched → هرچی نوشته می‌شه، فوری نمایش داده می‌شه
     py.setStdout({ write: s => { out += s; flush(); }, isatty: true });
     py.setStderr({ write: s => { out += s; flush(); }, isatty: true });
-
-    py.setStdin({
-      stdin: () => {
-        // آخرین خط چاپ‌شده = پرامپت input()
-        const lastNL = out.lastIndexOf('\n');
-        const lastLine = out.slice(lastNL + 1);
-        const promptText = lastLine.trim() || 'ورودی:';
-        const v = window.prompt(promptText);
-        if (v === null) { out += '\n'; flush(); return null; }
-        out += v + '\n';
-        flush();
-        return v + '\n';
-      }
-    });
 
     try {
       const r = await py.runPythonAsync(code);
       if (r !== undefined && r !== null) out += String(r);
     } catch (e) {
       out += 'Error: ' + (e.message || e);
-    } finally {
-      py.setStdin({ stdin: () => null });
     }
   } catch (e) {
     out = 'Pyodide error: ' + e.message;
