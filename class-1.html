@@ -1092,7 +1092,7 @@ async function runCode(id, code, outputEl) {
     py.setStdout({ write: s => { window.__pyBuf.text += s; window.__pyBuf.flush(); }, isatty: true });
     py.setStderr({ write: s => { window.__pyBuf.text += s; window.__pyBuf.flush(); }, isatty: true });
 
-    try {
+ try {
   const r = await py.runPythonAsync(code);
   // ✅ فقط وقتی خروجی نشون بده که stdout خالی باشه
   //    (یعنی کاربر چیزی print نکرده و کد فقط یه expression بوده)
