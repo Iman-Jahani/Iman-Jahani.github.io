@@ -1079,22 +1079,35 @@ builtins.input = _py_input
   }
   return pyodide;
 }
+function decodePyChunk(s) {
+  if (typeof s === 'string') {
+    return { str: s, len: s.length };
+  }
+  if (s instanceof Uint8Array || ArrayBuffer.isView(s)) {
+    return { str: new TextDecoder('utf-8').decode(s), len: s.byteLength };
+  }
+  return { str: String(s), len: String(s).length };
+}
 async function runCode(id, code, outputEl) {
   await setOutput(outputEl, '⏳ آماده‌سازی Pyodide…', false);
   try {
     const py = await getPyodide();
 
-    // ✅ همه‌ی خروجی‌ها رو به این بافر مشترک می‌فرستیم
     window.__pyBuf.text = '';
     window.__pyBuf.flush = () => setOutput(outputEl, window.__pyBuf.text || '⏳ در حال اجرا…', false);
 
-    // print و خطاها از طریق stdout/stderr استاندارد Pyodide → می‌رن تو همون بافر
-    py.setStdout({ write: s => { window.__pyBuf.text += s; window.__pyBuf.flush(); }, isatty: true });
-    py.setStderr({ write: s => { window.__pyBuf.text += s; window.__pyBuf.flush(); }, isatty: true });
+    // ✅ write بایت می‌گیره و باید عدد برگردونه
+    const writeHandler = s => {
+      const { str, len } = decodePyChunk(s);
+      window.__pyBuf.text += str;
+      window.__pyBuf.flush();
+      return len;
+    };
+    py.setStdout({ write: writeHandler, isatty: true });
+    py.setStderr({ write: writeHandler, isatty: true });
 
     try {
       const r = await py.runPythonAsync(code);
-      // ✅ فقط وقتی خروجی expression رو نشون بده که stdout خالی باشه
       if (r !== undefined && r !== null && window.__pyBuf.text === '') {
         window.__pyBuf.text += String(r);
         window.__pyBuf.flush();
@@ -1104,7 +1117,6 @@ async function runCode(id, code, outputEl) {
     }
 
   } catch (e) {
-    // ✅ این catch برای خطاهای مرحله‌ی setup (loadPyodide, setStdout و ...)
     window.__pyBuf.text = 'Pyodide error: ' + e.message;
   }
 
