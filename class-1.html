@@ -1072,32 +1072,26 @@ _bi.input = _safe_input
 async function runCode(id, code, outputEl) {
   await setOutput(outputEl, '⏳ آماده‌سازی Pyodide…', false);
   let out = '';
+  const flush = () => setOutput(outputEl, out || '⏳ در حال اجرا…', false);
   try {
     const py = await getPyodide();
     await setOutput(outputEl, '⏳ در حال اجرا…', false);
-    py.setStdout({ batched: s => { out += s + '\n'; } });
-    py.setStderr({ batched: s => { out += s + '\n'; } });
+
+    // ✅ write به جای batched → بدون تأخیر
+    // ✅ isatty: true → Python فکر می‌کنه ترمیناله، پس prompt رو فوری flush می‌کنه
+    py.setStdout({ write: s => { out += s; flush(); }, isatty: true });
+    py.setStderr({ write: s => { out += s; flush(); }, isatty: true });
 
     py.setStdin({
       stdin: () => {
-        // آخرین خطی که چاپ شده = پرامپت input()
-        const lastNL = out.lastIndexOf('\n', out.length - 2);
-        const lastLine = out.slice(lastNL + 1).replace(/\n$/, '');
+        // آخرین خط چاپ‌شده = پرامپت input()
+        const lastNL = out.lastIndexOf('\n');
+        const lastLine = out.slice(lastNL + 1);
         const promptText = lastLine.trim() || 'ورودی:';
-
-        // دیالوگ با متن پرامپت
         const v = window.prompt(promptText);
-
-        if (v === null) {
-          // Cancel → EOF؛ فقط یه newline بزن که ادامه‌ی خروجی به خط جدید بره
-          out += '\n';
-          setOutput(outputEl, out, false);
-          return null;
-        }
-
-        // جواب رو با newline به output اضافه کن
+        if (v === null) { out += '\n'; flush(); return null; }
         out += v + '\n';
-        setOutput(outputEl, out, false);
+        flush();
         return v + '\n';
       }
     });
