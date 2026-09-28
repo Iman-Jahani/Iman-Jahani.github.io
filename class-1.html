@@ -1077,21 +1077,26 @@ async function runCode(id, code, outputEl) {
     await setOutput(outputEl, '⏳ در حال اجرا…', false);
     py.setStdout({ batched: s => { out += s + '\n'; } });
     py.setStderr({ batched: s => { out += s + '\n'; } });
-    // ✅ stdin از طریق prompt مرورگر
+
     py.setStdin({
       stdin: () => {
-        const v = window.prompt('ورودی (input):');
-        if (v === null) return null;      // کاربر Cancel زد → EOF
+        // 🟢 قبل از باز شدن دیالوگ، output فعلی رو نشون بده (تا prompt دیده شه)
+        setOutput(outputEl, out || '⏳ منتظر ورودی…', false);
+        const v = window.prompt('');
+        if (v === null) return null;   // Cancel → EOF
+        // 🟢 ورودی کاربر رو به output اضافه کن که مثل ترمینال دیده شه
+        out += v + '\n';
+        setOutput(outputEl, out, false);
         return v + '\n';
       }
     });
+
     try {
       const r = await py.runPythonAsync(code);
       if (r !== undefined && r !== null) out += String(r);
     } catch (e) {
       out += 'Error: ' + (e.message || e);
     } finally {
-      // ✅ بعد از اجرا، stdin رو ریست کن تا کد بعدی prompt نده
       py.setStdin({ stdin: () => null });
     }
   } catch (e) {
