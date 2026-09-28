@@ -643,6 +643,12 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 import { loadPyodide } from 'https://cdn.jsdelivr.net/pyodide/v0.26.3/full/pyodide.mjs';
 
+// ✅ بافر مشترک برای خروجی پایتون
+window.__pyBuf = { text: '', flush: () => {} };
+window.__pyOut = (s) => { window.__pyBuf.text += s; window.__pyBuf.flush(); };
+window.__pyAsk = (msg) => { const v = window.prompt(msg); return v === null ? '' : v; };
+
+  
 const SUPABASE_URL = 'https://fqwlbqpduxmpnlvxrmsy.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxd2xicXBkdXhtcG5sdnhybXN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MTUwNjEsImV4cCI6MjEwNTM5MTA2MX0.5qvPUi_grBuUgITLpG0-QShzLsLaiA07i7pWRtnsWPc';
 
@@ -1052,55 +1058,53 @@ let pyodide;
 async function getPyodide() {
   if (!pyodide) {
     pyodide = await loadPyodide();
-    // ✅ input() رو کاملاً بازنویسی می‌کنیم — دیگه به stdin کاری نداریم
+    // ✅ ورودی پایتون رو کلاً با JS prompt override می‌کنیم
     pyodide.runPython(`
+from js import __pyOut as _out, __pyAsk as _ask
 import builtins
-import sys
-import js
 
-def _patched_input(prompt=''):
-    # ۱. پرامپت رو بدون newline چاپ کن و فوری flush کن
-    if prompt:
-        sys.stdout.write(str(prompt))
-        sys.stdout.flush()
-    # ۲. دیالوگ مرورگر رو باز کن
-    val = js.window.prompt(str(prompt) if prompt else '')
-    # ۳. اگه Cancel زد → رشته خالی
-    if val is None:
-        val = ''
-    val = str(val)
-    # ۴. جواب کاربر رو echo کن (مثل ترمینال واقعی)
-    sys.stdout.write(val + '\\n')
-    sys.stdout.flush()
-    return val
+def _py_input(prompt=''):
+    p = str(prompt) if prompt else ''
+    if p:
+        _out(p)
+    v = _ask(p)
+    if v is None:
+        v = ''
+    v = str(v)
+    _out(v + '\\n')
+    return v
 
-builtins.input = _patched_input
+builtins.input = _py_input
 `);
   }
   return pyodide;
 }
 async function runCode(id, code, outputEl) {
   await setOutput(outputEl, '⏳ آماده‌سازی Pyodide…', false);
-  let out = '';
-  const flush = () => setOutput(outputEl, out || '⏳ در حال اجرا…', false);
   try {
     const py = await getPyodide();
-    await setOutput(outputEl, '⏳ در حال اجرا…', false);
 
-    // ✅ write به جای batched → هرچی نوشته می‌شه، فوری نمایش داده می‌شه
-    py.setStdout({ write: s => { out += s; flush(); }, isatty: true });
-    py.setStderr({ write: s => { out += s; flush(); }, isatty: true });
+    // ✅ همه‌ی خروجی‌ها رو به این بافر مشترک می‌فرستیم
+    window.__pyBuf.text = '';
+    window.__pyBuf.flush = () => setOutput(outputEl, window.__pyBuf.text || '⏳ در حال اجرا…', false);
+
+    // print و خطاها از طریق stdout/stdin استاندارد Pyodide → می‌رن تو همون بافر
+    py.setStdout({ write: s => { window.__pyBuf.text += s; window.__pyBuf.flush(); }, isatty: true });
+    py.setStderr({ write: s => { window.__pyBuf.text += s; window.__pyBuf.flush(); }, isatty: true });
 
     try {
       const r = await py.runPythonAsync(code);
-      if (r !== undefined && r !== null) out += String(r);
+      if (r !== undefined && r !== null) {
+        window.__pyBuf.text += String(r);
+        window.__pyBuf.flush();
+      }
     } catch (e) {
-      out += 'Error: ' + (e.message || e);
+      window.__pyBuf.text += 'Error: ' + (e.message || e);
     }
   } catch (e) {
-    out = 'Pyodide error: ' + e.message;
+    window.__pyBuf.text = 'Pyodide error: ' + e.message;
   }
-  out = out.trim() || '(بدون خروجی)';
+  const out = (window.__pyBuf.text || '').trim() || '(بدون خروجی)';
   await setOutput(outputEl, out, out.startsWith('Error') || out.startsWith('Pyodide'));
   await saveCell(id, code, out);
 }
