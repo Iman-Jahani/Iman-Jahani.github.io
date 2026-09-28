@@ -1093,17 +1093,16 @@ async function runCode(id, code, outputEl) {
     py.setStderr({ write: s => { window.__pyBuf.text += s; window.__pyBuf.flush(); }, isatty: true });
 
     try {
-      const r = await py.runPythonAsync(code);
-      if (r !== undefined && r !== null) {
-        window.__pyBuf.text += String(r);
-        window.__pyBuf.flush();
-      }
-    } catch (e) {
-      window.__pyBuf.text += 'Error: ' + (e.message || e);
-    }
-  } catch (e) {
-    window.__pyBuf.text = 'Pyodide error: ' + e.message;
+  const r = await py.runPythonAsync(code);
+  // ✅ فقط وقتی خروجی نشون بده که stdout خالی باشه
+  //    (یعنی کاربر چیزی print نکرده و کد فقط یه expression بوده)
+  if (r !== undefined && r !== null && window.__pyBuf.text === '') {
+    window.__pyBuf.text += String(r);
+    window.__pyBuf.flush();
   }
+} catch (e) {
+  window.__pyBuf.text += 'Error: ' + (e.message || e);
+}
   const out = (window.__pyBuf.text || '').trim() || '(بدون خروجی)';
   await setOutput(outputEl, out, out.startsWith('Error') || out.startsWith('Pyodide'));
   await saveCell(id, code, out);
