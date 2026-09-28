@@ -1080,11 +1080,22 @@ async function runCode(id, code, outputEl) {
 
     py.setStdin({
       stdin: () => {
-        // 🟢 قبل از باز شدن دیالوگ، output فعلی رو نشون بده (تا prompt دیده شه)
-        setOutput(outputEl, out || '⏳ منتظر ورودی…', false);
-        const v = window.prompt('');
-        if (v === null) return null;   // Cancel → EOF
-        // 🟢 ورودی کاربر رو به output اضافه کن که مثل ترمینال دیده شه
+        // آخرین خطی که چاپ شده = پرامپت input()
+        const lastNL = out.lastIndexOf('\n', out.length - 2);
+        const lastLine = out.slice(lastNL + 1).replace(/\n$/, '');
+        const promptText = lastLine.trim() || 'ورودی:';
+
+        // دیالوگ با متن پرامپت
+        const v = window.prompt(promptText);
+
+        if (v === null) {
+          // Cancel → EOF؛ فقط یه newline بزن که ادامه‌ی خروجی به خط جدید بره
+          out += '\n';
+          setOutput(outputEl, out, false);
+          return null;
+        }
+
+        // جواب رو با newline به output اضافه کن
         out += v + '\n';
         setOutput(outputEl, out, false);
         return v + '\n';
